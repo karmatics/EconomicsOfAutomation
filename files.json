@@ -1,0 +1,15 @@
+{
+  "main": [
+    "js/ArticleContent.js",
+    "js/ColonyContent.js",
+    "js/EarthContent.js",
+    "js/TaxChartComponent.js",
+    "js/EconomicsOfAutomation.js"
+  ],
+  "local": [],
+  "library": [
+    "DomBasics.js",
+    "UITools.js"
+  ],
+  "thirdParty": []
+}
