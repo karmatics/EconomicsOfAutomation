@@ -1,6 +1,6 @@
 {
   "name": "EconomicsOfAutomation",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "The Robot Dividend & Economics of Automation - Multi-Document Reader with Embedded Colony Tax & Dividend Simulator",
   "type": "luno-web-app",
   "mainClass": "EconomicsOfAutomation",
@@ -13,6 +13,7 @@
     "js/ArticleContent.js",
     "js/ColonyContent.js",
     "js/EarthContent.js",
+    "js/DoomerContent.js",
     "js/TaxChartComponent.js",
     "js/EconomicsOfAutomation.js"
   ],
@@ -23,15 +24,17 @@
   "styles": [
     "css/robotDividend.css"
   ],
-  "processedCountSinceCheckpoint": 0,
+  "processedCountSinceCheckpoint": 6,
   "changedMethods": {
     "js/TaxChartComponent.js": "2026-09-20T21:28:11.832Z",
-    "files.json": "2026-09-20T20:59:13.068Z",
-    "luno.json": "2026-09-20T20:59:13.068Z",
+    "files.json": "2026-09-25T00:42:13.529Z",
+    "luno.json": "2026-09-25T00:42:13.529Z",
     "css/robotDividend.css": "2026-09-20T22:38:17.323Z",
     "js/ColonyContent.js": "2026-09-20T21:28:11.832Z",
-    "js/EconomicsOfAutomation.js": "2026-09-20T21:28:11.832Z"
+    "js/EconomicsOfAutomation.js": "2026-09-25T00:42:13.529Z",
+    "js/EarthContent.js": "2026-09-23T23:46:37.626Z",
+    "js/DoomerContent.js": "2026-09-25T00:42:13.529Z"
   },
   "lastCheckpointTime": "2026-09-22T01:44:03.001Z",
-  "pendingCheckpointDescription": "Clean working tree"
+  "pendingCheckpointDescription": "Added Page 4: The Anatomy of a Doomer Loop"
 }

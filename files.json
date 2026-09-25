@@ -3,6 +3,7 @@
     "js/ArticleContent.js",
     "js/ColonyContent.js",
     "js/EarthContent.js",
+    "js/DoomerContent.js",
     "js/TaxChartComponent.js",
     "js/EconomicsOfAutomation.js"
   ],
