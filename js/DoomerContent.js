@@ -18,8 +18,8 @@ class DoomerContent {
   // Section 1: The Trap
   static p_loop_intro_1() {
     return [
-      "The five-step exchange above is not an exaggeration; it is a transcript from a real discussion with real people. It demonstrates how easily an inquiry about automated combine harvesters and AI software algorithms spirals into a conspiracy theory about the extermination of eight billion people.",
-      "Notice that the fatalist in that debate didn't start with hatred; they started with anxiety. When a technological leap breaks our oldest assumptions about survival, our brains struggle to cope. Rather than updating the accounting ledger we inherited, it feels emotionally safer to treat the future as an inescapable horror movie."
+      "The five-step exchange above is drawn directly from a real public discussion on Quora (click the button above to read the complete, unedited transcript). Notice how easily an inquiry about automated combines and software algorithms spirals into an unshakeable belief that eight billion human beings are marked for extermination. The fatalist in that debate didn't start with malice; they started with acute anxiety. When a technological leap breaks our oldest assumptions about survival, our brains struggle to cope. Rather than updating the accounting ledger we inherited, it feels emotionally safer to treat the future as an inescapable horror movie.",
+      "The dialogue above highlights a widespread psychological reflex. When faced with the prospect of full machine automation, people rarely debate tax rates or monetary policy; they immediately jump to catastrophe. It is worth examining this loop because the voice challenging that doomer narrative—arguing from first-principles physical arithmetic and game theory—is rare in public discourse, where conversations almost inevitably default to fatalism."
     ];
   }
 

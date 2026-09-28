@@ -15,7 +15,8 @@ class EconomicsOfAutomation {
         { id: "dividend", title: "1. The Robot Dividend", docClass: () => globalThis.ArticleContent },
         { id: "colony", title: "2. The 100,000 Colony", docClass: () => globalThis.ColonyContent },
         { id: "earth", title: "3. Earth Transition", docClass: () => globalThis.EarthContent },
-        { id: "doomer", title: "4. The Doomer Loop", docClass: () => globalThis.DoomerContent }
+        { id: "doomer", title: "4. The Doomer Loop", docClass: () => globalThis.DoomerContent },
+        { id: "paradigms", title: "5. The Three Visions", docClass: () => globalThis.ParadigmsContent }
       ];
 
       const savedPage = localStorage.getItem("robot_dividend_active_page") || "dividend";

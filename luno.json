@@ -1,7 +1,7 @@
 {
   "name": "EconomicsOfAutomation",
-  "version": "1.4.0",
-  "description": "The Robot Dividend & Economics of Automation - Multi-Document Reader with Embedded Colony Tax & Dividend Simulator",
+  "version": "1.5.0",
+  "description": "The Robot Dividend & Economics of Automation - Multi-Document Reader with Embedded Colony Tax & Dividend Simulator and Comparative Paradigm Analysis",
   "type": "luno-web-app",
   "mainClass": "EconomicsOfAutomation",
   "entrypoint": {
@@ -16,6 +16,8 @@
     "js/DoomerContent.js",
     "js/DoomerDebateComponent.js",
     "js/TaxChartComponent.js",
+    "js/ParadigmsContent.js",
+    "js/ParadigmsComparisonComponent.js",
     "js/EconomicsOfAutomation.js"
   ],
   "library": [
@@ -25,18 +27,12 @@
   "styles": [
     "css/robotDividend.css"
   ],
-  "processedCountSinceCheckpoint": 9,
+  "processedCountSinceCheckpoint": 17,
   "changedMethods": {
-    "js/TaxChartComponent.js": "2026-09-20T21:28:11.832Z",
-    "files.json": "2026-09-25T20:38:19.988Z",
-    "luno.json": "2026-09-25T20:38:19.988Z",
-    "css/robotDividend.css": "2026-09-20T22:38:17.323Z",
-    "js/ColonyContent.js": "2026-09-20T21:28:11.832Z",
-    "js/EconomicsOfAutomation.js": "2026-09-24T17:15:00.000Z",
-    "js/EarthContent.js": "2026-09-23T23:46:37.626Z",
-    "js/DoomerContent.js": "2026-09-25T20:50:21.456Z",
-    "js/DoomerDebateComponent.js": "2026-09-25T20:50:21.456Z"
-  },
-  "lastCheckpointTime": "2026-09-22T01:44:03.001Z",
-  "pendingCheckpointDescription": "Added visual hero banner, debate thread UI, and escalation ladder for Page 4"
+    "js/ParadigmsContent.js": "2026-09-28T05:12:13.606Z",
+    "js/ParadigmsComparisonComponent.js": "2026-09-28T05:12:13.606Z",
+    "js/EconomicsOfAutomation.js": "2026-09-28T03:26:24.437Z",
+    "files.json": "2026-09-28T03:26:24.437Z",
+    "luno.json": "2026-09-28T03:26:24.437Z"
+  }
 }

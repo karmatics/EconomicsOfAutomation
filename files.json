@@ -6,6 +6,8 @@
     "js/DoomerContent.js",
     "js/DoomerDebateComponent.js",
     "js/TaxChartComponent.js",
+    "js/ParadigmsContent.js",
+    "js/ParadigmsComparisonComponent.js",
     "js/EconomicsOfAutomation.js"
   ],
   "local": [],
