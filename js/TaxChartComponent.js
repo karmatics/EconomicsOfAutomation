@@ -664,70 +664,72 @@ class TaxChartComponent {
   }
 
   calculateTaxes(dataPoints, totalRevenuePercent, progressivityPercent) {
-    const n = dataPoints.length;
-    const incomes = dataPoints.map((p) => p.income);
-    const totalPreTaxIncome = incomes.reduce((a, b) => a + b, 0);
+      const n = dataPoints.length;
+      const incomes = dataPoints.map((p) => p.income);
+      const totalPreTaxIncome = incomes.reduce((a, b) => a + b, 0);
 
-    const r = totalRevenuePercent / 100;
-    const targetRevenueTotal = totalPreTaxIncome * r;
-    const targetTaxPerBracket = targetRevenueTotal / n;
-    const averageIncome = totalPreTaxIncome / n;
+      const r = totalRevenuePercent / 100;
+      const targetRevenueTotal = totalPreTaxIncome * r;
+      const targetTaxPerBracket = targetRevenueTotal / n;
+      const averageIncome = totalPreTaxIncome / n;
 
-    let taxes = new Array(n).fill(0);
+      let taxes = new Array(n).fill(0);
 
-    const S = progressivityPercent;
-    let p = 0.5;
-    if (S <= 30) {
-      p = (S / 30) * 0.5;
-    } else if (S <= 50) {
-      p = 0.5 + ((S - 30) / 20) * 0.20;
-    } else {
-      p = 0.70 + ((S - 50) / 50) * 0.30;
-    }
-
-    if (p <= 0.5) {
-      const linearU = p * 2;
-      const u = 1 - Math.pow(1 - linearU, 4);
-      for (let i = 0; i < n; i++) {
-        taxes[i] = (1 - u) * targetTaxPerBracket + u * (r * incomes[i]);
+      const S = progressivityPercent;
+      let p = 0.5;
+      if (S <= 30) {
+        p = (S / 30) * 0.5;
+      } else if (S <= 50) {
+        p = 0.5 + ((S - 30) / 20) * 0.20;
+      } else {
+        p = 0.70 + ((S - 50) / 50) * 0.30;
       }
-    } else {
-      const u = (p - 0.5) * 2;
-      for (let i = 0; i < n; i++) {
-        const equalizingTax = incomes[i] - (1 - r) * averageIncome;
-        taxes[i] = (1 - u) * (r * incomes[i]) + u * equalizingTax;
-      }
-    }
 
-    let iterations = 0;
-    while (iterations < 10) {
-      let shortfall = 0;
-      let eligiblePreTaxSum = 0;
-
-      for (let i = 0; i < n; i++) {
-        if (taxes[i] > incomes[i]) {
-          shortfall += (taxes[i] - incomes[i]);
-          taxes[i] = incomes[i];
-        } else if (taxes[i] < incomes[i]) {
-          eligiblePreTaxSum += incomes[i];
+      if (p <= 0.5) {
+        const linearU = p * 2;
+        const u = 1 - Math.pow(1 - linearU, 4);
+        for (let i = 0; i < n; i++) {
+          taxes[i] = (1 - u) * targetTaxPerBracket + u * (r * incomes[i]);
+        }
+      } else {
+        // Cap the equalizing weight at 0.65 to ensure marginal tax rates never reach 100%,
+        // guaranteeing that earning additional income always yields positive marginal returns.
+        const rawU = (p - 0.5) * 2;
+        const u = rawU * 0.65;
+        for (let i = 0; i < n; i++) {
+          const equalizingTax = incomes[i] - (1 - r) * averageIncome;
+          taxes[i] = (1 - u) * (r * incomes[i]) + u * equalizingTax;
         }
       }
 
-      if (shortfall < 0.1 || eligiblePreTaxSum === 0) break;
+      let iterations = 0;
+      while (iterations < 10) {
+        let shortfall = 0;
+        let eligiblePreTaxSum = 0;
 
-      for (let i = 0; i < n; i++) {
-        if (taxes[i] < incomes[i]) {
-          const share = incomes[i] / eligiblePreTaxSum;
-          taxes[i] += shortfall * share;
+        for (let i = 0; i < n; i++) {
+          if (taxes[i] > incomes[i]) {
+            shortfall += (taxes[i] - incomes[i]);
+            taxes[i] = incomes[i];
+          } else if (taxes[i] < incomes[i]) {
+            eligiblePreTaxSum += incomes[i];
+          }
         }
+
+        if (shortfall < 0.1 || eligiblePreTaxSum === 0) break;
+
+        for (let i = 0; i < n; i++) {
+          if (taxes[i] < incomes[i]) {
+            const share = incomes[i] / eligiblePreTaxSum;
+            taxes[i] += shortfall * share;
+          }
+        }
+        iterations++;
       }
-      iterations++;
+
+      const postTax = incomes.map((inc, i) => Math.max(0, inc - taxes[i]));
+      return { taxes, postTax };
     }
-
-    const postTax = incomes.map((inc, i) => Math.max(0, inc - taxes[i]));
-    return { taxes, postTax };
-  }
-
   update() {
     if (!this.currentData || !this.currentData.data) return;
 

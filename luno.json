@@ -1,7 +1,7 @@
 {
   "name": "EconomicsOfAutomation",
-  "version": "1.5.0",
-  "description": "The Robot Dividend & Economics of Automation - Multi-Document Reader with Embedded Colony Tax & Dividend Simulator and Comparative Paradigm Analysis",
+  "version": "1.6.0",
+  "description": "The Robot Dividend & Economics of Automation - Complete Six-Part Series with Embedded Colony Tax & Dividend Simulator, Doomer Ladder, Paradigms Matrix, and Adversarial Gauntlet",
   "type": "luno-web-app",
   "mainClass": "EconomicsOfAutomation",
   "entrypoint": {
@@ -18,6 +18,7 @@
     "js/TaxChartComponent.js",
     "js/ParadigmsContent.js",
     "js/ParadigmsComparisonComponent.js",
+    "js/ObjectionsContent.js",
     "js/EconomicsOfAutomation.js"
   ],
   "library": [
@@ -27,12 +28,18 @@
   "styles": [
     "css/robotDividend.css"
   ],
-  "processedCountSinceCheckpoint": 17,
+  "processedCountSinceCheckpoint": 32,
   "changedMethods": {
-    "js/ParadigmsContent.js": "2026-09-28T05:12:13.606Z",
-    "js/ParadigmsComparisonComponent.js": "2026-09-28T05:12:13.606Z",
-    "js/EconomicsOfAutomation.js": "2026-09-28T03:26:24.437Z",
-    "files.json": "2026-09-28T03:26:24.437Z",
-    "luno.json": "2026-09-28T03:26:24.437Z"
-  }
+    "luno.json": "2026-09-28T20:09:00.376Z",
+    "js/TaxChartComponent.js": "2026-09-28T20:33:22.496Z",
+    "js/ColonyContent.js": "2026-09-28T20:33:22.496Z",
+    "js/EarthContent.js": "2026-09-29T21:33:41.611Z",
+    "js/DoomerContent.js": "2026-09-29T21:27:25.094Z",
+    "js/ObjectionsContent.js": "2026-09-29T21:33:41.611Z",
+    "js/ParadigmsContent.js": "2026-09-29T20:35:05.288Z",
+    "js/EconomicsOfAutomation.js": "2026-09-29T19:56:17.875Z",
+    "ClaudeMasterPrompt.md": "2026-09-29T20:23:21.561Z"
+  },
+  "lastCheckpointTime": "2026-09-28T20:15:00.000Z",
+  "pendingCheckpointDescription": "Six-part series complete: armored against adversarial LLM critique with Wheelbarrow of Gold lens, China geopolitical realism, persuasion bridge, and dual Markdown/HTML export"
 }

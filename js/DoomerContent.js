@@ -39,19 +39,18 @@ class DoomerContent {
   }
 
   static p_step_deep_2() {
-    return [
-      "Step Two: The 50-Year Stagnation Fallacy. Pessimists frequently object: 'Wages stagnated for fifty years while corporations took all the profits!' But this commits a basic category error: you cannot use the voting behavior of an employed electorate to predict how an automated electorate will vote.",
-      "When 95% of voters hold paychecks, politics revolves around income tax brackets and job security. But when machines automate 60% of all labor while warehouses overflow, the median voter is no longer a nervous employee trying to keep their head down. The median voter is now an unemployed citizen with hungry kids. In a democracy, when the overwhelming majority faces an identical existential need, the political mandate flips overnight: passing a machine dividend becomes the only politically viable path."
-    ];
-  }
+      return [
+        "Step Two: The 50-Year Stagnation Fallacy. Pessimists frequently object: 'Wages stagnated for fifty years while corporations took all the profits!' But this commits a basic category error: you cannot use the voting behavior of an employed electorate to predict how an automated electorate will vote. You do not need to wait until 51% of voters are destitute for the mandate to flip.",
+        "When 95% of voters hold secure paychecks, politics naturally revolves around protecting personal income tax brackets. But when automation rapidly displaces the first 15% or 20% of workers, the psychology of the entire electorate transforms. The remaining employed majority sees their colleagues laid off, their friends displaced, and their children graduating into a jobless market. Anticipatory anxiety and parental instinct take over: passing a machine dividend ceases to be 'welfare for strangers' and becomes essential survival insurance for everyone they love."
+      ];
+    }
 
   static p_step_deep_3() {
-    return [
-      "Step Three: The Fiction of Frictionless Tyranny. When people realize that an unemployed majority will vote for a dividend, they immediately assume the powerful will just cancel democracy. But people talk about tyranny as if it were a software patch that an oligarch installs overnight.",
-      "Oligarchs do not patrol streets or guard perimeter fences. Those duties are carried out by ordinary working-class men and women: soldiers, police officers, and technicians. Those individuals have parents, children, and spouses who face the exact same economic displacement. The fantasy that millions of armed soldiers will cheerfully execute their own starving families to protect a billionaire's server farm ignores every historical reality of political power."
-    ];
-  }
-
+      return [
+        "Step Three: The Fiction of Frictionless Tyranny. When fatalists realize that an unemployed majority will vote for a dividend, they immediately assume the powerful will just cancel democracy or deploy private armies of autonomous combat drones. But people talk about tyranny as if it were a software patch that an oligarch installs overnight. Oligarchs do not enforce laws or command sovereign military divisions. Armed forces, National Guard units, and federal law enforcement officers are sworn to the Constitution, not tech billionaires. Those soldiers and officers have parents, children, and spouses who face the exact same economic displacement. Furthermore, sovereign states hold an absolute monopoly on legitimate physical force, aerospace clearance, and heavy defense systems. The fantasy that private tech executives can build autonomous mercenary divisions to mow down their own citizenry ignores every reality of military command, logistical supply, and domestic treason laws. Treason against a sovereign democratic republic results in frozen assets, nationalized infrastructure, and federal detention, not private feudal dominion.",
+        "The myth of autonomous corporate tyranny ignores that private property only exists because the sovereign state and its legal apparatus enforce it. If an oligarch attempts an armed insurrection against the sovereign democratic will, they forfeit the legal protections that make their wealth meaningful in the first place."
+      ];
+    }
   static p_step_deep_4() {
     return [
       "Step Four: The Prisoner's Dilemma of Automation. Make no mistake: companies will lay off workers. They have to. In a competitive market, paying human beings for work that machines perform for near-zero marginal cost is commercial suicide. Individual firms cannot act as private welfare agencies. But if every company automates, aggregate consumer purchasing power collapses to zero. This is a classic Prisoner's Dilemma: no single corporation can solve it alone without being undercut by competitors.",
@@ -66,21 +65,19 @@ class DoomerContent {
     ];
   }
 
-  // Section 3: The Bunker Reality
   static p_bunker_reality_1() {
-    return [
-      "Even if automated units manufacture every physical luxury and AI synthesizes every cultural product, a billionaire still needs a thriving human civilization. Status, admiration, and social hierarchy only exist in relation to other conscious human beings. The wealthy want world capitals, crowded galas, cultural influence, and a society that acknowledges their achievements.",
-      "Once you realize that the wealthy cannot survive without a customer base, and that social status has zero meaning without a living human civilization, the doomer fantasy collapses. The Robot Dividend does not require billionaires to be saints. It only requires them to act in their own rational self-interest."
-    ];
-  }
+      return [
+        "Even if we set aside the physical absurdity of an isolated bunker—where a single rogue firmware update from a lead security engineer or an unmaintainable semiconductor supply chain turns a private compound into a tomb—the sophisticated alternative that fatalists fear is state-level authoritarian capture: the idea that elites will simply turn the existing democratic state into an armed corporatist police apparatus. But this completely ignores the historical reality of the Dictator's Dilemma. Consider the Russian Oligarch Paradox: where do the billionaires of authoritarian, captured states choose to park their wealth, educate their children, and spend their leisure? Not in the autocracies they control, but in London, Zurich, and the social democracies of Western Europe. Why? Because in an authoritarian regime where the rule of law has been dismantled to suppress the public, no oligarch is ever safe from the sovereign executive. If the minister of defense, the secret police, or a rival faction decides to expropriate your assets or put you under house arrest, there is no independent court to appeal to. By destroying democratic constitutionalism to protect their money from voters, elites simply make themselves the permanent hostages of the police state.",
+        "The retreat into authoritarian state capture is not a rational triumph for capital; it is a paranoid trap. The wealthiest individuals on Earth do not enjoy their highest quality of life in low-tax, high-surveillance dictatorships where they must travel in armored motorcades between fortified checkpoints. They enjoy their highest quality of life in high-trust, high-legitimacy constitutional democracies where they can walk freely through public parks, dine in open restaurants, and enjoy the prestige of a flourishing civilization. Trading that freedom away to become a terrified dynast inside a police state is a catastrophic miscalculation."
+      ];
+    }
 
   static quote_bunker() {
-    return [
-      "Wealth is not gold hoarded in a concrete cave; wealth is a claim check on a living civilization. Ruling over an ash heap is not luxury—it is solitary confinement.",
-      "You cannot flex a trillion dollars on a toaster. Capital cannot exist without a living human society to give it value and status."
-    ];
-  }
-
+      return [
+        "You cannot build a private paradise on top of a public graveyard. The Robot Dividend is not corporate charity wrung from capital; it is the modest insurance premium the wealthy pay to enjoy unimaginable luxury in safety, peace, and public honor.",
+        "If you rely on a police state to protect you from the ballot box, you become the hostage of the police state. Wealth is only meaningful inside a living, peaceful civilization."
+      ];
+    }
   // Section 4: Stepping Out of the Loop
   static p_loop_close_1() {
     return [

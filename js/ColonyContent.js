@@ -39,12 +39,11 @@ class ColonyContent {
   }
 
   static p_colony_china_contrast() {
-    return [
-      "It is worth noting a terrestrial counterpoint: authoritarian regimes like China face far less procedural friction when restructuring their economies. Because power is centrally controlled from the top down, a command regime can decree mass automation, deploy millions of industrial robots, and mandate demographic reallocations overnight without waiting for legislative consensus. That central authority undeniably makes their technical execution of an automated transition faster and easier. But it comes at the steep price of personal freedom, individual preference, and civil liberty. Our challenge in a free society is to achieve that same effortless transition through optimal democratic consensus, rather than bureaucratic coercion.",
-      "Consider how this contrasts with centrally controlled systems like China. An authoritarian command structure can decree automation from above, retooling entire cities and deploying robot fleets by executive fiat. While that top-down control certainly makes executing a rapid transition easier in the short run, it sacrifices human autonomy and ignores genuine public consent. A free society cannot and should not transition that way. Our goal is showing that when democracy is engineered properly, a free people can transition even more smoothly—by voting directly on the rules of their own abundance."
-    ];
-  }
-
+      return [
+        "It is worth examining a terrestrial reality that Western commentators frequently misjudge: an authoritarian command state like China is uniquely positioned to adapt to post-labor automation with brutal efficiency. Because power is centralized, a command regime does not have to spend twenty years navigating corporate lobbying cartels, legislative filibusters, or media-manufactured culture wars. If Beijing decides to deploy fifty million humanoid robots, retool entire provinces, and allocate automated physical surplus by executive decree, they can execute the shift overnight. And if machines are increasingly performing scientific research and engineering better than humans anyway, the old Western assumption that top-down states 'cannot innovate' evaporates. The challenge for a free society is not pretending authoritarian states are incompetent; it is proving that a democracy can achieve that same transition voluntarily—through transparent consensus and algorithmic taxation—without surrendering human liberty to a digital police state.",
+        "Consider the geopolitical contrast with command economies like China. A centralized government faces far less procedural friction when labor becomes obsolete. They can mandate industrial automation, deploy massive robotic fleets, and reallocate physical resources by executive decree. The old cliché that authoritarian regimes will fail because they stifle human innovation misses the point: when advanced AI and autonomous systems drive the innovation cycle themselves, command economies can execute at terrifying speed. Our task in the democratic world is existential: if we remain paralyzed in partisan warfare over obsolete payroll taxes, top-down command regimes will operationalize post-labor abundance long before we do."
+      ];
+    }
   // Section 2: The Tangible Basket Currency
   static p_colony_money_1() {
     return [
@@ -60,21 +59,19 @@ class ColonyContent {
     ];
   }
 
-  // Section 3: Algorithmic Taxation: Voting on Two Numbers
   static p_colony_tax_1() {
-    return [
-      "With a non-partisan legislature and an honest currency in place, the colony solves public finance by replacing the thousands of pages of special-interest tax loopholes that plague Earth with an open mathematical formula governed by just two numbers.",
-      "On Earth, tax codes are battlegrounds for lobbyists, packed with tens of thousands of carve-outs and shelters. The colony replaces all of that with a radically transparent, democratic fiscal policy. The entire tax and dividend structure is defined by two fundamental numbers chosen directly by the citizens."
-    ];
-  }
+      return [
+        "To see how straightforward public finance becomes in an automated society, the colony replaces the thousands of pages of special-interest tax loopholes that plague Earth with an open mathematical schedule defined by two intuitive dials. On the frontier, citizens illustrate this by voting directly on the parameters. But in the real world, this requires no constitutional upheaval: we do not need national referendums on mathematical equations. We simply need to elect representatives who understand the principle and configure our existing progressive tax schedule to capture machine surplus and disburse a universal dividend floor.",
+        "The colony's two-number tax schedule serves as a pedagogical model for radical transparency. On Earth today, tax codes are battlegrounds for lobbyists, packed with tens of thousands of carve-outs and shelters. In a well-designed progressive tax system, whether set directly or by elected representatives, fiscal policy can be parameterized cleanly: capturing automated capital profits and converting them into an unconditional baseline for every citizen."
+      ];
+    }
 
   static p_colony_tax_2() {
-    return [
-      "The first number is the Total Collection Rate (T): the percentage of aggregate colony output collected each year for public infrastructure and universal citizen dividends. The second number is the Progressivity Index (P): the slope of the curve determining how much of that collection comes from high-capital enterprises versus lower earners. Every citizen votes by simply picking their two preferred numbers on an annual ballot, and the median preference becomes the law of the land.",
-      "Every year, each citizen casts a ballot by selecting two values: a target percentage for total public revenue (T), and a progressivity index (P) defining the curve. Because the median choice automatically governs both parameters, the tax code directly reflects the median voter's will—without a single lobbyist or backroom deal."
-    ];
-  }
-
+      return [
+        "The two dials are simple: the Total Collection Rate (T) sets the overall percentage of aggregate economic output captured for public infrastructure and universal citizen dividends, while the Progressivity Index (P) defines the slope of the curve. Crucially, this formula is dynamic and self-adjusting: you do not need politicians frantically changing the dials every legislative session. As demonstrated in our simulation, the exact same values for T and P function smoothly whether human employment is at 95%, 50%, or 10%. As machine automation expands, the formula automatically absorbs capital gains and converts them into a rising dividend floor.",
+        "The elegance of this mechanism is its stability over time. One parameter governs total public revenue (T), and the other governs progressivity (P). Because the schedule is continuous, it operates gracefully across the entire transition. When most people are employed, it acts as a balanced progressive income and capital tax. As machines replace human labor, the identical mathematical formula automatically channels the swelling corporate surplus into universal dividends without requiring emergency bailout legislation."
+      ];
+    }
   static p_colony_tax_3() {
     return [
       "Notice the elegance of this mechanism: as shown in the simulation above, whenever the citizens vote for a progressive curve above 30%, the formula automatically generates negative income tax credits for the lower percentiles. It creates an unconditional citizen dividend floor without requiring separate welfare legislation. The tax code and the Robot Dividend are the exact same mathematical function.",

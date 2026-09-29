@@ -25,11 +25,10 @@ class EarthContent {
 
   static p_earth_intro_2() {
     return [
-      "Today, almost every modern democracy funds its public services by taxing human wages. As generative AI and humanoid robotics accelerate, this creates a catastrophic fiscal scissors: the tax base drawn from human sweat collapses at the exact moment citizens need a dividend to survive. Yet whenever a solution is proposed, our political machine reflexively slices it down the middle into warring camps. One side screams 'lazy socialist welfare'; the other screams 'oligarch hush-money.'",
-      "The great tragedy of our current terrestrial moment is that we are on the verge of solving humanity's oldest problem—physical scarcity—while being intellectually crippled by our political operating system. We treat the distribution of machine-made wealth as a test of partisan loyalty rather than a straightforward update to our accounting ledger."
+      "Today, almost every modern democracy funds its public services by taxing human wages. As generative AI and humanoid robotics accelerate, this creates a catastrophic fiscal scissors: the tax base drawn from human sweat collapses at the exact moment citizens need a dividend to survive. Skeptics often argue that democracy cannot act until a full 51% majority is unemployed and starving. But that misunderstands political psychology and legislative design. We do not need a revolutionary single-day vote. The transition can be implemented as an Automatic Stabilization Trigger: a statutory fiscal rule enacted today that automatically scales up machine surplus capture and citizen dividends whenever the national labor share of GDP drops below designated historical baselines. When 15% or 20% of the workforce is displaced, the remaining 80% realize their own careers or their children's futures are next in line. Empathy, anticipatory anxiety, and automatic triggers turn machine surplus capture into law long before society reaches a crisis cliff.",
+      "The great tragedy of our current terrestrial moment is that we are on the verge of solving humanity's oldest problem—physical scarcity—while being intellectually crippled by our political operating system. We do not have to wait for half the nation to end up on the sidewalk before our democracy can act. By structuring the Robot Dividend as an automatic stabilizer pegged to labor-share displacement, we bypass endless annual legislative horse-trading and create a self-executing safety mechanism."
     ];
   }
-
   static sidebar_binary_trap() {
     return [
       "Our first-past-the-post plurality voting system inevitably funnels a complex, 350-million-person society into just two adversarial teams. While structural electoral reforms like ranked-choice voting are valuable, waiting for constitutional amendments while AI advances exponentially is a losing strategy. The immediate breakthrough is cognitive: realizing that our two-party sorting machine is an artificial construct. You do not have to think down the party line on automation.",
@@ -38,12 +37,11 @@ class EarthContent {
   }
 
   static p_earth_china() {
-    return [
-      "It is worth confronting an uncomfortable terrestrial contrast: authoritarian command economies like China face far less procedural gridlock in an automated age. When an unelected central committee decides to deploy ten million humanoid robots, retool entire industrial zones, or redirect capital flows, they can execute the shift overnight by executive fiat. But that rapid technical execution comes at an intolerable price: the total suppression of human liberty, dissent, and personal choice. Our challenge in the democratic world is to prove that a free society can manage this transition even better—not by submitting to a dictator, but by shedding our artificial partisan paralysis.",
-      "Authoritarian regimes have an undeniable short-term advantage in deploying mass automation: they don't have to navigate legislative deadlocks or media-fueled culture wars. Yet trading freedom for rapid automation is a catastrophic bargain. A democracy does not need top-down tyranny to distribute machine abundance; it only requires an electorate that understands the difference between real wealth and obsolete accounting tokens."
-    ];
-  }
-
+      return [
+        "We must confront an uncomfortable geopolitical reality: authoritarian command economies like China possess an enormous structural advantage in executing mass automation. Because state power is absolute, they do not have to negotiate with corporate campaign donors, navigate legislative deadlocks, or appease legacy labor unions. If an unelected central committee decides that labor has ceased to be the basis of economic survival, they can decree industrial automation, deploy tens of millions of humanoid robots, and distribute the physical harvest by executive decree. And if advanced AI systems increasingly conduct the scientific and technological innovation anyway, the comfortable Western belief that dictatorships 'cannot innovate' becomes a dangerous delusion. The existential threat to the West is not that China will stumble; it is that China will successfully operationalize machine abundance while Western democracies tear themselves apart defending obsolete payroll systems.",
+        "Command economies have an undeniable speed advantage in a post-labor transition: they don't have to debate. A centralized leadership can deploy autonomous infrastructure and decree physical distribution overnight by executive fiat. If AI performs the core engineering and design work, the historical innovation penalty of authoritarianism largely disappears. Our challenge in the democratic world is urgent: we cannot afford to let partisan paralysis trap our citizens in artificial poverty while command regimes adapt to the post-work world. We must prove that free citizens can update their own ledger through democratic consensus."
+      ];
+    }
   // Section 2: The Interview & The Core Dissonance
   static p_earth_interview_1() {
     return [
@@ -66,14 +64,12 @@ class EarthContent {
     ];
   }
 
-  // Section 3: The Two-Number Earth Model & Simulator
   static p_earth_model_1() {
-    return [
-      "How do we enact this transition on Earth without dismantling private enterprise or bankrupting public treasuries? We bring the colony's two-number algorithmic model home to our own economy. Instead of arguing over hundreds of arbitrary tax brackets, deductions, and corporate loopholes, society focuses on just two macro dials: the Total Collection Rate (T) to capture automated machine surplus, and the Progressivity Index (P) to shape the distribution curve.",
-      "The mathematical fiscal schedule tested in our 100,000-person colony applies directly to terrestrial data. By setting a progressive curve on aggregate capital and automated production, the tax formula automatically produces a negative tax bracket at the lower tiers. It delivers the Robot Dividend floor as an organic mathematical feature of the tax code—eliminating welfare bureaucracies, means-testing paperwork, and the social stigma of 'handouts' in a single stroke."
-    ];
-  }
-
+      return [
+        "How do we enact this transition on Earth without dismantling private enterprise or bankrupting public treasuries? We bring the colony's parameterized model home to our existing tax system by cleanly separating the macro funding base from the individual distribution curve. At the macroeconomic level, public revenue is anchored in the true surplus of the machine age: a Destination-Based Cash Flow Tax (DBCFT) on automated enterprise cash flows, a Land Value Tax (LVT) on unimproved urban location rents, and royalties on natural energy extraction. That aggregate revenue sets the macro collection target (dial T). Society then uses the Progressivity dial (P) to shape how that surplus flows back to households through a continuous Negative Income Tax schedule. Because the formula automatically adapts to shifts in the labor market, it works out-of-the-box: capturing corporate automation windfalls and routing them directly into an unconditional Credit floor for every household.",
+        "The mathematical schedule tested in our simulator applies directly to terrestrial economies. By funding the aggregate pool through corporate cash-flow and land taxes, the progressive formula automatically produces a negative tax bracket at the lower tiers. It delivers the Robot Dividend floor as an organic mathematical feature of the tax code—eliminating welfare bureaucracies, means-testing paperwork, and the social stigma of 'handouts' in a single stroke, while preserving healthy marginal incentives for high-end creators and entrepreneurs."
+      ];
+    }
   static p_earth_model_2() {
     return [
       "Use the interactive simulator above with the 'Earth Benchmark: US (2024)' dataset. Notice what happens when you raise Progressivity (P) above 40%: without raising taxes on ordinary human labor, the model automatically channels machine-generated capital gains into an unconditional monthly Credit floor for every household. The market continues to set prices, incentives for innovation remain completely unhindered, and no family faces destitution when an algorithm automates their desk job.",
@@ -81,14 +77,12 @@ class EarthContent {
     ];
   }
 
-  // Section 4: Beyond the Party Line: A Permission Structure for Both Sides
   static p_earth_conservative() {
-    return [
-      "To the conservative and free-market reader: the Robot Dividend is not socialism. Socialism is government ownership of the means of production, managed by bureaucratic central planning. An unconditional dividend does the exact opposite: it puts unconditional purchasing power directly into the hands of sovereign citizens, letting free markets, private enterprise, and consumer choice decide which businesses succeed. Furthermore, capital owners need this dividend to survive: if machines replace workers without a dividend, who will buy the products the automated factories produce? The dividend protects private property and market dynamism from the demand vacuum of full automation.",
-      "If you value free enterprise, fiscal sanity, and individual liberty, the Robot Dividend is your greatest ally. Traditional welfare requires intrusive government bureaucrats auditing citizens' bank accounts, penalizing marriage, and micromanaging personal choices. An automated dividend replaces that entire bureaucratic apparatus with a clean, universal floor. It guarantees consumer purchasing power, ensures stable demand for private industry, and preserves individual autonomy against the encroachment of the state."
-    ];
-  }
-
+      return [
+        "To the conservative and free-market reader: the Robot Dividend is the ultimate protector of market capitalism and private enterprise. Consider the real alternative to a dividend in an automated world: it is not a low-tax free-market paradise; it is a corrupt, authoritarian surveillance state where capital owners must permanently capture the government, militarize domestic policing, and live in constant terror of public revolution or state expropriation. When you eliminate the purchasing power of consumers, private enterprise collapses—businesses either die of demand starvation or become client-state monopolies feeding on government contracts. Furthermore, the Robot Dividend solves the capitalist's greatest fear—majoritarian expropriation—by turning the entire public into de facto enterprise stakeholders. Because every household's monthly dividend depends directly on corporate profitability and cash-flow health, voting to over-tax or handicap automated enterprise directly slashes the voter's own dinner table. The Robot Dividend is not an attack on wealth; it is the modest insurance premium capital pays to ensure that its factories have solvent customers, its property deeds remain protected by independent courts, and the voting public has an overwhelming self-interest in defending private enterprise.",
+        "If you value private property, the rule of law, and commercial enterprise, the Robot Dividend is your greatest bulwark against tyranny. It prevents the state from nationalizing production by putting purchasing power directly into household hands, allowing consumer demand to direct the economy. It gives capital owners what every Russian or Chinese oligarch desperately seeks when buying property in London or Zurich: the priceless security of a high-trust, peaceful, and legitimate constitutional democracy where the public is a partner in corporate success rather than an existential threat."
+      ];
+    }
   static p_earth_progressive() {
     return [
       "To the progressive and labor-minded reader: the Robot Dividend is not a corporate bribe to pacify the working class. It is the realization of the oldest humanitarian ideal: the permanent abolition of involuntary poverty and wage coercion. For centuries, workers were forced to sell their time under the threat of eviction and starvation. When machines shoulder the burden of production and the surplus is distributed as a birthright, work transforms from compulsory survival into voluntary vocation. Humans are finally emancipated to raise families, create art, study science, and care for their communities without fear.",
@@ -96,14 +90,12 @@ class EarthContent {
     ];
   }
 
-  // Section 5: The Democratic Settlement
   static p_earth_conclusion_1() {
-    return [
-      "Non-polarized, pragmatic problem-solving is not science fiction. It is how human beings naturally behave whenever an artificial two-party sorting machine is not actively dividing them. When a flood threatens a small town, neighbors do not check party registrations before filling sandbags. They see a physical reality and apply a physical solution. The arrival of automated abundance is that exact same moment: a tidal wave of physical goods is arriving at our shores, and our only task is to update our accounting so everyone can share in the bounty.",
-      "We do not need to wait for a constitutional convention, an electoral revolution, or an all-powerful AI overlord to claim our future. We simply need to look at the machines for what they are: the accumulated heritage of thousands of years of human scientific discovery. That heritage belongs to all of us."
-    ];
-  }
-
+      return [
+        "Critics often dismiss the idea of democratic persuasion as politically naive, arguing that modern legislative bodies are hopelessly paralyzed by special interests and partisan deadlock. But that critique confuses peacetime budget squabbling over percentage crumbs with an existential civilizational turning point. History shows that when a shared threat or opportunity becomes viscerally clear, democratic consensus can transform with astonishing speed. In 1983, when over one hundred million Americans watched the television film 'The Day After', the abstract mathematics of thermonuclear war suddenly became concrete and emotionally undeniable—profoundly altering President Ronald Reagan’s strategic worldview and paving the way for the historic INF Treaty. Similarly, when scientists proved that chlorofluorocarbons (CFCs) were destroying the stratospheric ozone layer, humanity did not disintegrate into a century of trench warfare over freon: the world enacted the 1987 Montreal Protocol, banning the harmful chemicals because everyone recognized they would be vastly better off with a preserved atmosphere. Today, machine automation poses the exact same coordination challenge. The obstacle is not a mystery of physical production—the machines already harvest the grain and mill the lumber. The task is simply persuading society to implement a solution using familiar mechanisms like progressive taxation. With AI now available as an interactive simulator to clearly project the outcomes of machine surplus versus demand collapse, persuasion is not a naive daydream; it is the most historically proven catalyst for collective action we possess.",
+        "The accusation that democratic persuasion is naive assumes that political systems can only react after catastrophe strikes. But our own history proves otherwise. The global consensus that solved the ozone hole through the Montreal Protocol, or the public awakening following 'The Day After' that drove the superpowers toward nuclear arms reduction, demonstrated that humanity can coordinate preemptively when the reality of collective self-preservation is made plain. Automation does not present an insoluble theoretical paradox about how people eat without jobs; the food is already in the silos. It presents a communication challenge: convincing the electorate and its leadership to update the ledger using existing progressive tax schedules before an obsolete wage system engineers artificial poverty amid machine abundance."
+      ];
+    }
   static p_earth_conclusion_2() {
     return [
       "The choice before planet Earth is not between capitalism and socialism, nor between the red team and the blue team. The choice is between accounting reality and accounting delusion. If we cling to the obsolete belief that survival must be earned through compulsory toil even as machines produce record physical surpluses, we will engineer artificial poverty amid unimaginable abundance. But if we have the courage to step outside the manufactured partisan trance and update the ledger, we can build the wealthiest, freest, and most flourishing civilization in human history.",
