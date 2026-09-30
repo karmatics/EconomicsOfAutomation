@@ -34,69 +34,160 @@ class EconomicsOfAutomation {
       this.initUI();
       this.renderArticle();
     }
+
   initUI() {
-      this.container.innerHTML = "";
+        this.container.innerHTML = "";
 
-      // Build Page Switcher Buttons
-      this.navPageButtons = {};
-      const pageTabElements = this.pages.map((p) => {
-        const btn = makeElement("button", {
-          className: `nav-page-btn ${this.currentPageId === p.id ? "active" : ""}`,
-          title: `Switch to ${p.title}`,
-          onclick: () => this.switchPage(p.id)
-        }, p.title);
-        this.navPageButtons[p.id] = btn;
-        return btn;
-      });
+        // Build Page Switcher Buttons
+        this.navPageButtons = {};
+        const pageTabElements = this.pages.map((p) => {
+          const btn = makeElement("button", {
+            className: `nav-page-btn ${this.currentPageId === p.id ? "active" : ""}`,
+            title: `Switch to ${p.title}`,
+            onclick: () => this.switchPage(p.id)
+          }, p.title);
+          this.navPageButtons[p.id] = btn;
+          return btn;
+        });
 
-      const pageSelector = makeElement("div", { className: "reader-nav-pages" }, pageTabElements);
+        this.pageSelector = makeElement("div", { className: "reader-nav-pages" }, pageTabElements);
 
-      // Floating Navigation Bar with Single Clean Export Button
-      this.navBar = makeElement("nav", { className: "reader-nav-bar" }, [
-        ["div", { className: "reader-nav-brand" }, [
-          ["span", {}, "⚡"],
-          ["span", {}, "Economics of Automation"]
-        ]],
-        pageSelector,
-        ["div", { className: "reader-nav-actions" }, [
-          ["button", {
-            className: "nav-btn",
-            title: "Toggle Light / Dark reading palette",
-            onclick: () => this.toggleTheme()
-          }, "🌓 Theme"],
-          ["button", {
-            className: "nav-btn primary",
-            title: "Export all 5 sections as Markdown or Formatted Text",
-            onclick: () => this.showExportDialog()
-          }, [
-            ["span", {}, "📤"],
-            ["span", { className: "btn-label-long" }, "Export"]
+        // Support mouse-wheel horizontal translation: spinning mouse wheel scrolls horizontally
+        this.pageSelector.addEventListener("wheel", (e) => {
+          if (e.deltaY !== 0) {
+            e.preventDefault();
+            this.pageSelector.scrollLeft += e.deltaY * 1.2;
+            this._updateNavScrollIndicators();
+          }
+        }, { passive: false });
+
+        // Support mouse drag-to-scroll
+        let isDragging = false;
+        let startX = 0;
+        let initialScrollLeft = 0;
+
+        this.pageSelector.addEventListener("mousedown", (e) => {
+          if (e.button !== 0) return;
+          isDragging = true;
+          startX = e.pageX - this.pageSelector.offsetLeft;
+          initialScrollLeft = this.pageSelector.scrollLeft;
+          this.pageSelector.classList.add("dragging");
+        });
+
+        window.addEventListener("mouseup", () => {
+          if (isDragging) {
+            isDragging = false;
+            this.pageSelector.classList.remove("dragging");
+          }
+        });
+
+        this.pageSelector.addEventListener("mousemove", (e) => {
+          if (!isDragging) return;
+          e.preventDefault();
+          const currentX = e.pageX - this.pageSelector.offsetLeft;
+          const walk = (currentX - startX) * 1.5;
+          this.pageSelector.scrollLeft = initialScrollLeft - walk;
+          this._updateNavScrollIndicators();
+        });
+
+        this.pageSelector.addEventListener("scroll", () => {
+          this._updateNavScrollIndicators();
+        }, { passive: true });
+
+        // Dedicated Scroll Navigation Buttons (left & right)
+        this.navScrollLeftBtn = makeElement("button", {
+          className: "nav-scroll-btn nav-scroll-left",
+          title: "Scroll tabs left",
+          "aria-label": "Scroll tabs left",
+          onclick: () => {
+            this.pageSelector.scrollBy({ left: -240, behavior: "smooth" });
+            setTimeout(() => this._updateNavScrollIndicators(), 250);
+          }
+        }, "‹");
+
+        this.navScrollRightBtn = makeElement("button", {
+          className: "nav-scroll-btn nav-scroll-right",
+          title: "Scroll tabs right",
+          "aria-label": "Scroll tabs right",
+          onclick: () => {
+            this.pageSelector.scrollBy({ left: 240, behavior: "smooth" });
+            setTimeout(() => this._updateNavScrollIndicators(), 250);
+          }
+        }, "›");
+
+        this.navCarousel = makeElement("div", { className: "reader-nav-carousel" }, [
+          this.navScrollLeftBtn,
+          this.pageSelector,
+          this.navScrollRightBtn
+        ]);
+
+        // Responsive Chapter Dropdown Selector for small viewports / mobile
+        const selectOptions = this.pages.map((p) => {
+          return makeElement("option", {
+            value: p.id,
+            selected: this.currentPageId === p.id
+          }, p.title);
+        });
+
+        this.navSelect = makeElement("select", {
+          className: "nav-chapter-select",
+          "aria-label": "Choose Chapter",
+          onchange: (e) => {
+            this.switchPage(e.target.value);
+          }
+        }, selectOptions);
+
+        // Clean Floating Navigation Bar with responsive layout
+        this.navBar = makeElement("nav", { className: "reader-nav-bar" }, [
+          ["div", { className: "reader-nav-brand" }, [
+            ["span", { className: "nav-brand-icon" }, "⚡"],
+            ["span", { className: "nav-brand-text" }, "Economics of Automation"]
+          ]],
+          this.navCarousel,
+          this.navSelect,
+          ["div", { className: "reader-nav-actions" }, [
+            ["button", {
+              className: "nav-btn theme-toggle-btn",
+              title: "Toggle Light / Dark mode",
+              "aria-label": "Toggle reading theme",
+              onclick: () => this.toggleTheme()
+            }, "🌓"],
+            ["button", {
+              className: "nav-btn primary export-btn",
+              title: "Export all sections as Markdown or Formatted Text",
+              onclick: () => this.showExportDialog()
+            }, [
+              ["span", {}, "📤"],
+              ["span", { className: "btn-label-long" }, "Export"]
+            ]]
           ]]
-        ]]
-      ]);
-      document.body.appendChild(this.navBar);
+        ]);
+        document.body.appendChild(this.navBar);
 
-      // Reading Progress Bar
-      this.progressTrack = makeElement("div", { className: "reading-progress-track" });
-      this.progressBar = makeElement("div", { className: "reading-progress-bar" });
-      this.progressTrack.appendChild(this.progressBar);
-      document.body.appendChild(this.progressTrack);
+        // Reading Progress Bar
+        this.progressTrack = makeElement("div", { className: "reading-progress-track" });
+        this.progressBar = makeElement("div", { className: "reading-progress-bar" });
+        this.progressTrack.appendChild(this.progressBar);
+        document.body.appendChild(this.progressTrack);
 
-      this._scrollHandler = () => {
-        const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-        if (totalHeight > 0) {
-          const progress = Math.min(100, Math.max(0, (window.scrollY / totalHeight) * 100));
-          this.progressBar.style.width = `${progress}%`;
-        }
-      };
-      window.addEventListener("scroll", this._scrollHandler, { passive: true });
+        this._scrollHandler = () => {
+          const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+          if (totalHeight > 0) {
+            const progress = Math.min(100, Math.max(0, (window.scrollY / totalHeight) * 100));
+            this.progressBar.style.width = `${progress}%`;
+          }
+        };
+        window.addEventListener("scroll", this._scrollHandler, { passive: true });
 
-      this.shell = makeElement("div", { className: "article-shell" });
-      this.articleContainer = makeElement("div", { className: "article-container" });
-      this.shell.appendChild(this.articleContainer);
-      this.container.appendChild(this.shell);
-    }
+        this.shell = makeElement("div", { className: "article-shell" });
+        this.articleContainer = makeElement("div", { className: "article-container" });
+        this.shell.appendChild(this.articleContainer);
+        this.container.appendChild(this.shell);
 
+        // Initial check for scroll indicator states
+        setTimeout(() => this._updateNavScrollIndicators(), 50);
+        window.addEventListener("resize", () => this._updateNavScrollIndicators(), { passive: true });
+      }
   renderArticle() {
       this.articleContainer.innerHTML = "";
       const doc = this.getCurrentDoc();
@@ -241,185 +332,186 @@ class EconomicsOfAutomation {
       footerNav.appendChild(navRow);
       this.articleContainer.appendChild(footerNav);
     }
+
   renderBlock(blockDef) {
-      const doc = this.getCurrentDoc();
-      const blockId = blockDef.id;
+        const doc = this.getCurrentDoc();
+        const blockId = blockDef.id;
 
-      // Interactive Custom Component Block (e.g. TaxChart)
-      if (blockDef.type === "component") {
-        const mountId = `comp-mount-${blockId}`;
-        const wrapper = makeElement("div", {
-          className: "interactive-component-wrap",
-          id: mountId
-        });
+        // Interactive Custom Component Block (e.g. TaxChart)
+        if (blockDef.type === "component") {
+          const mountId = `comp-mount-${blockId}`;
+          const wrapper = makeElement("div", {
+            className: "interactive-component-wrap",
+            id: mountId
+          });
 
-        const compClass = globalThis[blockDef.component];
-        if (compClass && typeof compClass.render === "function") {
-          setTimeout(() => {
-            const el = document.getElementById(mountId);
-            if (el) compClass.render(el);
-          }, 0);
-        } else {
-          const placeholder = makeElement("div", { className: "interactive-component-placeholder" }, [
-            ["div", { className: "comp-placeholder-badge" }, "📊 Interactive Simulation"],
-            ["div", { className: "comp-placeholder-title" }, blockDef.title || "Interactive Tax & Dividend Simulator"],
-            ["div", { className: "comp-placeholder-desc" }, 
-              "Dynamic sliders for Total Collection Rate (T) and Progressivity Index (P) will mount here."
-            ]
-          ]);
-          wrapper.appendChild(placeholder);
+          const compClass = globalThis[blockDef.component];
+          if (compClass && typeof compClass.render === "function") {
+            setTimeout(() => {
+              const el = document.getElementById(mountId);
+              if (el) compClass.render(el);
+            }, 0);
+          } else {
+            const placeholder = makeElement("div", { className: "interactive-component-placeholder" }, [
+              ["div", { className: "comp-placeholder-badge" }, "📊 Interactive Simulation"],
+              ["div", { className: "comp-placeholder-title" }, blockDef.title || "Interactive Tax & Dividend Simulator"],
+              ["div", { className: "comp-placeholder-desc" }, 
+                "Dynamic sliders for Total Collection Rate (T) and Progressivity Index (P) will mount here."
+              ]
+            ]);
+            wrapper.appendChild(placeholder);
+          }
+
+          return wrapper;
         }
 
-        return wrapper;
-      }
+        // Sidebar / Callout Note Box
+        if (blockDef.type === "sidebar" || blockDef.type === "callout") {
+          const variants = (typeof doc[blockId] === "function") ? doc[blockId]() : ["[Missing block]"];
+          const variantKey = `${this.currentPageId}:${blockId}`;
+          const currentIdx = this.activeVariants[variantKey] || 0;
+          const currentText = variants[currentIdx] || variants[0];
+          return makeElement("aside", { className: "block-sidebar" }, [
+            blockDef.kicker ? ["div", { className: "block-sidebar-kicker" }, blockDef.kicker] : null,
+            blockDef.title ? ["div", { className: "block-sidebar-title" }, blockDef.title] : null,
+            ["div", { className: "block-sidebar-body" }, this.formatInlineText(currentText)]
+          ]);
+        }
 
-      // Sidebar / Callout Note Box
-      if (blockDef.type === "sidebar" || blockDef.type === "callout") {
+        // Single Image
+        if (blockDef.type === "image") {
+          const card = this.createThumbCard(blockDef.file);
+          return makeElement("div", { className: "image-single-wrap" }, [card]);
+        }
+
+        // Grouped Images
+        if (blockDef.type === "image-group") {
+          const isGrid4 = blockDef.layout === "grid-4";
+          const containerClass = isGrid4 ? "image-grid-four" : "image-row-pair";
+
+          const cards = (blockDef.images || []).map((imgDef) => {
+            return this.createThumbCard(imgDef.file);
+          });
+
+          return makeElement("div", { className: containerClass }, cards);
+        }
+
+        // Handle Text Blocks & Quotes
         const variants = (typeof doc[blockId] === "function") ? doc[blockId]() : ["[Missing block]"];
         const variantKey = `${this.currentPageId}:${blockId}`;
         const currentIdx = this.activeVariants[variantKey] || 0;
         const currentText = variants[currentIdx] || variants[0];
-        return makeElement("aside", { className: "block-sidebar" }, [
-          blockDef.kicker ? ["div", { className: "block-sidebar-kicker" }, blockDef.kicker] : null,
-          blockDef.title ? ["div", { className: "block-sidebar-title" }, blockDef.title] : null,
-          ["div", { className: "block-sidebar-body" }, currentText]
-        ]);
-      }
 
-      // Single Image
-      if (blockDef.type === "image") {
-        const card = this.createThumbCard(blockDef.file);
-        return makeElement("div", { className: "image-single-wrap" }, [card]);
-      }
-
-      // Grouped Images
-      if (blockDef.type === "image-group") {
-        const isGrid4 = blockDef.layout === "grid-4";
-        const containerClass = isGrid4 ? "image-grid-four" : "image-row-pair";
-
-        const cards = (blockDef.images || []).map((imgDef) => {
-          return this.createThumbCard(imgDef.file);
+        const wrapper = makeElement("div", {
+          className: `block-wrapper ${this.selectedBlockId === blockId ? "block-selected" : ""}`,
+          id: `block-${blockId}`
         });
 
-        return makeElement("div", { className: containerClass }, cards);
-      }
-
-      // Handle Text Blocks & Quotes
-      const variants = (typeof doc[blockId] === "function") ? doc[blockId]() : ["[Missing block]"];
-      const variantKey = `${this.currentPageId}:${blockId}`;
-      const currentIdx = this.activeVariants[variantKey] || 0;
-      const currentText = variants[currentIdx] || variants[0];
-
-      const wrapper = makeElement("div", {
-        className: `block-wrapper ${this.selectedBlockId === blockId ? "block-selected" : ""}`,
-        id: `block-${blockId}`
-      });
-
-      let contentEl;
-      if (blockDef.type === "quote") {
-        contentEl = makeElement("blockquote", { className: "block-quote" }, currentText);
-      } else {
-        if (/\n\d+\.\s/.test(currentText) || /^\d+\.\s/.test(currentText)) {
-          contentEl = makeElement("div", { className: "block-text-multi" });
-          const lines = currentText.split("\n");
-          let currentParagraph = [];
-          let currentList = null;
-
-          const flushParagraph = () => {
-            if (currentParagraph.length > 0) {
-              const pText = currentParagraph.join(" ").trim();
-              if (pText) contentEl.appendChild(makeElement("p", { className: "block-p" }, pText));
-              currentParagraph = [];
-            }
-          };
-
-          const flushList = () => {
-            if (currentList) {
-              contentEl.appendChild(currentList);
-              currentList = null;
-            }
-          };
-
-          lines.forEach((line) => {
-            const trimmed = line.trim();
-            if (!trimmed) {
-              flushParagraph();
-              flushList();
-              return;
-            }
-
-            const listMatch = trimmed.match(/^(\d+)\.\s+(.*)$/);
-            if (listMatch) {
-              flushParagraph();
-              if (!currentList) currentList = makeElement("ol", { className: "block-ol" });
-              currentList.appendChild(makeElement("li", {}, listMatch[2]));
-            } else {
-              flushList();
-              currentParagraph.push(trimmed);
-            }
-          });
-
-          flushParagraph();
-          flushList();
-        } else if (currentText.includes("\n\n")) {
-          contentEl = makeElement("div", { className: "block-text-multi" });
-          const parts = currentText.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
-          parts.forEach((p) => {
-            contentEl.appendChild(makeElement("p", { className: "block-p" }, p));
-          });
+        let contentEl;
+        if (blockDef.type === "quote") {
+          contentEl = makeElement("blockquote", { className: "block-quote" }, this.formatInlineText(currentText));
         } else {
-          contentEl = makeElement("p", { className: "block-p" }, currentText);
-        }
-      }
+          if (/\n\d+\.\s/.test(currentText) || /^\d+\.\s/.test(currentText)) {
+            contentEl = makeElement("div", { className: "block-text-multi" });
+            const lines = currentText.split("\n");
+            let currentParagraph = [];
+            let currentList = null;
 
-      wrapper.appendChild(contentEl);
-
-      // Subtle Gutter Controls
-      const gutterControls = makeElement("div", { className: "block-gutter-controls" });
-
-      if (variants.length > 1) {
-        const vCol = makeElement("div", { className: "gutter-v-col" });
-        variants.forEach((_, idx) => {
-          const badge = makeElement("button", {
-            className: `gutter-v-badge ${idx === currentIdx ? "active" : ""}`,
-            title: `Switch to variant ${idx + 1}`,
-            onclick: (e) => {
-              e.stopPropagation();
-              this.activeVariants[variantKey] = idx;
-              this.renderArticle();
-              if (this.assistantDialog && this.assistantDialog.element?.isConnected) {
-                this.updateAssistant(blockId);
+            const flushParagraph = () => {
+              if (currentParagraph.length > 0) {
+                const pText = currentParagraph.join(" ").trim();
+                if (pText) contentEl.appendChild(makeElement("p", { className: "block-p" }, this.formatInlineText(pText)));
+                currentParagraph = [];
               }
-            }
-          }, `${idx + 1}`);
-          vCol.appendChild(badge);
-        });
-        gutterControls.appendChild(vCol);
-      }
+            };
 
-      const inspectBtn = makeElement("button", {
-        className: "gutter-inspect-btn",
-        title: `Edit & AI studio for #${blockId}`,
-        onclick: (e) => {
-          e.stopPropagation();
-          this.selectBlock(blockId, true);
+            const flushList = () => {
+              if (currentList) {
+                contentEl.appendChild(currentList);
+                currentList = null;
+              }
+            };
+
+            lines.forEach((line) => {
+              const trimmed = line.trim();
+              if (!trimmed) {
+                flushParagraph();
+                flushList();
+                return;
+              }
+
+              const listMatch = trimmed.match(/^(\d+)\.\s+(.*)$/);
+              if (listMatch) {
+                flushParagraph();
+                if (!currentList) currentList = makeElement("ol", { className: "block-ol" });
+                currentList.appendChild(makeElement("li", {}, this.formatInlineText(listMatch[2])));
+              } else {
+                flushList();
+                currentParagraph.push(trimmed);
+              }
+            });
+
+            flushParagraph();
+            flushList();
+          } else if (currentText.includes("\n\n")) {
+            contentEl = makeElement("div", { className: "block-text-multi" });
+            const parts = currentText.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+            parts.forEach((p) => {
+              contentEl.appendChild(makeElement("p", { className: "block-p" }, this.formatInlineText(p)));
+            });
+          } else {
+            contentEl = makeElement("p", { className: "block-p" }, this.formatInlineText(currentText));
+          }
         }
-      }, "✎");
-      gutterControls.appendChild(inspectBtn);
 
-      const idTip = makeElement("span", {
-        className: "gutter-id-tip"
-      }, `#${blockId}`);
-      gutterControls.appendChild(idTip);
+        wrapper.appendChild(contentEl);
 
-      wrapper.appendChild(gutterControls);
+        // Subtle Gutter Controls
+        const gutterControls = makeElement("div", { className: "block-gutter-controls" });
 
-      wrapper.addEventListener("click", () => {
-        this.selectBlock(blockId, true);
-      });
+        if (variants.length > 1) {
+          const vCol = makeElement("div", { className: "gutter-v-col" });
+          variants.forEach((_, idx) => {
+            const badge = makeElement("button", {
+              className: `gutter-v-badge ${idx === currentIdx ? "active" : ""}`,
+              title: `Switch to variant ${idx + 1}`,
+              onclick: (e) => {
+                e.stopPropagation();
+                this.activeVariants[variantKey] = idx;
+                this.renderArticle();
+                if (this.assistantDialog && this.assistantDialog.element?.isConnected) {
+                  this.updateAssistant(blockId);
+                }
+              }
+            }, `${idx + 1}`);
+            vCol.appendChild(badge);
+          });
+          gutterControls.appendChild(vCol);
+        }
 
-      return wrapper;
-    }
+        const inspectBtn = makeElement("button", {
+          className: "gutter-inspect-btn",
+          title: `Edit & AI studio for #${blockId}`,
+          onclick: (e) => {
+            e.stopPropagation();
+            this.selectBlock(blockId, true);
+          }
+        }, "✎");
+        gutterControls.appendChild(inspectBtn);
+
+        const idTip = makeElement("span", {
+          className: "gutter-id-tip"
+        }, `#${blockId}`);
+        gutterControls.appendChild(idTip);
+
+        wrapper.appendChild(gutterControls);
+
+        wrapper.addEventListener("click", () => {
+          this.selectBlock(blockId, true);
+        });
+
+        return wrapper;
+      }
   selectBlock(blockId, openDialog = false) {
     this.selectedBlockId = blockId;
     document.querySelectorAll(".block-wrapper").forEach((el) => el.classList.remove("block-selected"));
@@ -879,32 +971,46 @@ class EconomicsOfAutomation {
     }
 
   switchPage(pageId) {
-      if (this.currentPageId === pageId) return;
-      this.currentPageId = pageId;
-      localStorage.setItem("robot_dividend_active_page", pageId);
+        if (this.currentPageId === pageId) return;
+        this.currentPageId = pageId;
+        localStorage.setItem("robot_dividend_active_page", pageId);
 
-      // Update navigation button active styles
-      if (this.navPageButtons) {
-        Object.entries(this.navPageButtons).forEach(([id, btn]) => {
-          btn.classList.toggle("active", id === pageId);
-        });
+        // Update navigation button active styles and scroll active tab into view
+        if (this.navPageButtons) {
+          Object.entries(this.navPageButtons).forEach(([id, btn]) => {
+            const isActive = id === pageId;
+            btn.classList.toggle("active", isActive);
+            if (isActive && this.pageSelector) {
+              // Smoothly align active tab within the scrollable container
+              const btnLeft = btn.offsetLeft;
+              const btnWidth = btn.offsetWidth;
+              const containerWidth = this.pageSelector.clientWidth;
+              const targetScroll = btnLeft - (containerWidth / 2) + (btnWidth / 2);
+              this.pageSelector.scrollTo({ left: Math.max(0, targetScroll), behavior: "smooth" });
+            }
+          });
+        }
+
+        // Update mobile select menu if present
+        if (this.navSelect) {
+          this.navSelect.value = pageId;
+        }
+
+        // Scroll smoothly to top of the article
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
+        // Render new document
+        this.renderArticle();
+        this._updateNavScrollIndicators();
+
+        // Update assistant if open
+        if (this.assistantDialog && this.assistantDialog.element?.isConnected) {
+          const doc = this.getCurrentDoc();
+          const firstBlock = doc.manifest()?.[0]?.blocks?.[0]?.id || "p_scarcity_1";
+          this.selectBlock(firstBlock, false);
+          this.updateAssistant(firstBlock);
+        }
       }
-
-      // Scroll smoothly to top
-      window.scrollTo({ top: 0, behavior: "smooth" });
-
-      // Render new document
-      this.renderArticle();
-
-      // Update assistant if open
-      if (this.assistantDialog && this.assistantDialog.element?.isConnected) {
-        const doc = this.getCurrentDoc();
-        const firstBlock = doc.manifest()?.[0]?.blocks?.[0]?.id || "p_scarcity_1";
-        this.selectBlock(firstBlock, false);
-        this.updateAssistant(firstBlock);
-      }
-    }
-
   getImageDescription(fileName) {
       const descriptions = {
         // First page (ArticleContent) images
@@ -1226,6 +1332,45 @@ class EconomicsOfAutomation {
       });
 
       return htmlParts.join("\n");
+    }
+
+  _updateNavScrollIndicators() {
+      if (!this.pageSelector || !this.navCarousel) return;
+      const { scrollLeft, scrollWidth, clientWidth } = this.pageSelector;
+      const canScrollLeft = scrollLeft > 4;
+      const canScrollRight = scrollLeft < (scrollWidth - clientWidth - 4);
+
+      if (this.navScrollLeftBtn) {
+        this.navScrollLeftBtn.classList.toggle("disabled", !canScrollLeft);
+      }
+      if (this.navScrollRightBtn) {
+        this.navScrollRightBtn.classList.toggle("disabled", !canScrollRight);
+      }
+
+      this.navCarousel.classList.toggle("has-overflow-left", canScrollLeft);
+      this.navCarousel.classList.toggle("has-overflow-right", canScrollRight);
+    }
+
+  formatInlineText(text) {
+      if (!text || typeof text !== "string") return text || "";
+      if (!text.includes("*")) return text;
+
+      const frag = document.createDocumentFragment();
+      const parts = text.split(/(\*\*.*?\*\*|\*.*?\*)/g);
+      for (const part of parts) {
+        if (part.startsWith("**") && part.endsWith("**") && part.length >= 4) {
+          const strong = document.createElement("strong");
+          strong.textContent = part.slice(2, -2);
+          frag.appendChild(strong);
+        } else if (part.startsWith("*") && part.endsWith("*") && part.length >= 2) {
+          const em = document.createElement("em");
+          em.textContent = part.slice(1, -1);
+          frag.appendChild(em);
+        } else if (part) {
+          frag.appendChild(document.createTextNode(part));
+        }
+      }
+      return frag;
     }
 }
 

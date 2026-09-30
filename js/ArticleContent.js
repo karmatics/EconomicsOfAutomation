@@ -1,12 +1,12 @@
 class ArticleContent {
-  static getMeta() {
-    return {
-      kicker: "A thought experiment on work, money, and machines",
-      title: "The Robot Dividend",
-      subtitle: "What actually happens to a society when machines can finally do all the work?"
-    };
-  }
 
+  static getMeta() {
+      return {
+        kicker: "A thought experiment on work, money, and machines",
+        title: "The Robot Dividend",
+        subtitle: "A first-principles guide to post-labor economics: how machine abundance decouples survival from sweat, and why the arithmetic of a Robot Dividend holds up."
+      };
+    }
   static getImagePrompts() {
     return {
       masterAnchor: "Cinematic 35mm film still, shot on Arri Alexa with anamorphic lenses, natural golden hour frontier lighting. Style reminiscent of Earth 2, Firefly, and Terra Nova: authentic planetary colony aesthetic, realistic wear and tear, weathered matte composite materials, solar array frames, hydraulic utility pistons, unpainted titanium and dusty polymer mixed with rough-hewn timber, canvas shade tarps, and utilitarian denim and canvas workwear. Photorealistic, atmospheric dust motes, subtle lens flare, realistic depth of field, tactile textures. No sleek white plastic, no neon cyberpunk, no post-apocalyptic rubble.",
@@ -33,18 +33,18 @@ class ArticleContent {
   }
 
   static p_scarcity_3() {
-    return [
-      "The panic is not really about technology; it is a profound confusion between money and wealth. Money has never been food, housing, or healthcare—it is merely an accounting token engineered for a world where getting anything done demanded human sweat. For ten thousand years of recorded history, 'no job' and 'no production' were the exact same physical reality: if people didn't break their backs in the fields, crops did not grow and the tribe starved. That ten-millennium trauma forged an ironclad reflex in the human nervous system: labor equals income equals survival. But automation snaps that ancient equation clean in half. You can now have zero human sweat alongside record physical production. When people ask, 'If robots take our jobs, how will we buy food?' they are asking a question that assumes human sweat is still required to bake the bread. But if the machines are already baking it, employment has ceased to be the engine of our sustenance—it has merely remained our obsolete gatekeeper for eating it.",
-      "The anxiety isn't about machines; it is an ancient mix-up between the ticket and the harvest. Money has never been a meal, a roof, or medical care. It is an accounting convention we invented to ration scarcity in a world where physical survival demanded human muscle and cognitive strain. For centuries, our operating formula has read: sweat → wages → survival. The instant automation severs labor from the chain, our instincts scream that the entire sky is falling. But machines don't destroy goods; they produce them. When automated granaries overflow, starvation is no longer a law of nature; it is an indictment of our ledger.",
-      "The confusion stems from conflating the claim check with the physical reality. Money is not wealth; wealth is the bread on the table, the warm shelter overhead, and the kilowatt-hours in the wire. Because human history has always operated under the brutal arithmetic of physical scarcity, we conditioned ourselves to believe that suffering was the prerequisite for life. When mechanical hands take over the toil, we do not face a crisis of production—we face a crisis of imagination."
-    ];
-  }
-  static p_scarcity_4() {
-    return [
-      "To see why that instinct is wrong, it helps to strip away tax codes, central banks, stock markets, and every other piece of financial plumbing bolted onto modern economies, and instead watch the whole story unfold from scratch — one relationship, then one ledger, at a time — on a small, isolated colony far from any of it."
-    ];
-  }
+      return [
+        "The panic is not really about technology; it is a confusion between money and wealth. Money has never been food, housing, or healthcare—it is merely an accounting token engineered for a world where getting anything done demanded human sweat. For ten thousand years, 'no job' and 'no production' were the exact same physical reality: if people didn't break their backs in the fields, crops did not grow and the community starved. That trauma forged an ironclad reflex: labor equals income equals survival. But automation severs that ancient equation. You can now have zero human sweat alongside record physical production. When people ask, 'If robots take our jobs, how will we buy food?' they are asking a question that assumes human sweat is still required to bake the bread. If machines are already baking it, employment has ceased to be the engine of our sustenance—it has merely remained an obsolete gatekeeper.",
+        "The anxiety isn't about machines; it is an ancient mix-up between the claim check and the harvest. Money has never been a meal, a roof, or medical care; it is an accounting convention we invented to ration scarcity in a world where physical survival demanded human muscle. For centuries, our operating formula has read: sweat → wages → survival. The moment automation severs labor from production, our instincts scream that the sky is falling. But machines don't destroy goods; they produce them. When automated granaries overflow, starvation is no longer a law of nature; it is an indictment of our ledger."
+      ];
+    }
 
+  static p_scarcity_4() {
+      return [
+        "Where does this inquiry lead? Over the course of this six-part investigation, we will trace the journey from a tiny frontier outpost all the way to modern macroeconomic policy on Earth. We begin with twelve pioneers with no money, scale to a settlement of a hundred where currency is backed by physical utility, introduce partial robotic labor, and watch how an unconditional dividend naturally emerges. From there, we scale the model to a city of 100,000, tackle our polarized politics on Earth, dismantle the psychology of the 'doomer loop,' compare competing post-labor architectures, and run an adversarial gauntlet against every major economic objection. To see why our scarcity instincts are obsolete, we begin by stripping away central banks, stock markets, and financial plumbing to watch the story unfold from scratch—one relationship, then one ledger, at a time.",
+        "To understand how a society can thrive when machines do the work, we must trace the idea from its simplest beginnings to full-scale civilization. This series maps that entire transition: starting with a 12-person homestead where reputation replaces money, advancing to a 100-person settlement with a timber-backed Credit, introducing a partial robot shipment that decouples survival from shifts, and scaling to a democratic city of 100,000 with algorithmic taxation. Finally, we bring the model home to planet Earth, showing how a modern economy can update its distribution rules so that machine progress elevates every individual's baseline."
+      ];
+    }
   static p_dozen_1() {
       return [
         "Picture twelve colonists settled on a fertile, Earth-like frontier world, operating independently without active supply lifelines back home. Everyone works hard, but they live reasonably well. Two tend the crops. Two build and maintain the shelters. Two keep the water filtration system humming. The rest split their time felling timber, repairing worn tools, and cooking. Life is steady and honest, but because every pair of hands is needed to keep the community running, nobody takes an indefinite holiday.",
@@ -124,12 +124,12 @@ class ArticleContent {
     }
 
   static p_hundred_4() {
-    return [
-      "Notice why this currency standard works—and why it quietly dissolves our oldest monetary superstitions. Unlike gold, whose value rests primarily on ancient convention, milled lumber has immediate, indisputable physical utility: you can always use a standard 2×4 to frame a bedroom, brace a roof, or craft furniture. To see why this distinction matters, consider a simple thought experiment: if an asteroid made of solid gold crashed into Earth tomorrow morning and every human being received a wheelbarrow full of pure bullion, would humanity be a single crumb richer? Not by a single grain of wheat. You cannot eat gold, build sturdy shelter out of soft metal, or cure an infection with it; prices would simply skyrocket overnight to soak up the flood of metal. Wealth is never the token—wealth is the physical goods and services the token can buy. Contrast this with modern cryptocurrency like Bitcoin, where civilization burns massive rivers of real electricity to manufacture artificial digital scarcity. Wasting real kilowatt-hours to simulate scarcity in a computer is an economic pathology. A currency does not need to be artificially scarce; it needs to be an honest, unforgeable claim check on real, physical abundance.",
-      "The Credit is anchored in tangible, thermodynamic utility. Unlike gold—which holds value largely through collective habit—a standard 2×4 board possesses undeniable material worth: it directly frames shelter, fences, and tools. Anyone holding a Credit holds a guarantee for something genuinely useful in the settlement. If everyone in the colony were suddenly handed a ton of gold, nobody would have more food or warmer beds—prices would simply adjust. But because the Credit represents an actual board produced by the mill, money here is not wealth itself; it is an honest claim check on physical output. In an unautomated colony, this keeps the ledger honest: every board demands human sweat, so earning Credits requires contributing labor.",
-      "Choosing milled lumber anchors the economy in genuine physical reality. A 2×4 isn't like gold or Bitcoin, whose worth relies on shared myth or the deliberate waste of electrical power; it is something you can immediately use to keep the rain off your family. The Credit is a promise backed by physical utility. Before machines arrive, that standard enforces reality: without labor, nothing gets built, so access to the colony's bounty must be earned with work."
-    ];
-  }
+      return [
+        "Notice why this currency standard works: milled lumber has immediate, indisputable physical utility. You can always use a standard 2×4 to frame a bedroom, brace a roof, or craft furniture. Contrast this with gold: gold holds value primarily through convention and historical habit, not practical utility in an early frontier settlement. Spending colony labor digging in the dirt for soft yellow metal would be a pointless waste of human effort when what people need is shelter, food, and clean water. Wealth is never the token; wealth is the physical goods and services the token commands. Because the Credit represents an actual board produced by the mill, money here is an honest claim check on physical output.",
+        "The Credit is anchored in tangible, real-world utility. Unlike gold—whose value rests on collective convention and would be a waste of colony labor to mine—a standard 2×4 board possesses undeniable material worth: it directly frames homes, fences, and tools. Anyone holding a Credit holds a guarantee for something genuinely useful in the settlement. Money here is not wealth itself; it is an honest claim check on the community's physical output.",
+        "Choosing milled lumber anchors the economy in genuine physical reality. A 2×4 isn't like gold, whose worth relies on shared myth rather than practical utility for survival. It is something you can immediately use to keep the rain off your family. The Credit is a promise backed by physical usefulness. In an unautomated colony, this keeps the ledger honest: every board demands human sweat, so earning Credits requires contributing labor."
+      ];
+    }
   static p_trans_1() {
       return [
         "Then a cargo pod touches down carrying an automated workforce, but only enough units to handle about half the colony's total labor. The machines take over the heaviest tasks: clearing land, felling trees, and rough framing. But between limited machinery and nuanced jobs that require human dexterity, plenty of work remains across the settlement.",
@@ -229,124 +229,147 @@ class ArticleContent {
       "Whether you call it Universal Basic Income, a Robot Dividend, or a negative income tax, critics always ask if the math holds up. It hinges on three basic facts:\n\n1. Machines do real physical work and generate real physical output.\n2. That automated output can surpass the baseline survival needs of everyone in the community.\n3. The monetary system can distribute tokens so citizens can access that surplus.\n\nWhen all three are present, there is no mathematical reason for any individual's living standard to decline when machines take their job. A society that permits its citizens to suffer while robots fill the granaries suffers from an intellectual delusion, not a shortage of wealth."
     ];
   }
-  static manifest() {
-    return [
-      {
-        section: "scarcity",
-        title: "The scarcity illusion",
-        blocks: [
-          { id: "p_scarcity_1", type: "p" },
-          { id: "p_scarcity_2", type: "p" },
-          { id: "p_scarcity_3", type: "p" },
-          { id: "p_scarcity_4", type: "p" }
-        ]
-      },
-      {
-        section: "dozen",
-        partLabel: "Part One",
-        title: "The Dozen: pure abundance",
-        blocks: [
-          { id: "p_dozen_1", type: "p" },
-          { id: "p_dozen_2", type: "p" },
-          {
-            id: "img_dozen_pair",
-            type: "image-group",
-            layout: "pair",
-            images: [
-              { file: "dinner.jpeg" },
-              { file: "robotsarrive.jpeg" }
-            ]
-          },
-          { id: "p_dozen_3", type: "p" },
-          { id: "p_dozen_4", type: "p" },
-          { id: "p_dozen_5", type: "p" },
-          { id: "p_dozen_6", type: "p" }
-        ]
-      },
-      {
-        section: "hundred",
-        partLabel: "Part Two",
-        title: "The Hundred: the Credit standard",
-        blocks: [
-          { id: "p_hundred_1", type: "p" },
-          { id: "p_hundred_2", type: "p" },
-          { id: "p_hundred_3", type: "p" },
-          {
-            id: "img_hundred_pair",
-            type: "image-group",
-            layout: "pair",
-            images: [
-              { file: "sawmill.jpeg" },
-              { file: "market.jpeg" }
-            ]
-          },
-          { id: "p_hundred_4", type: "p" }
-        ]
-      },
-      {
-        section: "trans",
-        partLabel: "Part Three",
-        title: "The half-robot shipment: the transition to a dividend",
-        blocks: [
-          { id: "p_trans_1", type: "p" },
-          { id: "p_trans_2", type: "p" },
-          {
-            id: "img_trans_pair",
-            type: "image-group",
-            layout: "pair",
-            images: [
-              { file: "transition.jpeg" },
-              { file: "robotandcarpenter.jpeg" }
-            ]
-          },
-          { id: "p_trans_3", type: "p" },
-          { id: "p_trans_4", type: "p" },
-          { id: "p_trans_5", type: "p" }
-        ]
-      },
-      {
-        section: "auto",
-        partLabel: "Part Four",
-        title: "Full automation: the free colony",
-        blocks: [
-          { id: "p_auto_1", type: "p" },
-          { id: "p_auto_2", type: "p" },
-          { id: "p_auto_3", type: "p" },
-          { id: "quote_abundance", type: "quote" },
-          {
-            id: "img_bottom_four",
-            type: "image-group",
-            layout: "grid-4",
-            images: [
-              { file: "musicandart.jpeg" },
-              { file: "vehicle.jpeg" },
-              { file: "treehouses.jpeg" },
-              { file: "whimsicalhouse.jpeg" }
-            ]
-          }
-        ]
-      },
-      {
-        section: "conclusion",
-        partLabel: "Conclusion",
-        title: "Updating the ledger",
-        blocks: [
-          { id: "p_conc_1", type: "p" },
-          { id: "p_conc_2", type: "p" },
-          { id: "p_conc_perpetual", type: "p" },
-          { id: "p_conc_scope", type: "p" }
-        ]
-      }
-    ];
-  }
 
+  static manifest() {
+      return [
+        {
+          section: "overview",
+          partLabel: "Orientation",
+          title: "The Roadmap: Beyond Compulsory Labor",
+          blocks: [
+            { id: "p_overview_thesis", type: "p" },
+            { id: "p_overview_roadmap", type: "p" }
+          ]
+        },
+        {
+          section: "scarcity",
+          title: "The scarcity illusion",
+          blocks: [
+            { id: "p_scarcity_1", type: "p" },
+            { id: "p_scarcity_2", type: "p" },
+            { id: "p_scarcity_3", type: "p" },
+            { id: "p_scarcity_4", type: "p" }
+          ]
+        },
+        {
+          section: "dozen",
+          partLabel: "Part One",
+          title: "The Dozen: pure abundance",
+          blocks: [
+            { id: "p_dozen_1", type: "p" },
+            { id: "p_dozen_2", type: "p" },
+            {
+              id: "img_dozen_pair",
+              type: "image-group",
+              layout: "pair",
+              images: [
+                { file: "dinner.jpeg" },
+                { file: "robotsarrive.jpeg" }
+              ]
+            },
+            { id: "p_dozen_3", type: "p" },
+            { id: "p_dozen_4", type: "p" },
+            { id: "p_dozen_5", type: "p" },
+            { id: "p_dozen_6", type: "p" }
+          ]
+        },
+        {
+          section: "hundred",
+          partLabel: "Part Two",
+          title: "The Hundred: the Credit standard",
+          blocks: [
+            { id: "p_hundred_1", type: "p" },
+            { id: "p_hundred_2", type: "p" },
+            { id: "p_hundred_3", type: "p" },
+            {
+              id: "img_hundred_pair",
+              type: "image-group",
+              layout: "pair",
+              images: [
+                { file: "sawmill.jpeg" },
+                { file: "market.jpeg" }
+              ]
+            },
+            { id: "p_hundred_4", type: "p" }
+          ]
+        },
+        {
+          section: "trans",
+          partLabel: "Part Three",
+          title: "The half-robot shipment: the transition to a dividend",
+          blocks: [
+            { id: "p_trans_1", type: "p" },
+            { id: "p_trans_2", type: "p" },
+            {
+              id: "img_trans_pair",
+              type: "image-group",
+              layout: "pair",
+              images: [
+                { file: "transition.jpeg" },
+                { file: "robotandcarpenter.jpeg" }
+              ]
+            },
+            { id: "p_trans_3", type: "p" },
+            { id: "p_trans_4", type: "p" },
+            { id: "p_trans_5", type: "p" }
+          ]
+        },
+        {
+          section: "auto",
+          partLabel: "Part Four",
+          title: "Full automation: the free colony",
+          blocks: [
+            { id: "p_auto_1", type: "p" },
+            { id: "p_auto_2", type: "p" },
+            { id: "p_auto_3", type: "p" },
+            { id: "quote_abundance", type: "quote" },
+            {
+              id: "img_bottom_four",
+              type: "image-group",
+              layout: "grid-4",
+              images: [
+                { file: "musicandart.jpeg" },
+                { file: "vehicle.jpeg" },
+                { file: "treehouses.jpeg" },
+                { file: "whimsicalhouse.jpeg" }
+              ]
+            }
+          ]
+        },
+        {
+          section: "conclusion",
+          partLabel: "Conclusion",
+          title: "Updating the ledger",
+          blocks: [
+            { id: "p_conc_1", type: "p" },
+            { id: "p_conc_2", type: "p" },
+            { id: "p_conc_perpetual", type: "p" },
+            { id: "p_conc_scope", type: "p" }
+          ]
+        }
+      ];
+    }
   static p_conc_perpetual() {
-    return [
-      "To minds conditioned by traditional economics, an unconditional dividend often sounds suspiciously like a perpetual motion machine—an impossible attempt to conjure wealth from thin air, getting something for nothing. But that objection confuses being free of human sweat with being free of physical inputs. A perpetual motion machine is impossible because in a closed thermodynamic system you cannot extract more energy than you put in. An automated economy, however, is not a closed human loop: you have introduced a massive, tireless physical producer into the equation. Powered by sunlight, mineral fuels, and nuclear energy, autonomous harvesters, robotic mills, and AI networks do real physical work. Net of the energy, maintenance, and capital required to sustain the machines, they pour an outright surplus of physical goods into the colony every single day. The dividend is simply the accounting claim check on that harvest. It is not a free lunch; the machine paid for it in physical energy.",
-      "To people trained in classical scarcity, an unconditional dividend sounds like a monetary trick—an attempt to generate free energy from nowhere. But this is the exact opposite of reality. A perpetual motion machine fails because physics forbids extracting work from an empty system. An automated economy is not an empty system. The robotic fleet and generative networks represent an enormous, continuous influx of external physical power and productive capacity. You are not conjuring wealth from thin air; you are harvesting the physical bounty that autonomous machines pump into civilization around the clock.",
-      "At first glance, receiving goods without requiring human sweat sounds like trying to build an engine that runs forever on nothing. But the physics here is ironclad: this is not a closed loop. The robots, autonomous tractors, and generative logistics systems are actively doing the heavy lifting. They harvest the grain, mill the timber, and maintain the infrastructure. The reason the math works is that you have added a tireless new physical producer to the family of humanity."
-    ];
-  }
+      return [
+        "To minds conditioned by traditional economics, an unconditional dividend often sounds suspiciously like a perpetual motion machine—an impossible attempt to get something for nothing. But consider how we reason about perpetual motion machines: you do not need to inspect every gear, spring, or pulley to know that a machine claiming to run forever without an external energy source cannot work. The physics of closed systems tells you that immediately. An automated economy is the exact inverse: you can conclude that it *can* work without getting bogged down in messy mechanics, because it is not a closed loop of human effort. Tireless external machines have entered the equation, producing an outright physical surplus. The dividend does not conjure wealth from nowhere; it simply distributes the harvest that machines are already producing.",
+        "To people trained in classical scarcity, an unconditional dividend sounds like an attempt to build a perpetual motion engine. But that analogy gets the conclusion backwards. We know a perpetual motion machine is impossible without needing to trace every cog, because you cannot extract energy from a system with no inputs. With an automated economy, you can just as easily conclude that it *can* work without tracking every financial gear: the system has massive new mechanical producers generating more output than the community consumes. The dividend is simply the receipt for that surplus.",
+        "At first glance, receiving goods without compulsory sweat sounds like getting something from nothing. But think of the perpetual motion analogy: you can evaluate the whole system simply by looking at inputs versus outputs. A perpetual motion machine fails because it has no external input. An automated economy succeeds because you have introduced tireless mechanical workers that pump physical abundance into the settlement. You do not need to invent busywork to justify distributing what the machines have already built."
+      ];
+    }
+
+  static p_overview_thesis() {
+      return [
+        "When machines produce more of everything with far less human effort, real physical wealth multiplies—so why do we assume society will collapse? The standard reaction to automation is almost pure panic: imagining that if robots take our jobs, humanity must starve in front of automated granaries while a handful of tech billionaires retreat into fortified bunkers. This series argues that this fear is an intellectual delusion forged by ten thousand years of biological scarcity. If technology makes goods abundant, poverty is not an engineering failure—it is a bookkeeping error. Money has never been food or shelter; it is merely an accounting token we invented to ration scarce human sweat. When mechanical hands take over the toil, compulsory labor ceases to be the prerequisite for staying alive.",
+        "The defining challenge of the automated age is not whether machines can do the work, but whether our economic rulebook can survive the transition. For millennia, human survival demanded compulsory sweat: no labor meant no harvest, and no harvest meant starvation. Automation shatters that equation. Machines do not destroy goods; they produce an outright physical surplus. This six-part series demonstrates from first principles why the arrival of automated labor should never leave a single human being worse off, and how a modern society can update its distribution rules so that machine progress elevates everyone."
+      ];
+    }
+
+  static p_overview_roadmap() {
+      return [
+        "To understand how modern economies can survive full automation, we first need to turn down the noise. If you want to understand how a complex engine works, you don't start by staring at a jet turbine; you start with a two-stroke cylinder. We strip the economic operating system down to bare metal on a simplified frontier settlement—using it as an analytical testbed to watch labor, money, and automated machinery interact in plain sight—before scaling those lessons to real-world policy on Earth:\n\n1. **The Robot Dividend:** We watch an isolated settlement transition from manual toil to partial automation, demonstrating how an unconditional Credit dividend naturally decouples human survival from compulsory employment.\n2. **The Colony of 100,000:** We scale the model to city size, introducing ranked-choice consensus and an open two-parameter tax curve ($T$ and $P$) with an interactive simulator showing how corporate automation surplus automatically converts into a universal dividend floor.\n3. **Transitioning on Planet Earth:** We bring the model home to real-world democracies, showing how a dual-pillar tax system (corporate cash flows and land value taxation) provides a smooth, self-balancing glide path without inflation or asset shocks.\n4. **The Anatomy of a Doomer Loop:** We dismantle the fatalistic belief that machines must lead to mass starvation or bunker oligarchs, using cold game theory to prove why capital owners require solvent domestic consumers.\n5. **The Three Visions:** We stress-test the Robot Dividend against competing post-labor architectures—David Shapiro's Sovereign Wealth Funds and Emad Mostaque's compute vouchers—showing why physical claim checks outperform financialized equity.\n6. **The Adversarial Gauntlet:** We confront the toughest counterarguments from orthodox economists, covering transitional friction, demand-pull inflation, positional land scarcity, geopolitical rivalry with China, and human purpose in an automated age.",
+        "To show how a post-labor society functions in practice, this series progresses through six distinct stages:\n\n1. **The Robot Dividend:** Grounding the core concept in physical reality using a clean-slate colony, showing how money represents claim checks on real goods and how automated surpluses fund an unconditional dividend floor.\n2. **The Colony of 100,000:** Scaling up to city scale with an interactive tax simulator, demonstrating how an algorithmic negative income tax curve automatically captures machine output.\n3. **Transitioning on Planet Earth:** Applying the model to modern economies with a dual-pillar fiscal design that avoids capital flight, protects retirement assets, and eliminates inflation.\n4. **The Anatomy of a Doomer Loop:** Walking through an authentic online debate to show how scarcity anxiety escalates into apocalyptic fantasies—and the cold game theory that refutes them.\n5. **The Three Visions:** Evaluating the leading post-scarcity economic proposals (equity endowments, compute vouchers, and physical dividends) against thermodynamics and human agency.\n6. **The Adversarial Gauntlet:** Stress-testing the thesis against orthodox counterarguments, from Ricardian land rents to geopolitical rivalry and the search for human meaning."
+      ];
+    }
 }
 
 globalThis.ArticleContent = ArticleContent;
