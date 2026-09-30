@@ -28,18 +28,19 @@
   "styles": [
     "css/robotDividend.css"
   ],
-  "processedCountSinceCheckpoint": 32,
+  "processedCountSinceCheckpoint": 11,
   "changedMethods": {
     "luno.json": "2026-09-28T20:09:00.376Z",
     "js/TaxChartComponent.js": "2026-09-28T20:33:22.496Z",
-    "js/ColonyContent.js": "2026-09-28T20:33:22.496Z",
-    "js/EarthContent.js": "2026-09-29T21:33:41.611Z",
-    "js/DoomerContent.js": "2026-09-29T21:27:25.094Z",
-    "js/ObjectionsContent.js": "2026-09-29T21:33:41.611Z",
-    "js/ParadigmsContent.js": "2026-09-29T20:35:05.288Z",
+    "js/ColonyContent.js": "2026-09-30T00:23:29.340Z",
+    "js/EarthContent.js": "2026-09-30T04:32:37.778Z",
+    "js/DoomerContent.js": "2026-09-30T00:23:29.340Z",
+    "js/ObjectionsContent.js": "2026-09-30T04:32:37.778Z",
+    "js/ParadigmsContent.js": "2026-09-30T00:23:29.340Z",
     "js/EconomicsOfAutomation.js": "2026-09-29T19:56:17.875Z",
-    "ClaudeMasterPrompt.md": "2026-09-29T20:23:21.561Z"
+    "ClaudeMasterPrompt.md": "2026-09-29T20:23:21.561Z",
+    "js/ArticleContent.js": "2026-09-30T00:23:29.340Z"
   },
-  "lastCheckpointTime": "2026-09-28T20:15:00.000Z",
-  "pendingCheckpointDescription": "Six-part series complete: armored against adversarial LLM critique with Wheelbarrow of Gold lens, China geopolitical realism, persuasion bridge, and dual Markdown/HTML export"
+  "lastCheckpointTime": "2026-09-29T21:37:51.822Z",
+  "pendingCheckpointDescription": "Clean working tree"
 }

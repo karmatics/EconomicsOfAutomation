@@ -60,18 +60,18 @@ class ColonyContent {
   }
 
   static p_colony_tax_1() {
-      return [
-        "To see how straightforward public finance becomes in an automated society, the colony replaces the thousands of pages of special-interest tax loopholes that plague Earth with an open mathematical schedule defined by two intuitive dials. On the frontier, citizens illustrate this by voting directly on the parameters. But in the real world, this requires no constitutional upheaval: we do not need national referendums on mathematical equations. We simply need to elect representatives who understand the principle and configure our existing progressive tax schedule to capture machine surplus and disburse a universal dividend floor.",
-        "The colony's two-number tax schedule serves as a pedagogical model for radical transparency. On Earth today, tax codes are battlegrounds for lobbyists, packed with tens of thousands of carve-outs and shelters. In a well-designed progressive tax system, whether set directly or by elected representatives, fiscal policy can be parameterized cleanly: capturing automated capital profits and converting them into an unconditional baseline for every citizen."
-      ];
-    }
+    return [
+      "To see how clean public finance becomes in an automated society, the colony replaces the tens of thousands of pages of special-interest tax loopholes that plague Earth with an open mathematical schedule defined by two intuitive dials. On the frontier, citizens illustrate this by voting directly on the parameters. But in the real world, this requires no constitutional upheaval: we do not need national referendums on mathematical equations. We simply elect representatives who understand the principle and configure our existing progressive tax schedule to capture machine surplus and disburse a universal dividend floor. The tax code ceases to be a weapon of political favoritism; it becomes an open, transparent protocol.",
+      "The colony's two-number tax schedule serves as a pedagogical model for radical fiscal transparency. On Earth today, tax codes are labyrinthine battlegrounds for corporate lobbyists, packed with tens of thousands of carve-outs, accelerated shelters, and offshore loopholes. In a well-designed post-labor economy, whether set directly or by elected representatives, fiscal policy can be parameterized cleanly: capturing automated capital profits and converting them into an unconditional baseline for every citizen through a single continuous curve."
+    ];
+  }
 
   static p_colony_tax_2() {
-      return [
-        "The two dials are simple: the Total Collection Rate (T) sets the overall percentage of aggregate economic output captured for public infrastructure and universal citizen dividends, while the Progressivity Index (P) defines the slope of the curve. Crucially, this formula is dynamic and self-adjusting: you do not need politicians frantically changing the dials every legislative session. As demonstrated in our simulation, the exact same values for T and P function smoothly whether human employment is at 95%, 50%, or 10%. As machine automation expands, the formula automatically absorbs capital gains and converts them into a rising dividend floor.",
-        "The elegance of this mechanism is its stability over time. One parameter governs total public revenue (T), and the other governs progressivity (P). Because the schedule is continuous, it operates gracefully across the entire transition. When most people are employed, it acts as a balanced progressive income and capital tax. As machines replace human labor, the identical mathematical formula automatically channels the swelling corporate surplus into universal dividends without requiring emergency bailout legislation."
-      ];
-    }
+    return [
+      "The two dials are mathematically elegant: the Total Collection Rate (T) sets the overall percentage of aggregate economic output captured for public infrastructure and universal citizen dividends, while the Progressivity Index (P) defines the slope of the curve. Crucially, this formula is dynamic and self-adjusting: you do not need politicians frantically drafting emergency stimulus bills every legislative session. As demonstrated in our simulation, the exact same values for T and P function smoothly whether human employment is at 95%, 50%, or 10%. As machine automation expands, the formula automatically absorbs capital gains and converts them into a rising dividend floor. It is an economic auto-pilot for the transition to abundance.",
+      "The genius of this mechanism is its operational stability over time. One parameter governs total public revenue (T), and the other governs progressivity (P). Because the schedule is continuous, it operates gracefully across the entire transition. When most people work for wages, it acts as a balanced progressive income and capital tax. As machines replace human labor, the identical mathematical formula automatically channels the swelling corporate surplus into universal dividends without requiring emergency bailout legislation or political brinkmanship."
+    ];
+  }
   static p_colony_tax_3() {
     return [
       "Notice the elegance of this mechanism: as shown in the simulation above, whenever the citizens vote for a progressive curve above 30%, the formula automatically generates negative income tax credits for the lower percentiles. It creates an unconditional citizen dividend floor without requiring separate welfare legislation. The tax code and the Robot Dividend are the exact same mathematical function.",
