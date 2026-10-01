@@ -1046,49 +1046,53 @@ class EconomicsOfAutomation {
     }
 
   getComponentMarkdown(blockDef) {
-      if (blockDef.component === "TaxChartComponent" || blockDef.id?.includes("tax_chart")) {
-        return [
-          "> ### 📊 Interactive Simulation: Algorithmic Negative Income Tax & Dividend Schedule",
-          ">",
-          "> **Theoretical Lineage & Architecture:**",
-          "> This interactive model operationalizes a continuous Negative Income Tax schedule—in the direct intellectual tradition of Nobel laureates Milton Friedman (1962) and James Meade (1964)—parameterized by two transparent macro dials:",
-          "> 1. **Total Collection Rate ($T$):** The target percentage of aggregate economic output captured from automated corporate cash flows (via DBCFT) and land rents (via LVT) to fund public infrastructure and universal citizen dividends.",
-          "> 2. **Progressivity Index ($P$):** The curvature parameter ($P \\in [0, 100\\%]$), which maps piecewise into an equalizing curve parameter $p$:",
-          ">    - **$P = 0\\%$ ($p = 0$):** A lump-sum flat poll tax ($T_i = r \\cdot \\bar{Y}$), regressive on lower brackets.",
-          ">    - **$P = 30\\%$ ($p = 0.5$):** A pure proportional flat-tax baseline ($T_i = r \\cdot Y_i$), where every bracket pays the exact target percentage $r = T/100$.",
-          ">    - **$P > 30\\%$ ($p > 0.5$):** Blends into a progressive Negative Income Tax schedule:",
-          ">      $$T_i = (1 - u)(r \\cdot Y_i) + u\\big(Y_i - (1 - r)\\bar{Y}\\big)$$",
-          ">      where $u = (p - 0.5) \\times 2 \\times 0.65$. The $0.65$ multiplier guarantees that marginal tax rates never reach $100\\%$, ensuring that earning supplemental income always yields positive net return.",
-          ">",
-          "> **Negative Tax Credits as the Universal Dividend Floor:**",
-          "> For $P > 30\\%$, the schedule automatically generates negative tax liabilities ($T_i < 0$) for lower income percentiles. These are disbursed monthly as an unconditional Credit dividend floor. There is no separate welfare bureaucracy or means-testing stigma; the tax code and the Robot Dividend are the exact same mathematical function.",
-          ">",
-          "> **Empirical Validation Across Economic Eras:**",
-          "> - *Frontier (Pre-Auto):* Functions as a standard progressive tax, preserving work incentives when labor is required.",
-          "> - *Transition (50% Auto):* Recycles corporate automation rents to ensure displaced workers receive an expanding dividend baseline.",
-          "> - *Full Automation (100k Robots):* When wage sweat falls to zero for the majority, the formula automatically distributes the automated harvest as a universal dividend floor.",
-          "> - *Earth Benchmark (US 2024 Data):* Demonstrates significant Gini compression and poverty eradication while maintaining positive marginal rewards for high-end human innovation."
-        ].join("\n");
-      }
-
-      if (blockDef.component === "DoomerDebateComponent") {
-        return [
-          "> ### 💬 Case Study: The Anatomy of a Doomer Loop",
-          ">",
-          "> An interactive breakdown of a public debate deconstructing how anxiety over automation quickly escalates into fatalistic extermination fantasies in five steps (The Scarcity Reflex, The 50-Year Stagnation Fallacy, The Fiction of Frictionless Tyranny, The Prisoner's Dilemma of Capital, and The Status Paradox)—and the cold game theory showing why capital owners need solvent domestic consumers to prevent demand collapse."
-        ].join("\n");
-      }
-
-      if (blockDef.component === "ParadigmsComparisonComponent") {
-        return [
-          "> ### ⚖️ Analytical Comparison: The Three Post-Labor Blueprints",
-          ">",
-          "> An interactive matrix evaluating David Shapiro's Post-Labor Economics (Sovereign Wealth Funds & citizen equity trusts), Emad Mostaque's The Last Economy (compute vouchers & UBAI), and Rob Brown's The Robot Dividend (algorithmic tax curves & thermodynamic claim checks) across physical reality, fiscal funding, and human agency."
-        ].join("\n");
-      }
-
-      return `> *[Interactive Component: ${blockDef.title || blockDef.id}]*`;
+    if (blockDef.component === "TaxChartComponent" || blockDef.id?.includes("tax_chart")) {
+      return [
+        "> ### Interactive Simulation: Algorithmic Negative Income Tax & Dividend Schedule",
+        ">",
+        "> **Architecture & Lineage:**",
+        "> This simulation implements a continuous negative income tax schedule—in the tradition of Milton Friedman and James Meade—governed by two parameters within a capacity safety corridor $[T_{\\min}, T_{\\max}]$:",
+        "> 1. **Total Collection Rate ($T$):** The share of economic surplus captured through a consumption VAT, excess-profit surtaxes (with 100% immediate capital expensing), and resource royalties on land, power throughput, and mineral extraction:",
+        ">    $$R_{\\text{total}} = R_{\\text{VAT}} + R_{\\text{Surtax}} + R_{\\text{Resource}}$$",
+        ">    The upper bound ($T_{\\max}$) is calibrated to real physical telemetry (grain reserves, electrical grid operating margins, and critical trade staffing) to prevent overshooting productive capacity.",
+        "> 2. **Progressivity Index ($P$):** The curvature parameter ($P \\in [0, 100\\%]$), which maps into an equalizing curve parameter $p$:",
+        ">    - **$P = 0\\%$ ($p = 0$):** A lump-sum flat fee ($T_i = r \\cdot \\bar{Y}$), regressive on lower brackets.",
+        ">    - **$P = 30\\%$ ($p = 0.5$):** A proportional flat tax ($T_i = r \\cdot Y_i$), where each bracket pays target percentage $r = T/100$.",
+        ">    - **$P > 30\\%$ ($p > 0.5$):** Blends into a progressive negative income tax:",
+        ">      $$T_i = (1 - u)(r \\cdot Y_i) + u\\big(Y_i - (1 - r)\\bar{Y}\\big)$$",
+        ">      where $u = (p - 0.5) \\times 2 \\times 0.65$. The $0.65$ damping factor ensures that marginal tax rates remain well below 100%, so earning additional income always yields positive net take-home pay.",
+        ">",
+        "> **Negative Tax Credits & Dual-Channel Distribution:**",
+        "> When $P > 30\\%$, the schedule generates negative tax liabilities ($T_i < 0$) for lower percentiles, disbursed through two channels:",
+        "> - **Basic Services ($S_t$):** Broad access to zero-marginal-cost digital services (AI medical screening, legal advocacy, and personalized tutoring).",
+        "> - **Liquid Cash Floor ($C_t$):** Scaled to physical production capacity (housing starts, food tonnage, and power margins). Transitional surplus above current physical absorptive capacity funds milestone construction prizes to break physical bottlenecks.",
+        ">",
+        "> **Scenario Benchmarks:**",
+        "> - *Frontier (Pre-Auto):* Functions as a standard progressive tax, preserving work incentives when labor is required.",
+        "> - *Transition (50% Auto):* Recycles corporate automation rents to ensure displaced workers receive an expanding dividend baseline.",
+        "> - *Full Automation (100k Robots):* When wage sweat falls to zero for the majority, the formula automatically distributes the automated harvest as a universal dividend floor.",
+        "> - *Earth Benchmark (US 2024 Data):* Demonstrates Gini compression and poverty eradication while maintaining clear rewards for innovation and skill."
+      ].join("\n");
     }
+
+    if (blockDef.component === "DoomerDebateComponent") {
+      return [
+        "> ### Case Study: The Anatomy of a Doomer Loop",
+        ">",
+        "> A breakdown of an online discussion tracing how anxiety over automation escalates into fatalistic extermination scenarios in five steps (The Scarcity Reflex, The 50-Year Stagnation Argument, The Assumption of Frictionless Tyranny, The Competitive Dilemma, and The Status Fallacy)—and the game-theoretic incentives showing why capital owners require solvent domestic consumers."
+      ].join("\n");
+    }
+
+    if (blockDef.component === "ParadigmsComparisonComponent") {
+      return [
+        "> ### Analytical Comparison: Three Post-Labor Blueprints",
+        ">",
+        "> A comparative matrix evaluating David Shapiro's Post-Labor Economics (Sovereign Wealth Funds & citizen equity trusts), Emad Mostaque's The Last Economy (compute vouchers & UBAI), and Rob Brown's Robot Dividend (algorithmic tax curves & physical claim checks) across thermodynamics, public finance, and human agency."
+      ].join("\n");
+    }
+
+    return `> *[Interactive Component: ${blockDef.title || blockDef.id}]*`;
+  }
   generateMarkdown() {
       const mdLines = [];
 

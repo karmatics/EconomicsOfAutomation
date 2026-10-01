@@ -730,6 +730,7 @@ class TaxChartComponent {
       const postTax = incomes.map((inc, i) => Math.max(0, inc - taxes[i]));
       return { taxes, postTax };
     }
+
   update() {
     if (!this.currentData || !this.currentData.data) return;
 
@@ -737,15 +738,17 @@ class TaxChartComponent {
     const totalPop = this.currentData.totalEntities;
     const currency = '$';
 
-    // Descriptions
+    // Dynamic descriptions reflecting the Capacity-Bounded Corridor
     if (this.taxRevenuePercent === 0) {
       this.expRevenue.textContent = "Zero Rate: No public collection. Public reserves and robot dividend pool are zero.";
     } else if (this.taxRevenuePercent < 25) {
-      this.expRevenue.textContent = `Light Collection: Capturing ${this.taxRevenuePercent}% provides basic maintenance but small universal dividends.`;
-    } else if (this.taxRevenuePercent < 50) {
-      this.expRevenue.textContent = `Balanced Colony Standard: ${this.taxRevenuePercent}% captures automated machine surplus to fund universal security.`;
+      this.expRevenue.textContent = `Light Baseline [Within Corridor]: ${this.taxRevenuePercent}% captures initial surplus for basic maintenance and early Universal Basic Services.`;
+    } else if (this.taxRevenuePercent <= 50) {
+      this.expRevenue.textContent = `Optimal Capacity Zone [Corridor Center]: ${this.taxRevenuePercent}% balances heavy machine surplus capture with full infrastructure maintenance and labor retention.`;
+    } else if (this.taxRevenuePercent <= 65) {
+      this.expRevenue.textContent = `Upper Corridor Threshold: ${this.taxRevenuePercent}% maximizes universal dividends while thermodynamic telemetry actively monitors grid reserve margins.`;
     } else {
-      this.expRevenue.textContent = `High Dividend Collection: ${this.taxRevenuePercent}% channels heavy automated output into large citizen Credit dividends.`;
+      this.expRevenue.textContent = `Corridor Rev-Limiter Warning: At ${this.taxRevenuePercent}%, statutory safety protocols dynamically throttle T_max if essential technician retention or physical reserves narrow.`;
     }
 
     if (this.taxProgressivity === 0) {
@@ -777,7 +780,7 @@ class TaxChartComponent {
     this.subGci.textContent = `For ${totalPop.toLocaleString()} ${this.currentData.type || 'citizens'}`;
 
     this.valBudget.textContent = this.formatCurrency(totalTaxesCollected, currency);
-    this.subBudget.textContent = `Target: ${this.taxRevenuePercent}% | Effective: ${actualCollectedRatio.toFixed(1)}% of gross output`;
+    this.subBudget.textContent = `Target: ${this.taxRevenuePercent}% | Dual-Pillar Effective: ${actualCollectedRatio.toFixed(1)}% of gross volume`;
 
     // Gini reduction badge
     const giniReduction = preTaxGini > 0 ? ((preTaxGini - postTaxGini) / preTaxGini * 100) : 0;
@@ -795,7 +798,6 @@ class TaxChartComponent {
       this.updateTooltip(this.hoveredIndex);
     }
   }
-
   renderSvg(dataPoints, postTax, preTaxIncomes, currency) {
     const width = 1000;
     const height = 440;

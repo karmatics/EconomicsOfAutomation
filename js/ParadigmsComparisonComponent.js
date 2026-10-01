@@ -32,7 +32,7 @@ class ParadigmsComparisonComponent {
         badge: "Thermodynamic Reality",
         badgeClass: "badge-brown",
         accent: "#10b981",
-        summary: "Algorithmic surplus capture (T & P) distributing unconditional Credit claim checks on net physical output."
+        summary: "Algorithmic surplus capture (T & P) within a Capacity-Bounded Corridor, distributing Dual-Channel claim checks on net physical output."
       }
     ];
 
@@ -50,8 +50,8 @@ class ParadigmsComparisonComponent {
         title: "2. Solving the Tax Collapse (How is It Funded?)",
         shapiro: "Funded through capital returns and resource dividends (like the Alaska model), avoiding direct reliance on general legislative budgets.",
         emad: "Correctly recognizes that payroll taxes on human wages will collapse, concluding cash UBI is impossible. Substitutes compute utility infrastructure.",
-        brown: "Directly parameterizes an open democratic curve (T and P) on machine capital output, generating a negative income tax dividend floor.",
-        verdict: "Mostaque identified the death of payroll taxes, but Brown's formula proves automated capital surplus directly funds universal dividends."
+        brown: "Dual-Pillar Engine: WTO-compliant Border-Adjusted VAT + Monopoly Cash-Flow Surtaxes (with 100% CapEx expensing) + Thermodynamic Choke Points (LVT, kWh power, minerals).",
+        verdict: "Mostaque identified the death of payroll taxes, but Brown's Dual-Pillar engine proves automated corporate cash flows and physical choke points fund the dividend without debt or trade retaliation."
       },
       {
         id: "power",
@@ -66,7 +66,7 @@ class ParadigmsComparisonComponent {
         title: "4. Human Agency & Freedom (What Do People Do?)",
         shapiro: "Citizens act as active portfolio stakeholders and civic assembly voters, continuously defending their capital leverage.",
         emad: "Citizens become prompt-hustlers and localized problem-solvers using their daily compute allocations to trade synthetic value.",
-        brown: "Compulsory economic hustle is permanently abolished. Citizens enjoy unconditional physical security, free to choose any vocation or leisure.",
+        brown: "Compulsory economic hustle is permanently abolished. Citizens enjoy unconditional physical security via a Dual-Channel Rheostat (unthrottled services + capacity-paced cash).",
         verdict: "True human agency is not managing trading portfolios or prompt-hustling; it is the freedom to live without survival anxiety."
       },
       {
@@ -74,8 +74,8 @@ class ParadigmsComparisonComponent {
         title: "5. Systemic Failure Mode (Where Does It Break?)",
         shapiro: "Financialization & Phantom Leverage: Exposure to equity volatility and relying on strike leverage that vanished the moment labor was automated.",
         emad: "The Caloric Disconnect: In an age of superhuman foundation models, the market value of amateur compute output is zero. You cannot eat FLOPs.",
-        brown: "Airtight Alignment: Solves the Prisoner's Dilemma for capital owners (guaranteeing consumers) while securing the public baseline.",
-        verdict: "The Robot Dividend satisfies Occam's Razor: it aligns with thermodynamics and the self-interest of both capital owners and citizens."
+        brown: "Attribution Lag defused via the Capacity-Bounded Corridor [T_min, T_max]; hardware lag solved via milestone-bounty NCAP and Dual-Channel distribution.",
+        verdict: "The Robot Dividend satisfies Occam's Razor: it aligns with thermodynamics and the self-interest of both capital owners and citizens, protected by physical safety telemetry."
       }
     ];
   }
