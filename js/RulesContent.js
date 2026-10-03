@@ -1,70 +1,77 @@
 class RulesContent {
   static getMeta() {
     return {
-      kicker: "Standards of Rational Debate & Thread Moderation",
-      title: "Ground Rules of Discourse",
-      subtitle: "Why bad-faith cynicism, smuggled premises, and condescending posturing are removed from our discussion threads."
+      kicker: "Quora Moderation Policy & Discussion Standards",
+      title: "Ground Rules for Replying to My Quora Posts",
+      subtitle: "Why I ask commenters what they would do in the same position, and how we keep discussions focused on real economics rather than movie tropes."
     };
   }
 
   static manifest() {
     return [
       {
-        section: "rules_intro",
-        partLabel: "Moderation Policy",
-        title: "Standard Discussion Standards",
+        section: "rules_summary",
+        partLabel: "Overview",
+        title: "The Four Quick Rules (TL;DR)",
         blocks: [
-          { id: "p_rules_intro", type: "p" },
-          { id: "rule_sandbox", type: "sidebar", kicker: "Rule 1", title: "Respect the Sandbox (No Smuggling External Forces)" },
-          { id: "rule_reciprocity", type: "sidebar", kicker: "Rule 2", title: "The Reciprocity Rule (Answer Direct Questions)" },
-          { id: "rule_cynicism", type: "sidebar", kicker: "Rule 3", title: "Performative Cynicism is Not an Economic Argument" },
-          { id: "rule_history", type: "sidebar", kicker: "Rule 4", title: "The Historical Accuracy Rule (No Colonial Plunder Analogies)" },
-          { id: "rule_tone", type: "sidebar", kicker: "Rule 5", title: "Tone & Demeanor (No Condescending Slang or Insults)" },
-          { id: "p_rules_enforcement", type: "p" }
+          { id: "p_quora_context", type: "p" },
+          { id: "sidebar_tldr_summary", type: "sidebar", kicker: "Summary", title: "The Four Standards at a Glance" }
+        ]
+      },
+      {
+        section: "rules_breakdown",
+        partLabel: "Details",
+        title: "The Logic Behind the Rules",
+        blocks: [
+          { id: "rule_mirror", type: "sidebar", kicker: "Rule 1 • The Mirror Test", title: "Heading Off the Cartoon Villain Trap" },
+          { id: "rule_cynicism", type: "sidebar", kicker: "Rule 2 • Performative Cynicism", title: "The 'Bunker King' Fantasy & Evil for Evil's Sake" },
+          { id: "rule_sandbox", type: "sidebar", kicker: "Rule 3 • Respect the Sandbox", title: "Thought Experiments vs. Real-World Legislation" },
+          { id: "rule_tone", type: "sidebar", kicker: "Rule 4 • Keep it Civil", title: "The 'You're So Naive' Reflex" },
+          { id: "p_quora_process", type: "p" }
         ]
       }
     ];
   }
 
-  static p_rules_intro() {
+  static p_quora_context() {
     return [
-      "To keep conversations focused on the actual macroeconomic math, physical thermodynamics, and democratic institutional design of post-labor economics, all discussion threads are actively moderated. This is not to censor disagreement; thoughtful technical critiques of tax incidence, price stability, or capital investment are welcome and actively engaged. However, comments that derail discussions into comic-book nihilism, performative cynicism, or patronizing jargon will be pruned."
+      "If you’re reading this from one of my Quora answers or posts, welcome. I sometimes moderate my comment threads to keep the signal-to-noise ratio high. I always warn people first by linking to this page, and whenever I delete a comment, I leave a note explaining which rule was crossed.\n\nThe goal is never to silence disagreement. If you have a critique of tax incidence, price stability, capital expenditure, or the legislative glide path, that is great discourse and I welcome it. These rules exist for one reason: to stop comment threads from immediately descending into reflexive cynicism, comic-book villainy, and personal snark."
     ];
   }
 
-  static rule_sandbox() {
+  static sidebar_tldr_summary() {
     return [
-      "Thought experiments (such as the frontier colony or the island of castaways) exist to isolate specific mechanical variables—such as production vs. currency claim checks—on a clean canvas. Attacking a thought experiment by smuggling in unrelated external factors (e.g. 'an outside mega-corporation sends armed mercenaries to massacre everyone and build a tourist resort') is an epistemic failure. In a model representing the closed system of Earth, there is no outside corporation or alien planet. If you wish to debate real-world policy, critique the terrestrial legislative architecture in Part 3, not the illustrative testbed."
+      "If you're commenting on my Quora posts, here are the four rules to keep in mind:\n\n1. **The Mirror Test (The Golden Rule):** If your argument is that the wealthy will simply hoard all the robots, hide in bunkers, or let humanity starve, be prepared to answer: *If you were in their position, is that what YOU would do?* If you wouldn't do it, don't assume others are cartoon villains just to dodge the economics.\n2. **Performative Cynicism is Not an Argument:** Assuming people will act evil purely for the sake of being evil—contrary to their own self-interest and financial survival—fails basic game theory. Capital needs solvent domestic consumers to have any value.\n3. **Respect the Thought Experiment:** A simplified sandbox (like twelve pioneers or an island of castaways) isolates currency and production on purpose. Don't smuggle in external mercenary armies or alien lasers to dodge answering the underlying economic principles.\n4. **Keep it Civil:** Calling someone 'naive' because they use game theory instead of cynicism is a cop-out. Critique the math and the policy as sharply as you want, but drop the condescending slang, passive aggression, and personal insults."
     ];
   }
 
-  static rule_reciprocity() {
+  static rule_mirror() {
     return [
-      "Discourse is an honest two-way exchange, not a soapbox. If the author or another participant asks you a direct, clarifying question (e.g., The Mirror Test: 'If you were in charge of the automated harvesters, would YOU choose to exterminate everyone?'), you must answer that question directly before introducing new claims. Gish-galloping, deflecting, or ignoring clarifying questions while posting further assertions demonstrates bad faith and will result in comment removal."
+      "When people run out of macroeconomic counterarguments, they almost always retreat into comic-book plots: 'Billionaires will just hoard all the robots, build fortified enclaves, and let the rest of humanity starve.'\n\nWhenever someone makes this claim, I will ask them this exact question:\n\n**'If you were in this position, what would you do?'**\n\nThink about why this question is so important. If you developed automated combines, modular housing factories, and clean energy grids that produced an overwhelming surplus of physical necessities, would *you* order armed drones to massacre your neighbors and starve eight billion people? Or would you support an automated dividend that ensured a stable, peaceful, flourishing civilization where you could enjoy your wealth in safety and public honor?\n\nIf you wouldn't choose mass starvation, then why are you predicting that someone else inevitably would? If you are unwilling to say, 'Yes, that is what I would do in their shoes,' then there is something fundamentally broken with your argument. You have stopped analyzing human incentives and started projecting cinematic villainy onto others to justify feeling helpless."
     ];
   }
 
   static rule_cynicism() {
     return [
-      "Asserting that an economic transition is impossible simply because 'people are greedy' or 'billionaires are all evil psychopaths who want to murder humanity' is an intellectual cop-out. It replaces macroeconomic analysis with lazy Hollywood tropes. If you believe a policy fails, identify the game-theoretic breakdown, the fiscal shortfall, or the tax incidence distortion. Fatalism is not tough-minded realism; it is an excuse for intellectual apathy."
+      "The 'Bunker King' Fantasy & Evil for Evil's Sake: A very common comment is that the ultra-wealthy don't care about consumer markets and will simply 'build bunkers and defend them with private armies.'\n\nThat sounds tough-minded, but it makes zero sense under cold game theory:\n\n1. **A bunker is solitary confinement:** Wealth is an intersubjective social status game. You cannot show off a trillion dollars to an android, and you cannot enjoy luxury inside a concrete tomb surrounded by sentry turrets. A billionaire isolated in a bunker with robots isn't an emperor; he's a prisoner in an appliance warehouse.\n2. **Capital requires solvent consumers:** Automated factories producing cars, houses, and food have zero commercial value if the domestic public has no income. Corporate revenues crash to zero and stock values evaporate. Capital needs the Robot Dividend just to stay solvent.\n\nAssuming that elites will destroy the consumer economy and imprison themselves in bunkers assumes they will act evil *purely for the sake of being evil*, even when it destroys their own wealth, safety, and status. That's why I ask people what they would do: if you wouldn't make that insane trade, don't base your economic analysis on assuming someone else would."
     ];
   }
 
-  static rule_history() {
+  static rule_sandbox() {
     return [
-      "Citing historical corporate atrocities—such as the British East India Company, the Royal African Company, or the Johnson County War—to argue that modern domestic corporations will murder their own citizens with robots is a fatal category error. Colonial mercantilism extracted scarce physical loot (gold, spices, opium) from conquered lands to sell to an external domestic market in London. Domestic automation multiplies reproducible abundance for the same domestic market. Automated factories with no solvent domestic consumers become worthless scrap metal. Do not cite colonial plunder to explain domestic macroeconomic automation."
+      "Thought Experiments vs. Real-World Policy: Simplified models (like seven castaways on an island or pioneers at a sawmill) exist to isolate how currency, labor, and machine output interact when stripped of real-world noise. Attacking an island model by saying 'corporations would send gunboats to massacre the castaways and build a luxury resort' breaks the sandbox.\n\nThe island represents the whole planet. There is no off-screen corporation, and there is no outside world to book your resort. If you want to debate real-world policy on Earth, critique the actual legislative architecture in Part 3 (the border-adjusted VAT, corporate surtax, and land value tax). But don't smuggle outside forces into a closed thought experiment just to avoid the math."
     ];
   }
 
   static rule_tone() {
     return [
-      "Passive-aggressive colloquialisms ('my dude', 'sweet summer child', 'touch grass'), dismissive posturing, and ad hominem insults have zero place in serious economic debate. Attack the math, attack the incentives, and critique the policy mechanisms as sharply as you like, but treat other participants with basic adult respect. Comments employing condescending internet slang will be removed."
+      "The 'You're So Naive' Reflex: Dismissing an argument by saying 'You're so naive to think the rich will do this' is not a counterargument; it's a defense mechanism. Cynicism often masquerades as sophistication because predicting catastrophe makes you feel worldly without requiring you to do any actual homework on tax design or game theory.\n\nI don't expect anyone to share machine surplus out of kindness or charity. I argue they will do it for two cold, selfish reasons: first, because an automated electorate will outvote them in a democracy; and second, because capital owners need solvent domestic buyers to keep their businesses alive.\n\nCalling someone naive because they analyze incentives instead of declaring doom is just performative cynicism. Disagree with the mechanics, but leave the condescending internet slang and sneers at the door."
     ];
   }
 
-  static p_rules_enforcement() {
+  static p_quora_process() {
     return [
-      "These rules apply equally to everyone. If your comment was removed, it was not because you disagreed with the Robot Dividend; it was because you violated one of the five standards above. You are always welcome to repost your critique in a manner that addresses the actual mechanics in good faith."
+      "How I Moderate:\n\n1. **Warning First:** If a comment violates these guidelines, I will reply with a link to this page and identify which rule was crossed, giving you a chance to refocus on the economics.\n2. **A Note on Deletion:** If a comment is deleted, I will leave a brief note explaining why so the thread remains transparent.\n3. **Good-Faith Welcome:** You are always welcome to reformulate your argument around the actual economics and post again. If your argument holds up to first principles, it will stand."
     ];
   }
 }

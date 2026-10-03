@@ -311,7 +311,7 @@ class EconomicsOfAutomation {
           e.preventDefault();
           this.switchPage("rules");
         }
-      }, "📜 Standards & Rules of Discourse"),
+      }, "📜 Rules for Replying on Quora"),
       makeElement("span", {}, "•"),
       makeElement("span", {}, "The Robot Dividend Series © 2026")
     ]);
@@ -319,9 +319,51 @@ class EconomicsOfAutomation {
     footerNav.appendChild(subUtilityRow);
     this.articleContainer.appendChild(footerNav);
   }
+
   renderBlock(blockDef) {
     const doc = this.getCurrentDoc();
     const blockId = blockDef.id;
+
+    // Single-Click Copyable Markdown Payload Box (for AI Prompt Rules)
+    if (blockDef.type === "markdown-box") {
+      const rawMarkdown = typeof doc.getMasterMarkdown === "function" ? doc.getMasterMarkdown() : "";
+      const boxWrapper = makeElement("div", { className: "markdown-prompt-container", id: `block-${blockId}` });
+
+      const topBar = makeElement("div", { className: "markdown-prompt-topbar" }, [
+        makeElement("div", { className: "markdown-prompt-title" }, [
+          makeElement("span", {}, "📄"),
+          makeElement("span", {}, blockDef.title || "Copy-Paste Master Prompt")
+        ]),
+        makeElement("button", {
+          className: "copy-prompt-btn primary",
+          onclick: (e) => {
+            const btn = e.currentTarget;
+            navigator.clipboard.writeText(rawMarkdown).then(() => {
+              btn.textContent = "✓ Copied to Clipboard!";
+              setTimeout(() => { btn.textContent = "📋 Copy Master Markdown Prompt"; }, 2500);
+              if (typeof UITools !== "undefined" && typeof UITools.showHUD === "function") {
+                UITools.showHUD({
+                  html: `<div style="padding:10px 16px;background:#065f46;color:#ecfdf5;border:1px solid #10b981;border-radius:8px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;"><span>✓</span><span>Master Markdown Prompt copied to clipboard!</span></div>`,
+                  position: "bottom-right",
+                  autoClose: 2400
+                });
+              }
+            });
+          }
+        }, "📋 Copy Master Markdown Prompt")
+      ]);
+
+      const codeArea = makeElement("textarea", {
+        className: "markdown-prompt-textarea",
+        readonly: true,
+        spellcheck: false
+      });
+      codeArea.value = rawMarkdown;
+
+      boxWrapper.appendChild(topBar);
+      boxWrapper.appendChild(codeArea);
+      return boxWrapper;
+    }
 
     // Interactive Custom Component Block (e.g. TaxChart, DoomerDebate)
     if (blockDef.type === "component") {
@@ -341,7 +383,7 @@ class EconomicsOfAutomation {
       return wrapper;
     }
 
-    // Sidebar / Callout Note Box with Deep-Link Copy Badge
+    // Sidebar / Callout Note Box with Multi-Paragraph & Ordered List Parsing
     if (blockDef.type === "sidebar" || blockDef.type === "callout") {
       const variants = (typeof doc[blockId] === "function") ? doc[blockId]() : ["[Missing block]"];
       const variantKey = `${this.currentPageId}:${blockId}`;
@@ -357,17 +399,52 @@ class EconomicsOfAutomation {
         }
       }, "🔗 Copy Link");
 
+      const bodyContainer = makeElement("div", { className: "block-sidebar-body" });
+
+      // Multi-paragraph and list parser for sidebars
+      const paragraphs = currentText.split(/\n\s*\n/);
+      paragraphs.forEach((pText) => {
+        const trimmed = pText.trim();
+        if (!trimmed) return;
+
+        // Check if this paragraph contains a numbered list
+        if (/\n\d+\.\s/.test(trimmed) || /^\d+\.\s/.test(trimmed)) {
+          const lines = trimmed.split("\n");
+          let listEl = null;
+
+          lines.forEach((l) => {
+            const lTrim = l.trim();
+            const listMatch = lTrim.match(/^(\d+)\.\s+(.*)$/);
+            if (listMatch) {
+              if (!listEl) listEl = makeElement("ol", { className: "sidebar-ol" });
+              listEl.appendChild(makeElement("li", {}, this.formatInlineText(listMatch[2])));
+            } else if (lTrim) {
+              if (listEl) {
+                bodyContainer.appendChild(listEl);
+                listEl = null;
+              }
+              bodyContainer.appendChild(makeElement("p", {}, this.formatInlineText(lTrim)));
+            }
+          });
+
+          if (listEl) bodyContainer.appendChild(listEl);
+        } else {
+          // Standalone paragraph
+          bodyContainer.appendChild(makeElement("p", {}, this.formatInlineText(trimmed)));
+        }
+      });
+
       return makeElement("aside", {
         className: "block-sidebar",
         id: `block-${blockId}`,
         "data-block-id": blockId
       }, [
-        ["div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" } }, [
+        ["div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" } }, [
           blockDef.kicker ? ["div", { className: "block-sidebar-kicker" }, blockDef.kicker] : makeElement("div"),
           copyLinkBtn
         ]],
         blockDef.title ? ["div", { className: "block-sidebar-title" }, blockDef.title] : null,
-        ["div", { className: "block-sidebar-body" }, this.formatInlineText(currentText)]
+        bodyContainer
       ]);
     }
 
@@ -385,7 +462,7 @@ class EconomicsOfAutomation {
       return makeElement("div", { className: containerClass, id: `block-${blockId}` }, cards);
     }
 
-    // Handle Text Blocks & Quotes
+    // Regular Paragraphs & Multi-Line Blocks
     const variants = (typeof doc[blockId] === "function") ? doc[blockId]() : ["[Missing block]"];
     const variantKey = `${this.currentPageId}:${blockId}`;
     const currentIdx = this.activeVariants[variantKey] || 0;
@@ -456,7 +533,7 @@ class EconomicsOfAutomation {
 
     wrapper.appendChild(contentEl);
 
-    // Gutter Controls with Direct Copy Link Icon
+    // Gutter Controls
     const gutterControls = makeElement("div", { className: "block-gutter-controls" });
 
     if (variants.length > 1) {
