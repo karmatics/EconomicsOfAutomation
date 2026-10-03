@@ -1,517 +1,514 @@
 class EconomicsOfAutomation {
 
   async run(env) {
-      if (!env || !env.container) {
-        throw new Error("[EconomicsOfAutomation] run() requires an environment object with a valid container.");
-      }
-      this.env = env;
-      this.container = env.container;
-      this.activeVariants = {};
-      this.selectedBlockId = null;
-      this.assistantDialog = null;
-
-      // Supported pages / documents across the complete six-part series
-      this.pages = [
-        { id: "dividend", title: "1. The Robot Dividend", docClass: () => globalThis.ArticleContent },
-        { id: "colony", title: "2. The 100,000 Colony", docClass: () => globalThis.ColonyContent },
-        { id: "earth", title: "3. Earth Transition", docClass: () => globalThis.EarthContent },
-        { id: "doomer", title: "4. The Doomer Loop", docClass: () => globalThis.DoomerContent },
-        { id: "paradigms", title: "5. The Three Visions", docClass: () => globalThis.ParadigmsContent },
-        { id: "objections", title: "6. The Adversarial Gauntlet", docClass: () => globalThis.ObjectionsContent }
-      ];
-
-      const savedPage = localStorage.getItem("robot_dividend_active_page") || "dividend";
-      this.currentPageId = this.pages.some((p) => p.id === savedPage) ? savedPage : "dividend";
-
-      // Restore preferred theme
-      const savedTheme = localStorage.getItem("robot_dividend_theme") || "light";
-      if (savedTheme === "dark") {
-        document.body.classList.add("theme-dark");
-      } else {
-        document.body.classList.remove("theme-dark");
-      }
-
-      this.initUI();
-      this.renderArticle();
+    if (!env || !env.container) {
+      throw new Error("[EconomicsOfAutomation] run() requires an environment object with a valid container.");
     }
+    this.env = env;
+    this.container = env.container;
+    this.activeVariants = {};
+    this.selectedBlockId = null;
+    this.assistantDialog = null;
+
+    // Supported pages: Main 6 chapters + auxiliary Discourse Rules and AI Directives
+    this.pages = [
+      { id: "dividend", title: "1. The Robot Dividend", docClass: () => globalThis.ArticleContent, isMain: true },
+      { id: "colony", title: "2. The 100,000 Colony", docClass: () => globalThis.ColonyContent, isMain: true },
+      { id: "earth", title: "3. Earth Transition", docClass: () => globalThis.EarthContent, isMain: true },
+      { id: "doomer", title: "4. The Doomer Loop", docClass: () => globalThis.DoomerContent, isMain: true },
+      { id: "paradigms", title: "5. The Three Visions", docClass: () => globalThis.ParadigmsContent, isMain: true },
+      { id: "objections", title: "6. The Adversarial Gauntlet", docClass: () => globalThis.ObjectionsContent, isMain: true },
+      { id: "rules", title: "Discourse Rules", docClass: () => globalThis.RulesContent, isMain: false },
+      { id: "ai-rules", title: "AI Prompt Rules", docClass: () => globalThis.AiRulesContent, isMain: false }
+    ];
+
+    // Resolve initial page from URL hash or query param if present
+    const parsed = this._parseUrlRoute();
+    const initialPage = parsed.pageId || localStorage.getItem("robot_dividend_active_page") || "dividend";
+    this.currentPageId = this.pages.some((p) => p.id === initialPage) ? initialPage : "dividend";
+
+    // Restore preferred theme
+    const savedTheme = localStorage.getItem("robot_dividend_theme") || "light";
+    if (savedTheme === "dark") {
+      document.body.classList.add("theme-dark");
+    } else {
+      document.body.classList.remove("theme-dark");
+    }
+
+    this.initUI();
+    this.renderArticle();
+
+    // Handle direct anchor deep-linking
+    if (parsed.anchorId) {
+      setTimeout(() => this.highlightTargetElement(parsed.anchorId), 300);
+    }
+
+    // Listen to popstate / hashchange for instant deep-linking from shared links
+    window.addEventListener("hashchange", () => this.handleUrlRouting(), { passive: true });
+  }
 
   initUI() {
-        this.container.innerHTML = "";
+    this.container.innerHTML = "";
 
-        // Build Page Switcher Buttons
-        this.navPageButtons = {};
-        const pageTabElements = this.pages.map((p) => {
-          const btn = makeElement("button", {
-            className: `nav-page-btn ${this.currentPageId === p.id ? "active" : ""}`,
-            title: `Switch to ${p.title}`,
-            onclick: () => this.switchPage(p.id)
-          }, p.title);
-          this.navPageButtons[p.id] = btn;
-          return btn;
-        });
+    // Build Page Switcher Buttons for the main 6 chapters only
+    this.navPageButtons = {};
+    const visiblePages = this.pages.filter(p => p.isMain !== false);
 
-        this.pageSelector = makeElement("div", { className: "reader-nav-pages" }, pageTabElements);
+    const pageTabElements = visiblePages.map((p) => {
+      const btn = makeElement("button", {
+        className: `nav-page-btn ${this.currentPageId === p.id ? "active" : ""}`,
+        title: `Switch to ${p.title}`,
+        onclick: () => this.switchPage(p.id)
+      }, p.title);
+      this.navPageButtons[p.id] = btn;
+      return btn;
+    });
 
-        // Support mouse-wheel horizontal translation: spinning mouse wheel scrolls horizontally
-        this.pageSelector.addEventListener("wheel", (e) => {
-          if (e.deltaY !== 0) {
-            e.preventDefault();
-            this.pageSelector.scrollLeft += e.deltaY * 1.2;
-            this._updateNavScrollIndicators();
-          }
-        }, { passive: false });
+    this.pageSelector = makeElement("div", { className: "reader-nav-pages" }, pageTabElements);
 
-        // Support mouse drag-to-scroll
-        let isDragging = false;
-        let startX = 0;
-        let initialScrollLeft = 0;
-
-        this.pageSelector.addEventListener("mousedown", (e) => {
-          if (e.button !== 0) return;
-          isDragging = true;
-          startX = e.pageX - this.pageSelector.offsetLeft;
-          initialScrollLeft = this.pageSelector.scrollLeft;
-          this.pageSelector.classList.add("dragging");
-        });
-
-        window.addEventListener("mouseup", () => {
-          if (isDragging) {
-            isDragging = false;
-            this.pageSelector.classList.remove("dragging");
-          }
-        });
-
-        this.pageSelector.addEventListener("mousemove", (e) => {
-          if (!isDragging) return;
-          e.preventDefault();
-          const currentX = e.pageX - this.pageSelector.offsetLeft;
-          const walk = (currentX - startX) * 1.5;
-          this.pageSelector.scrollLeft = initialScrollLeft - walk;
-          this._updateNavScrollIndicators();
-        });
-
-        this.pageSelector.addEventListener("scroll", () => {
-          this._updateNavScrollIndicators();
-        }, { passive: true });
-
-        // Dedicated Scroll Navigation Buttons (left & right)
-        this.navScrollLeftBtn = makeElement("button", {
-          className: "nav-scroll-btn nav-scroll-left",
-          title: "Scroll tabs left",
-          "aria-label": "Scroll tabs left",
-          onclick: () => {
-            this.pageSelector.scrollBy({ left: -240, behavior: "smooth" });
-            setTimeout(() => this._updateNavScrollIndicators(), 250);
-          }
-        }, "‹");
-
-        this.navScrollRightBtn = makeElement("button", {
-          className: "nav-scroll-btn nav-scroll-right",
-          title: "Scroll tabs right",
-          "aria-label": "Scroll tabs right",
-          onclick: () => {
-            this.pageSelector.scrollBy({ left: 240, behavior: "smooth" });
-            setTimeout(() => this._updateNavScrollIndicators(), 250);
-          }
-        }, "›");
-
-        this.navCarousel = makeElement("div", { className: "reader-nav-carousel" }, [
-          this.navScrollLeftBtn,
-          this.pageSelector,
-          this.navScrollRightBtn
-        ]);
-
-        // Responsive Chapter Dropdown Selector for small viewports / mobile
-        const selectOptions = this.pages.map((p) => {
-          return makeElement("option", {
-            value: p.id,
-            selected: this.currentPageId === p.id
-          }, p.title);
-        });
-
-        this.navSelect = makeElement("select", {
-          className: "nav-chapter-select",
-          "aria-label": "Choose Chapter",
-          onchange: (e) => {
-            this.switchPage(e.target.value);
-          }
-        }, selectOptions);
-
-        // Clean Floating Navigation Bar with responsive layout
-        this.navBar = makeElement("nav", { className: "reader-nav-bar" }, [
-          ["div", { className: "reader-nav-brand" }, [
-            ["span", { className: "nav-brand-icon" }, "⚡"],
-            ["span", { className: "nav-brand-text" }, "Economics of Automation"]
-          ]],
-          this.navCarousel,
-          this.navSelect,
-          ["div", { className: "reader-nav-actions" }, [
-            ["button", {
-              className: "nav-btn theme-toggle-btn",
-              title: "Toggle Light / Dark mode",
-              "aria-label": "Toggle reading theme",
-              onclick: () => this.toggleTheme()
-            }, "🌓"],
-            ["button", {
-              className: "nav-btn primary export-btn",
-              title: "Export all sections as Markdown or Formatted Text",
-              onclick: () => this.showExportDialog()
-            }, [
-              ["span", {}, "📤"],
-              ["span", { className: "btn-label-long" }, "Export"]
-            ]]
-          ]]
-        ]);
-        document.body.appendChild(this.navBar);
-
-        // Reading Progress Bar
-        this.progressTrack = makeElement("div", { className: "reading-progress-track" });
-        this.progressBar = makeElement("div", { className: "reading-progress-bar" });
-        this.progressTrack.appendChild(this.progressBar);
-        document.body.appendChild(this.progressTrack);
-
-        this._scrollHandler = () => {
-          const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-          if (totalHeight > 0) {
-            const progress = Math.min(100, Math.max(0, (window.scrollY / totalHeight) * 100));
-            this.progressBar.style.width = `${progress}%`;
-          }
-        };
-        window.addEventListener("scroll", this._scrollHandler, { passive: true });
-
-        this.shell = makeElement("div", { className: "article-shell" });
-        this.articleContainer = makeElement("div", { className: "article-container" });
-        this.shell.appendChild(this.articleContainer);
-        this.container.appendChild(this.shell);
-
-        // Initial check for scroll indicator states
-        setTimeout(() => this._updateNavScrollIndicators(), 50);
-        window.addEventListener("resize", () => this._updateNavScrollIndicators(), { passive: true });
+    // Support mouse-wheel horizontal translation
+    this.pageSelector.addEventListener("wheel", (e) => {
+      if (e.deltaY !== 0) {
+        e.preventDefault();
+        this.pageSelector.scrollLeft += e.deltaY * 1.2;
+        this._updateNavScrollIndicators();
       }
+    }, { passive: false });
+
+    // Dedicated Scroll Buttons
+    this.navScrollLeftBtn = makeElement("button", {
+      className: "nav-scroll-btn nav-scroll-left",
+      title: "Scroll tabs left",
+      onclick: () => {
+        this.pageSelector.scrollBy({ left: -240, behavior: "smooth" });
+        setTimeout(() => this._updateNavScrollIndicators(), 250);
+      }
+    }, "‹");
+
+    this.navScrollRightBtn = makeElement("button", {
+      className: "nav-scroll-btn nav-scroll-right",
+      title: "Scroll tabs right",
+      onclick: () => {
+        this.pageSelector.scrollBy({ left: 240, behavior: "smooth" });
+        setTimeout(() => this._updateNavScrollIndicators(), 250);
+      }
+    }, "›");
+
+    this.navCarousel = makeElement("div", { className: "reader-nav-carousel" }, [
+      this.navScrollLeftBtn,
+      this.pageSelector,
+      this.navScrollRightBtn
+    ]);
+
+    // Responsive Chapter Dropdown Selector
+    const selectOptions = this.pages.map((p) => {
+      return makeElement("option", {
+        value: p.id,
+        selected: this.currentPageId === p.id
+      }, p.title);
+    });
+
+    this.navSelect = makeElement("select", {
+      className: "nav-chapter-select",
+      "aria-label": "Choose Chapter",
+      onchange: (e) => this.switchPage(e.target.value)
+    }, selectOptions);
+
+    // Floating Navigation Bar
+    this.navBar = makeElement("nav", { className: "reader-nav-bar" }, [
+      ["div", { className: "reader-nav-brand", onclick: () => this.switchPage("dividend") }, [
+        ["span", { className: "nav-brand-icon" }, "⚡"],
+        ["span", { className: "nav-brand-text" }, "Economics of Automation"]
+      ]],
+      this.navCarousel,
+      this.navSelect,
+      ["div", { className: "reader-nav-actions" }, [
+        ["button", {
+          className: "nav-btn theme-toggle-btn",
+          title: "Toggle Light / Dark mode",
+          onclick: () => this.toggleTheme()
+        }, "🌓"],
+        ["button", {
+          className: "nav-btn primary export-btn",
+          title: "Export series as Markdown or Formatted Text",
+          onclick: () => this.showExportDialog()
+        }, [
+          ["span", {}, "📤"],
+          ["span", { className: "btn-label-long" }, "Export"]
+        ]]
+      ]]
+    ]);
+    document.body.appendChild(this.navBar);
+
+    // Reading Progress Bar
+    this.progressTrack = makeElement("div", { className: "reading-progress-track" });
+    this.progressBar = makeElement("div", { className: "reading-progress-bar" });
+    this.progressTrack.appendChild(this.progressBar);
+    document.body.appendChild(this.progressTrack);
+
+    this._scrollHandler = () => {
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (totalHeight > 0) {
+        const progress = Math.min(100, Math.max(0, (window.scrollY / totalHeight) * 100));
+        this.progressBar.style.width = `${progress}%`;
+      }
+    };
+    window.addEventListener("scroll", this._scrollHandler, { passive: true });
+
+    this.shell = makeElement("div", { className: "article-shell" });
+    this.articleContainer = makeElement("div", { className: "article-container" });
+    this.shell.appendChild(this.articleContainer);
+    this.container.appendChild(this.shell);
+
+    setTimeout(() => this._updateNavScrollIndicators(), 50);
+    window.addEventListener("resize", () => this._updateNavScrollIndicators(), { passive: true });
+  }
+
   renderArticle() {
-      this.articleContainer.innerHTML = "";
-      const doc = this.getCurrentDoc();
-      const meta = doc.getMeta();
-      const manifest = doc.manifest();
+    this.articleContainer.innerHTML = "";
+    const doc = this.getCurrentDoc();
+    const meta = doc.getMeta();
+    const manifest = doc.manifest();
 
-      // Dynamically calculate word count and estimated reading time based on active variants
-      let totalWords = 0;
-      manifest.forEach((sec) => {
-        sec.blocks.forEach((b) => {
-          const variants = (typeof doc[b.id] === "function") ? doc[b.id]() : [];
-          const variantKey = `${this.currentPageId}:${b.id}`;
-          const curIdx = this.activeVariants[variantKey] || 0;
-          const txt = variants[curIdx] || variants[0] || "";
-          totalWords += txt.split(/\s+/).filter(Boolean).length;
-        });
+    // Dynamically calculate word count and estimated reading time
+    let totalWords = 0;
+    manifest.forEach((sec) => {
+      sec.blocks.forEach((b) => {
+        const variants = (typeof doc[b.id] === "function") ? doc[b.id]() : [];
+        const variantKey = `${this.currentPageId}:${b.id}`;
+        const curIdx = this.activeVariants[variantKey] || 0;
+        const txt = variants[curIdx] || variants[0] || "";
+        totalWords += txt.split(/\s+/).filter(Boolean).length;
       });
-      const estMinutes = Math.max(1, Math.round(totalWords / 220));
+    });
+    const estMinutes = Math.max(1, Math.round(totalWords / 220));
 
-      const currentIdx = this.pages.findIndex((p) => p.id === this.currentPageId);
-      const prevPage = currentIdx > 0 ? this.pages[currentIdx - 1] : null;
-      const nextPage = currentIdx < this.pages.length - 1 ? this.pages[currentIdx + 1] : null;
+    const mainPages = this.pages.filter(p => p.isMain !== false);
+    const currentIdx = mainPages.findIndex((p) => p.id === this.currentPageId);
+    const prevPage = currentIdx > 0 ? mainPages[currentIdx - 1] : null;
+    const nextPage = currentIdx >= 0 && currentIdx < mainPages.length - 1 ? mainPages[currentIdx + 1] : null;
 
-      const header = makeElement("header", { className: "article-header" }, [
-        ["div", { className: "article-meta-row" }, [
-          ["span", { className: "article-kicker" }, meta.kicker],
-          ["span", { className: "article-read-time" }, `Part ${currentIdx + 1} of ${this.pages.length} • ${estMinutes} min read`]
-        ]],
-        ["h1", { className: "article-title" }, meta.title],
-        ["p", { className: "article-subtitle" }, meta.subtitle]
-      ]);
-      this.articleContainer.appendChild(header);
+    const header = makeElement("header", { className: "article-header" }, [
+      ["div", { className: "article-meta-row" }, [
+        ["span", { className: "article-kicker" }, meta.kicker],
+        currentIdx >= 0
+          ? ["span", { className: "article-read-time" }, `Part ${currentIdx + 1} of ${mainPages.length} • ${estMinutes} min read`]
+          : ["span", { className: "article-read-time" }, "Reference Document"]
+      ]],
+      ["h1", { className: "article-title" }, meta.title],
+      ["p", { className: "article-subtitle" }, meta.subtitle]
+    ]);
+    this.articleContainer.appendChild(header);
 
-      manifest.forEach((sec) => {
-        const secWrap = makeElement("section", { className: "section-divider" });
+    manifest.forEach((sec) => {
+      const secWrap = makeElement("section", { className: "section-divider" });
 
-        if (sec.partLabel) {
-          secWrap.appendChild(makeElement("div", { className: "section-part-label" }, sec.partLabel));
-        }
-        secWrap.appendChild(makeElement("h2", { className: "section-heading" }, sec.title));
+      if (sec.partLabel) {
+        secWrap.appendChild(makeElement("div", { className: "section-part-label" }, sec.partLabel));
+      }
+      secWrap.appendChild(makeElement("h2", { className: "section-heading" }, sec.title));
 
-        sec.blocks.forEach((b) => {
-          const blockEl = this.renderBlock(b);
-          secWrap.appendChild(blockEl);
-        });
-
-        this.articleContainer.appendChild(secWrap);
+      sec.blocks.forEach((b) => {
+        const blockEl = this.renderBlock(b);
+        secWrap.appendChild(blockEl);
       });
 
-      // Cinematic Chapter Transition Footer
-      const footerNav = makeElement("nav", {
-        className: "article-chapter-footer",
+      this.articleContainer.appendChild(secWrap);
+    });
+
+    // Footer Navigation and Small Discourse Reference Link
+    const footerNav = makeElement("nav", {
+      className: "article-chapter-footer",
+      style: {
+        marginTop: "80px",
+        paddingTop: "36px",
+        borderTop: "2px solid var(--reader-border)",
+        display: "flex",
+        flexDirection: "column",
+        gap: "22px"
+      }
+    });
+
+    const navRow = makeElement("div", {
+      style: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "stretch",
+        flexWrap: "wrap",
+        gap: "14px"
+      }
+    });
+
+    if (prevPage) {
+      const prevDocMeta = prevPage.docClass().getMeta();
+      const prevBtn = makeElement("button", {
+        className: "nav-btn",
         style: {
-          marginTop: "80px",
-          paddingTop: "36px",
-          borderTop: "2px solid var(--reader-border)",
+          flex: "1",
+          minWidth: "240px",
+          padding: "16px 20px",
+          borderRadius: "10px",
           display: "flex",
           flexDirection: "column",
-          gap: "18px"
-        }
-      });
-
-      const navRow = makeElement("div", {
-        style: {
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "stretch",
-          flexWrap: "wrap",
-          gap: "14px"
-        }
-      });
-
-      if (prevPage) {
-        const prevDocMeta = prevPage.docClass().getMeta();
-        const prevBtn = makeElement("button", {
-          className: "nav-btn",
-          style: {
-            flex: "1",
-            minWidth: "240px",
-            padding: "16px 20px",
-            borderRadius: "10px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            gap: "4px",
-            textAlign: "left"
-          },
-          onclick: () => this.switchPage(prevPage.id)
-        }, [
-          makeElement("span", { style: { fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--reader-accent)" } }, "← Previous Chapter"),
-          makeElement("span", { style: { fontSize: "1.05rem", fontWeight: "700" } }, prevDocMeta.title)
-        ]);
-        navRow.appendChild(prevBtn);
-      } else {
-        navRow.appendChild(makeElement("div", { style: { flex: "1" } }));
-      }
-
-      if (nextPage) {
-        const nextDocMeta = nextPage.docClass().getMeta();
-        const nextBtn = makeElement("button", {
-          className: "nav-btn primary",
-          style: {
-            flex: "1",
-            minWidth: "240px",
-            padding: "16px 20px",
-            borderRadius: "10px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-end",
-            gap: "4px",
-            textAlign: "right"
-          },
-          onclick: () => this.switchPage(nextPage.id)
-        }, [
-          makeElement("span", { style: { fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em", opacity: "0.9" } }, "Next Chapter →"),
-          makeElement("span", { style: { fontSize: "1.05rem", fontWeight: "700" } }, nextDocMeta.title)
-        ]);
-        navRow.appendChild(nextBtn);
-      } else {
-        const exportSeriesBtn = makeElement("button", {
-          className: "nav-btn primary",
-          style: {
-            flex: "1",
-            minWidth: "240px",
-            padding: "16px 20px",
-            borderRadius: "10px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "4px",
-            textAlign: "center"
-          },
-          onclick: () => this.showExportDialog("markdown")
-        }, [
-          makeElement("span", { style: { fontSize: "0.74rem", textTransform: "uppercase", letterSpacing: "0.1em" } }, "✨ Series Complete"),
-          makeElement("span", { style: { fontSize: "1.1rem", fontWeight: "800" } }, "Export All 6 Chapters to Markdown")
-        ]);
-        navRow.appendChild(exportSeriesBtn);
-      }
-
-      footerNav.appendChild(navRow);
-      this.articleContainer.appendChild(footerNav);
+          alignItems: "flex-start",
+          gap: "4px",
+          textAlign: "left"
+        },
+        onclick: () => this.switchPage(prevPage.id)
+      }, [
+        makeElement("span", { style: { fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--reader-accent)" } }, "← Previous Chapter"),
+        makeElement("span", { style: { fontSize: "1.05rem", fontWeight: "700" } }, prevDocMeta.title)
+      ]);
+      navRow.appendChild(prevBtn);
+    } else {
+      navRow.appendChild(makeElement("div", { style: { flex: "1" } }));
     }
 
+    if (nextPage) {
+      const nextDocMeta = nextPage.docClass().getMeta();
+      const nextBtn = makeElement("button", {
+        className: "nav-btn primary",
+        style: {
+          flex: "1",
+          minWidth: "240px",
+          padding: "16px 20px",
+          borderRadius: "10px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-end",
+          gap: "4px",
+          textAlign: "right"
+        },
+        onclick: () => this.switchPage(nextPage.id)
+      }, [
+        makeElement("span", { style: { fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em", opacity: "0.9" } }, "Next Chapter →"),
+        makeElement("span", { style: { fontSize: "1.05rem", fontWeight: "700" } }, nextDocMeta.title)
+      ]);
+      navRow.appendChild(nextBtn);
+    }
+
+    footerNav.appendChild(navRow);
+
+    // Subtle bottom utility row: Discourse Rules Link
+    const subUtilityRow = makeElement("div", {
+      style: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: "18px",
+        fontSize: "0.76rem",
+        color: "var(--reader-muted)",
+        paddingTop: "12px",
+        borderTop: "1px dashed var(--reader-border)"
+      }
+    }, [
+      makeElement("a", {
+        href: "#rules",
+        style: { color: "var(--reader-muted)", textDecoration: "none", transition: "color 0.15s" },
+        onmouseover: (e) => e.target.style.color = "var(--reader-accent)",
+        onmouseout: (e) => e.target.style.color = "var(--reader-muted)",
+        onclick: (e) => {
+          e.preventDefault();
+          this.switchPage("rules");
+        }
+      }, "📜 Standards & Rules of Discourse"),
+      makeElement("span", {}, "•"),
+      makeElement("span", {}, "The Robot Dividend Series © 2026")
+    ]);
+
+    footerNav.appendChild(subUtilityRow);
+    this.articleContainer.appendChild(footerNav);
+  }
   renderBlock(blockDef) {
-        const doc = this.getCurrentDoc();
-        const blockId = blockDef.id;
+    const doc = this.getCurrentDoc();
+    const blockId = blockDef.id;
 
-        // Interactive Custom Component Block (e.g. TaxChart)
-        if (blockDef.type === "component") {
-          const mountId = `comp-mount-${blockId}`;
-          const wrapper = makeElement("div", {
-            className: "interactive-component-wrap",
-            id: mountId
-          });
+    // Interactive Custom Component Block (e.g. TaxChart, DoomerDebate)
+    if (blockDef.type === "component") {
+      const mountId = `comp-mount-${blockId}`;
+      const wrapper = makeElement("div", {
+        className: "interactive-component-wrap",
+        id: mountId
+      });
 
-          const compClass = globalThis[blockDef.component];
-          if (compClass && typeof compClass.render === "function") {
-            setTimeout(() => {
-              const el = document.getElementById(mountId);
-              if (el) compClass.render(el);
-            }, 0);
-          } else {
-            const placeholder = makeElement("div", { className: "interactive-component-placeholder" }, [
-              ["div", { className: "comp-placeholder-badge" }, "📊 Interactive Simulation"],
-              ["div", { className: "comp-placeholder-title" }, blockDef.title || "Interactive Tax & Dividend Simulator"],
-              ["div", { className: "comp-placeholder-desc" }, 
-                "Dynamic sliders for Total Collection Rate (T) and Progressivity Index (P) will mount here."
-              ]
-            ]);
-            wrapper.appendChild(placeholder);
+      const compClass = globalThis[blockDef.component];
+      if (compClass && typeof compClass.render === "function") {
+        setTimeout(() => {
+          const el = document.getElementById(mountId);
+          if (el) compClass.render(el);
+        }, 0);
+      }
+      return wrapper;
+    }
+
+    // Sidebar / Callout Note Box with Deep-Link Copy Badge
+    if (blockDef.type === "sidebar" || blockDef.type === "callout") {
+      const variants = (typeof doc[blockId] === "function") ? doc[blockId]() : ["[Missing block]"];
+      const variantKey = `${this.currentPageId}:${blockId}`;
+      const currentIdx = this.activeVariants[variantKey] || 0;
+      const currentText = variants[currentIdx] || variants[0];
+
+      const copyLinkBtn = makeElement("button", {
+        className: "block-share-badge",
+        title: `Copy direct link to #${blockId}`,
+        onclick: (e) => {
+          e.stopPropagation();
+          this.copyAnchorLink(this.currentPageId, blockId, e.currentTarget);
+        }
+      }, "🔗 Copy Link");
+
+      return makeElement("aside", {
+        className: "block-sidebar",
+        id: `block-${blockId}`,
+        "data-block-id": blockId
+      }, [
+        ["div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" } }, [
+          blockDef.kicker ? ["div", { className: "block-sidebar-kicker" }, blockDef.kicker] : makeElement("div"),
+          copyLinkBtn
+        ]],
+        blockDef.title ? ["div", { className: "block-sidebar-title" }, blockDef.title] : null,
+        ["div", { className: "block-sidebar-body" }, this.formatInlineText(currentText)]
+      ]);
+    }
+
+    // Single Image
+    if (blockDef.type === "image") {
+      const card = this.createThumbCard(blockDef.file);
+      return makeElement("div", { className: "image-single-wrap", id: `block-${blockId}` }, [card]);
+    }
+
+    // Grouped Images
+    if (blockDef.type === "image-group") {
+      const isGrid4 = blockDef.layout === "grid-4";
+      const containerClass = isGrid4 ? "image-grid-four" : "image-row-pair";
+      const cards = (blockDef.images || []).map((imgDef) => this.createThumbCard(imgDef.file));
+      return makeElement("div", { className: containerClass, id: `block-${blockId}` }, cards);
+    }
+
+    // Handle Text Blocks & Quotes
+    const variants = (typeof doc[blockId] === "function") ? doc[blockId]() : ["[Missing block]"];
+    const variantKey = `${this.currentPageId}:${blockId}`;
+    const currentIdx = this.activeVariants[variantKey] || 0;
+    const currentText = variants[currentIdx] || variants[0];
+
+    const wrapper = makeElement("div", {
+      className: `block-wrapper ${this.selectedBlockId === blockId ? "block-selected" : ""}`,
+      id: `block-${blockId}`,
+      "data-block-id": blockId
+    });
+
+    let contentEl;
+    if (blockDef.type === "quote") {
+      contentEl = makeElement("blockquote", { className: "block-quote" }, this.formatInlineText(currentText));
+    } else {
+      if (/\n\d+\.\s/.test(currentText) || /^\d+\.\s/.test(currentText)) {
+        contentEl = makeElement("div", { className: "block-text-multi" });
+        const lines = currentText.split("\n");
+        let currentParagraph = [];
+        let currentList = null;
+
+        const flushParagraph = () => {
+          if (currentParagraph.length > 0) {
+            const pText = currentParagraph.join(" ").trim();
+            if (pText) contentEl.appendChild(makeElement("p", { className: "block-p" }, this.formatInlineText(pText)));
+            currentParagraph = [];
           }
+        };
 
-          return wrapper;
-        }
+        const flushList = () => {
+          if (currentList) {
+            contentEl.appendChild(currentList);
+            currentList = null;
+          }
+        };
 
-        // Sidebar / Callout Note Box
-        if (blockDef.type === "sidebar" || blockDef.type === "callout") {
-          const variants = (typeof doc[blockId] === "function") ? doc[blockId]() : ["[Missing block]"];
-          const variantKey = `${this.currentPageId}:${blockId}`;
-          const currentIdx = this.activeVariants[variantKey] || 0;
-          const currentText = variants[currentIdx] || variants[0];
-          return makeElement("aside", { className: "block-sidebar" }, [
-            blockDef.kicker ? ["div", { className: "block-sidebar-kicker" }, blockDef.kicker] : null,
-            blockDef.title ? ["div", { className: "block-sidebar-title" }, blockDef.title] : null,
-            ["div", { className: "block-sidebar-body" }, this.formatInlineText(currentText)]
-          ]);
-        }
-
-        // Single Image
-        if (blockDef.type === "image") {
-          const card = this.createThumbCard(blockDef.file);
-          return makeElement("div", { className: "image-single-wrap" }, [card]);
-        }
-
-        // Grouped Images
-        if (blockDef.type === "image-group") {
-          const isGrid4 = blockDef.layout === "grid-4";
-          const containerClass = isGrid4 ? "image-grid-four" : "image-row-pair";
-
-          const cards = (blockDef.images || []).map((imgDef) => {
-            return this.createThumbCard(imgDef.file);
-          });
-
-          return makeElement("div", { className: containerClass }, cards);
-        }
-
-        // Handle Text Blocks & Quotes
-        const variants = (typeof doc[blockId] === "function") ? doc[blockId]() : ["[Missing block]"];
-        const variantKey = `${this.currentPageId}:${blockId}`;
-        const currentIdx = this.activeVariants[variantKey] || 0;
-        const currentText = variants[currentIdx] || variants[0];
-
-        const wrapper = makeElement("div", {
-          className: `block-wrapper ${this.selectedBlockId === blockId ? "block-selected" : ""}`,
-          id: `block-${blockId}`
-        });
-
-        let contentEl;
-        if (blockDef.type === "quote") {
-          contentEl = makeElement("blockquote", { className: "block-quote" }, this.formatInlineText(currentText));
-        } else {
-          if (/\n\d+\.\s/.test(currentText) || /^\d+\.\s/.test(currentText)) {
-            contentEl = makeElement("div", { className: "block-text-multi" });
-            const lines = currentText.split("\n");
-            let currentParagraph = [];
-            let currentList = null;
-
-            const flushParagraph = () => {
-              if (currentParagraph.length > 0) {
-                const pText = currentParagraph.join(" ").trim();
-                if (pText) contentEl.appendChild(makeElement("p", { className: "block-p" }, this.formatInlineText(pText)));
-                currentParagraph = [];
-              }
-            };
-
-            const flushList = () => {
-              if (currentList) {
-                contentEl.appendChild(currentList);
-                currentList = null;
-              }
-            };
-
-            lines.forEach((line) => {
-              const trimmed = line.trim();
-              if (!trimmed) {
-                flushParagraph();
-                flushList();
-                return;
-              }
-
-              const listMatch = trimmed.match(/^(\d+)\.\s+(.*)$/);
-              if (listMatch) {
-                flushParagraph();
-                if (!currentList) currentList = makeElement("ol", { className: "block-ol" });
-                currentList.appendChild(makeElement("li", {}, this.formatInlineText(listMatch[2])));
-              } else {
-                flushList();
-                currentParagraph.push(trimmed);
-              }
-            });
-
+        lines.forEach((line) => {
+          const trimmed = line.trim();
+          if (!trimmed) {
             flushParagraph();
             flushList();
-          } else if (currentText.includes("\n\n")) {
-            contentEl = makeElement("div", { className: "block-text-multi" });
-            const parts = currentText.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
-            parts.forEach((p) => {
-              contentEl.appendChild(makeElement("p", { className: "block-p" }, this.formatInlineText(p)));
-            });
+            return;
+          }
+
+          const listMatch = trimmed.match(/^(\d+)\.\s+(.*)$/);
+          if (listMatch) {
+            flushParagraph();
+            if (!currentList) currentList = makeElement("ol", { className: "block-ol" });
+            currentList.appendChild(makeElement("li", {}, this.formatInlineText(listMatch[2])));
           } else {
-            contentEl = makeElement("p", { className: "block-p" }, this.formatInlineText(currentText));
+            flushList();
+            currentParagraph.push(trimmed);
           }
-        }
-
-        wrapper.appendChild(contentEl);
-
-        // Subtle Gutter Controls
-        const gutterControls = makeElement("div", { className: "block-gutter-controls" });
-
-        if (variants.length > 1) {
-          const vCol = makeElement("div", { className: "gutter-v-col" });
-          variants.forEach((_, idx) => {
-            const badge = makeElement("button", {
-              className: `gutter-v-badge ${idx === currentIdx ? "active" : ""}`,
-              title: `Switch to variant ${idx + 1}`,
-              onclick: (e) => {
-                e.stopPropagation();
-                this.activeVariants[variantKey] = idx;
-                this.renderArticle();
-                if (this.assistantDialog && this.assistantDialog.element?.isConnected) {
-                  this.updateAssistant(blockId);
-                }
-              }
-            }, `${idx + 1}`);
-            vCol.appendChild(badge);
-          });
-          gutterControls.appendChild(vCol);
-        }
-
-        const inspectBtn = makeElement("button", {
-          className: "gutter-inspect-btn",
-          title: `Edit & AI studio for #${blockId}`,
-          onclick: (e) => {
-            e.stopPropagation();
-            this.selectBlock(blockId, true);
-          }
-        }, "✎");
-        gutterControls.appendChild(inspectBtn);
-
-        const idTip = makeElement("span", {
-          className: "gutter-id-tip"
-        }, `#${blockId}`);
-        gutterControls.appendChild(idTip);
-
-        wrapper.appendChild(gutterControls);
-
-        wrapper.addEventListener("click", () => {
-          this.selectBlock(blockId, true);
         });
 
-        return wrapper;
+        flushParagraph();
+        flushList();
+      } else if (currentText.includes("\n\n")) {
+        contentEl = makeElement("div", { className: "block-text-multi" });
+        const parts = currentText.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+        parts.forEach((p) => {
+          contentEl.appendChild(makeElement("p", { className: "block-p" }, this.formatInlineText(p)));
+        });
+      } else {
+        contentEl = makeElement("p", { className: "block-p" }, this.formatInlineText(currentText));
       }
+    }
+
+    wrapper.appendChild(contentEl);
+
+    // Gutter Controls with Direct Copy Link Icon
+    const gutterControls = makeElement("div", { className: "block-gutter-controls" });
+
+    if (variants.length > 1) {
+      const vCol = makeElement("div", { className: "gutter-v-col" });
+      variants.forEach((_, idx) => {
+        const badge = makeElement("button", {
+          className: `gutter-v-badge ${idx === currentIdx ? "active" : ""}`,
+          title: `Switch to variant ${idx + 1}`,
+          onclick: (e) => {
+            e.stopPropagation();
+            this.activeVariants[variantKey] = idx;
+            this.renderArticle();
+            if (this.assistantDialog && this.assistantDialog.element?.isConnected) {
+              this.updateAssistant(blockId);
+            }
+          }
+        }, `${idx + 1}`);
+        vCol.appendChild(badge);
+      });
+      gutterControls.appendChild(vCol);
+    }
+
+    const shareBtn = makeElement("button", {
+      className: "gutter-inspect-btn",
+      title: `Copy shareable link for #${blockId}`,
+      onclick: (e) => {
+        e.stopPropagation();
+        this.copyAnchorLink(this.currentPageId, blockId, e.currentTarget);
+      }
+    }, "🔗");
+    gutterControls.appendChild(shareBtn);
+
+    const inspectBtn = makeElement("button", {
+      className: "gutter-inspect-btn",
+      title: `Edit & AI studio for #${blockId}`,
+      onclick: (e) => {
+        e.stopPropagation();
+        this.selectBlock(blockId, true);
+      }
+    }, "✎");
+    gutterControls.appendChild(inspectBtn);
+
+    const idTip = makeElement("span", {
+      className: "gutter-id-tip"
+    }, `#${blockId}`);
+    gutterControls.appendChild(idTip);
+
+    wrapper.appendChild(gutterControls);
+    wrapper.addEventListener("click", () => this.selectBlock(blockId, true));
+
+    return wrapper;
+  }
   selectBlock(blockId, openDialog = false) {
     this.selectedBlockId = blockId;
     document.querySelectorAll(".block-wrapper").forEach((el) => el.classList.remove("block-selected"));
@@ -1376,6 +1373,99 @@ class EconomicsOfAutomation {
       }
       return frag;
     }
+
+  _parseUrlRoute() {
+    let pageId = null;
+    let anchorId = null;
+
+    // 1. Check Query Params: ?page=rules&anchor=rule_reciprocity
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has("page")) pageId = params.get("page");
+      if (params.has("anchor")) anchorId = params.get("anchor");
+    } catch (e) {}
+
+    // 2. Check Hash Route: #rules/rule_reciprocity or #doomer/sidebar_east_india_fallacy or #rule_tone
+    if (window.location.hash) {
+      const hashStr = window.location.hash.replace(/^#\/?/, "");
+      if (hashStr.includes("/")) {
+        const parts = hashStr.split("/");
+        pageId = parts[0];
+        anchorId = parts[1];
+      } else {
+        const matchedPage = this.pages.find(p => p.id === hashStr);
+        if (matchedPage) {
+          pageId = matchedPage.id;
+        } else {
+          anchorId = hashStr;
+        }
+      }
+    }
+
+    return { pageId, anchorId };
+  }
+
+  handleUrlRouting() {
+    const { pageId, anchorId } = this._parseUrlRoute();
+    if (pageId && pageId !== this.currentPageId) {
+      this.switchPage(pageId, false);
+    }
+    if (anchorId) {
+      setTimeout(() => this.highlightTargetElement(anchorId), 250);
+    }
+  }
+
+  highlightTargetElement(targetId) {
+    if (!targetId) return;
+    const cleanId = targetId.replace(/^#/, "");
+
+    // Search for block-{id}, sidebar-{id}, or exact id
+    let el = document.getElementById(`block-${cleanId}`) || 
+             document.getElementById(`sidebar-${cleanId}`) || 
+             document.getElementById(cleanId) ||
+             document.querySelector(`[data-block-id="${cleanId}"]`);
+
+    if (!el) {
+      // Fallback: look for aside or div with matching id attribute or substring
+      el = document.querySelector(`[id*="${cleanId}"]`);
+    }
+
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.classList.remove("target-pulse-highlight");
+      void el.offsetWidth; // re-flow
+      el.classList.add("target-pulse-highlight");
+
+      if (typeof UITools !== "undefined" && typeof UITools.showHUD === "function") {
+        UITools.showHUD({
+          html: `<div style="padding:8px 14px;background:#1e293b;color:#38bdf8;border:1px solid #0284c7;border-radius:8px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;"><span>🎯</span><span>Viewing Anchor: #${cleanId}</span></div>`,
+          position: "bottom-right",
+          autoClose: 2400
+        });
+      }
+    }
+  }
+
+  copyAnchorLink(pageId, anchorId, btnElement = null) {
+    const url = `${window.location.origin}${window.location.pathname}#${pageId}/${anchorId}`;
+
+    navigator.clipboard.writeText(url).then(() => {
+      if (btnElement) {
+        const orig = btnElement.textContent;
+        btnElement.textContent = "✓ Copied!";
+        setTimeout(() => { btnElement.textContent = orig; }, 2000);
+      }
+      if (typeof UITools !== "undefined" && typeof UITools.showHUD === "function") {
+        UITools.showHUD({
+          html: `<div style="padding:10px 16px;background:#065f46;color:#ecfdf5;border:1px solid #10b981;border-radius:8px;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.45);display:flex;align-items:center;gap:8px;"><span>✓</span><span>Copied deep-link for <b>#${anchorId}</b> to clipboard!</span></div>`,
+          position: "bottom-right",
+          autoClose: 2500
+        });
+      }
+    }).catch(() => {
+      prompt("Copy this direct anchor URL:", url);
+    });
+  }
 }
 
 globalThis.EconomicsOfAutomation = EconomicsOfAutomation;

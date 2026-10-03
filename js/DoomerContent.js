@@ -92,6 +92,7 @@ class DoomerContent {
       "You do not have to choose between corporate tyranny and mass starvation. That false choice only exists in the minds of those who refuse to see that the rules have changed. When mechanical hands do the work, survival is no longer something you must earn through compulsory sweat. It is the birthright of an abundant civilization."
     ];
   }
+
   static manifest() {
     return [
       {
@@ -122,8 +123,33 @@ class DoomerContent {
         ]
       },
       {
-        section: "loop_bunker",
+        section: "loop_fallacies",
         partLabel: "Part Three",
+        title: "The Cynic's Playbook: Dismantling Common Tropes",
+        blocks: [
+          {
+            id: "sidebar_east_india_fallacy",
+            type: "sidebar",
+            kicker: "Historical Institutional Analysis",
+            title: "The Warlord Fallacy: East India Companies & Mercenary Resorts"
+          },
+          {
+            id: "sidebar_power_illusion",
+            type: "sidebar",
+            kicker: "Sociology of Autocracy",
+            title: "The 'Power Over People' Fallacy: Why Bunker Kings Have No Throne"
+          },
+          {
+            id: "sidebar_mirror_test",
+            type: "sidebar",
+            kicker: "Psychological Framing",
+            title: "The Mirror Test: The Cynic’s Inadvertent Confession"
+          }
+        ]
+      },
+      {
+        section: "loop_bunker",
+        partLabel: "Part Four",
         title: "The Bunker King Delusion",
         blocks: [
           { id: "p_bunker_reality_1", type: "p" },
@@ -132,13 +158,31 @@ class DoomerContent {
       },
       {
         section: "loop_freedom",
-        partLabel: "Part Four",
+        partLabel: "Part Five",
         title: "Stepping Out of the Loop",
         blocks: [
           { id: "p_loop_close_1", type: "p" },
           { id: "p_loop_close_2", type: "p" }
         ]
       }
+    ];
+  }
+
+  static sidebar_east_india_fallacy() {
+    return [
+      "The Warlord Fallacy (From Colonial Plunder to Domestic Automation): Online cynics frequently object: 'History is written in blood! The British East India Company, the Royal African Company, and the cattle barons of the Johnson County War murdered people for profit. If corporations get robots, they will massacre the population to turn the world into a private luxury resort!'\n\nThis argument is a fatal category error: it confuses 17th-century colonial mercantilism with 21st-century domestic automation:\n1. The Export-Plunder Illusion: The East India Company plundered scarce physical goods (spices, tea, opium, gold) from Bengal to sell to an external domestic market in London. The colonized population was not their customer base. But an automated economy is a closed system (Earth). There is no outside planet to export to. If an automated corporation builds empty resorts while the population is dead or destitute, who books the rooms? A business without solvent consumers collapses into zero valuation.\n2. Scarce Dirt vs. Machine Throughput: The cattle barons of the Johnson County War fought over physically fixed, zero-sum grazing land. Automation multiplies reproducible abundance: when combines and robotic factories harvest grain and 3D-print homes at machine speed, nobody needs to massacre neighbors to seize their manual garden.\n3. The Sovereign Monopoly on Force: The Johnson County War ended the instant the President deployed the US 6th Cavalry to surround and disarm the cattle barons' mercenaries. Corporations exist by state charter; an executive attempting to deploy armed drones domestically commits an act of war, resulting in frozen assets, corporate dissolution, and federal treason trials."
+    ];
+  }
+
+  static sidebar_power_illusion() {
+    return [
+      "The 'Power Over People' Fallacy: Pessimists often insist: 'Billionaires don't just want wealth; they want POWER over people. They would rather rule a desolate wasteland of machines than share abundance.'\n\nThis confuses operating an appliance with possessing social power. As defined by sociologists Max Weber and Robert Dahl, power is an asymmetric social relation between human beings. You cannot exercise power over a robot; that is merely operating a toaster. A billionaire isolated in a concrete bunker surrounded by automated drones has zero power; he is simply a prisoner in an automated appliance warehouse.\n\nFurthermore, consider the Praetorian Guard Dilemma: an oligarch ruling through private force is completely at the mercy of the human security commanders and software engineers who hold the override keys. In an autocracy where the rule of law has been destroyed, the wealthy do not live as kings; they live as terrified hostages to their own enforcers. This is why global oligarchs park their assets and families in rule-of-law constitutional democracies like London, Zurich, and New York. Constitutional legitimacy is the only environment where wealth can be enjoyed in safety, peace, and public honor."
+    ];
+  }
+
+  static sidebar_mirror_test() {
+    return [
+      "The Mirror Test (The Cynic's Inadvertent Confession): When an online commenter asserts with absolute certainty that anyone with capital will naturally choose mass extermination, present them with The Mirror Test:\n\n'If YOU were the owner of the automated farm and robotic factories, and you had the choice between an automated dividend that provided an abundant, peaceful world, or ordering drones to systematically massacre eight billion human beings—which one would YOU choose?'\n\nNotice the immediate checkmate:\n• If they answer: 'I wouldn't murder them, I'm not a monster!': They have just admitted that human beings do not inherently converge on cartoon genocide. They have conceded that their dystopia is not a law of human nature, but a cinematic trope they are projecting onto others to excuse their own political apathy.\n• If they answer: 'Yes, I would massacre them': They have ceased analyzing economics and started confessing their own personal psychopathy, instantly disqualifying themselves from serious conversation.\n\nPerformative cynicism is not tough-minded realism; it is an intellectual surrender that excuses the cynic from doing any actual thinking about tax policy or democratic reform."
     ];
   }
 }

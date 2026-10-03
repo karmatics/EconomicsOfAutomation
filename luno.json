@@ -1,7 +1,7 @@
 {
   "name": "EconomicsOfAutomation",
-  "version": "1.6.0",
-  "description": "The Robot Dividend & Economics of Automation - Complete Six-Part Series with Embedded Colony Tax & Dividend Simulator, Doomer Ladder, Paradigms Matrix, and Adversarial Gauntlet",
+  "version": "1.7.0",
+  "description": "The Robot Dividend & Economics of Automation - Complete Series with Deep-Linked Discourse Rules, Internal AI Prompt Playbook, and Expanded Anti-Cynicism Rebuttals",
   "type": "luno-web-app",
   "mainClass": "EconomicsOfAutomation",
   "entrypoint": {
@@ -19,6 +19,8 @@
     "js/ParadigmsContent.js",
     "js/ParadigmsComparisonComponent.js",
     "js/ObjectionsContent.js",
+    "js/RulesContent.js",
+    "js/AiRulesContent.js",
     "js/EconomicsOfAutomation.js"
   ],
   "library": [
@@ -28,22 +30,15 @@
   "styles": [
     "css/robotDividend.css"
   ],
-  "processedCountSinceCheckpoint": 20,
+  "processedCountSinceCheckpoint": 24,
+  "lastCheckpointTime": "2026-10-01T04:57:44.725Z",
+  "pendingCheckpointDescription": "Added deep-linked Discourse Rules, AI Prompting Playbook, and Anti-Cynicism Anchors",
   "changedMethods": {
-    "luno.json": "2026-09-28T20:09:00.376Z",
-    "js/TaxChartComponent.js": "2026-10-01T02:58:53.922Z",
-    "js/ColonyContent.js": "2026-10-01T03:07:15.626Z",
-    "js/EarthContent.js": "2026-10-01T03:07:15.626Z",
-    "js/DoomerContent.js": "2026-10-01T03:07:15.626Z",
-    "js/ObjectionsContent.js": "2026-10-01T03:07:15.626Z",
-    "js/ParadigmsContent.js": "2026-10-01T03:07:15.626Z",
-    "js/EconomicsOfAutomation.js": "2026-10-01T03:07:15.626Z",
-    "ClaudeMasterPrompt.md": "2026-09-29T20:23:21.561Z",
-    "js/ArticleContent.js": "2026-10-01T03:07:15.626Z",
-    "index.html": "2026-09-30T20:56:29.487Z",
-    "js/ParadigmsComparisonComponent.js": "2026-10-01T02:58:53.922Z",
-    "css/robotDividend.css": "2026-09-30T20:57:06.471Z"
-  },
-  "lastCheckpointTime": "2026-09-30T21:05:12.417Z",
-  "pendingCheckpointDescription": "Clean working tree"
+    "luno.json": "2026-10-03T19:52:12.095Z",
+    "js/RulesContent.js": "2026-10-03T19:52:12.095Z",
+    "js/AiRulesContent.js": "2026-10-03T19:52:12.095Z",
+    "js/DoomerContent.js": "2026-10-03T19:52:12.095Z",
+    "js/EconomicsOfAutomation.js": "2026-10-03T19:52:12.095Z",
+    "css/robotDividend.css": "2026-10-03T19:52:12.095Z"
+  }
 }
