@@ -1,7 +1,7 @@
 {
   "name": "EconomicsOfAutomation",
-  "version": "1.7.0",
-  "description": "The Robot Dividend & Economics of Automation - Complete Series with Deep-Linked Discourse Rules, Internal AI Prompt Playbook, and Expanded Anti-Cynicism Rebuttals",
+  "version": "1.8.0",
+  "description": "The Robot Dividend & Economics of Automation - Complete Series with Dedicated Standalone Quora Discourse Rules and Game Theory Primer",
   "type": "luno-web-app",
   "mainClass": "EconomicsOfAutomation",
   "entrypoint": {
@@ -20,6 +20,7 @@
     "js/ParadigmsComparisonComponent.js",
     "js/ObjectionsContent.js",
     "js/RulesContent.js",
+    "js/GameTheoryContent.js",
     "js/AiRulesContent.js",
     "js/EconomicsOfAutomation.js"
   ],
@@ -30,15 +31,15 @@
   "styles": [
     "css/robotDividend.css"
   ],
-  "processedCountSinceCheckpoint": 12,
-  "lastCheckpointTime": "2026-10-03T21:12:41.401Z",
-  "pendingCheckpointDescription": "Clean working tree",
+  "processedCountSinceCheckpoint": 26,
+  "lastCheckpointTime": "2026-10-09T22:50:00.000Z",
+  "pendingCheckpointDescription": "Added standalone rules.html and gametheory.html pages",
   "changedMethods": {
-    "luno.json": "2026-10-03T19:52:12.095Z",
-    "js/RulesContent.js": "2026-10-05T08:23:04.325Z",
-    "js/AiRulesContent.js": "2026-10-05T08:22:48.317Z",
-    "js/DoomerContent.js": "2026-10-03T19:52:12.095Z",
-    "js/EconomicsOfAutomation.js": "2026-10-05T08:22:55.528Z",
-    "css/robotDividend.css": "2026-10-05T08:23:04.325Z"
+    "luno.json": "2026-10-09T22:56:26.176Z",
+    "js/RulesContent.js": "2026-10-10T01:54:38.963Z",
+    "js/GameTheoryContent.js": "2026-10-10T01:54:38.963Z",
+    "rules.html": "2026-10-10T01:21:08.212Z",
+    "gametheory.html": "2026-10-10T01:21:08.212Z",
+    "js/EconomicsOfAutomation.js": "2026-10-10T01:26:47.281Z"
   }
 }

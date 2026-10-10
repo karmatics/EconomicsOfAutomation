@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Game Theory for Automation • The Robot Dividend</title>
+  <link rel="stylesheet" href="css/robotDividend.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      background-color: var(--reader-bg, #faf7f2);
+      color: var(--reader-text, #1f242e);
+      font-family: var(--reader-font-body, 'Newsreader', Georgia, serif);
+      line-height: 1.75;
+    }
+    body.theme-dark {
+      background-color: #0f141c;
+      color: #e2e8f0;
+    }
+    .gt-page-shell {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 40px 20px 100px;
+    }
+    .gt-nav-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 36px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--reader-border, #e6dfd5);
+      font-family: var(--reader-font-sans, system-ui, sans-serif);
+      font-size: 0.82rem;
+    }
+    .gt-nav-top a {
+      color: var(--reader-accent, #2563eb);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .gt-nav-top a:hover {
+      text-decoration: underline;
+    }
+    .gt-theme-btn {
+      background: var(--reader-surface, #ffffff);
+      border: 1px solid var(--reader-border, #e6dfd5);
+      padding: 4px 10px;
+      border-radius: 16px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .gt-header {
+      margin-bottom: 36px;
+    }
+    .gt-kicker {
+      font-family: var(--reader-font-sans, system-ui, sans-serif);
+      font-size: 0.74rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--reader-accent, #2563eb);
+      margin-bottom: 6px;
+    }
+    .gt-title {
+      font-family: var(--reader-font-sans, system-ui, sans-serif);
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+    .gt-sub {
+      font-size: 1.15rem;
+      font-style: italic;
+      color: var(--reader-text-subtle, #475569);
+    }
+    .gt-block-p {
+      font-size: 1.2rem;
+      line-height: 1.85;
+      margin: 22px 0;
+      color: var(--reader-text, #1f242e);
+    }
+    .gt-section-title {
+      font-family: var(--reader-font-sans, system-ui, sans-serif);
+      font-size: 1.45rem;
+      font-weight: 800;
+      margin: 44px 0 16px;
+      padding-top: 24px;
+      border-top: 1px solid var(--reader-border, #e6dfd5);
+    }
+    .gt-callout {
+      margin: 28px 0;
+      padding: 18px 22px;
+      background: var(--reader-card-bg, #f3efe7);
+      border-left: 4px solid var(--reader-accent, #2563eb);
+      border-radius: 0 8px 8px 0;
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+    .gt-callout strong {
+      color: var(--reader-text, #1f242e);
+    }
+    .target-highlight-active {
+      box-shadow: 0 0 0 3px #f59e0b, 0 8px 24px rgba(245, 158, 11, 0.35) !important;
+      transition: box-shadow 0.8s ease;
+    }
+    .footer-links {
+      margin-top: 54px;
+      padding-top: 24px;
+      border-top: 1px solid var(--reader-border, #e6dfd5);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-family: var(--reader-font-sans, system-ui, sans-serif);
+      font-size: 0.82rem;
+    }
+    .footer-links a {
+      color: var(--reader-accent, #2563eb);
+      text-decoration: none;
+      font-weight: 700;
+    }
+  </style>
+  <script src="js/GameTheoryContent.js"></script>
+</head>
+<body>
+  <div class="gt-page-shell">
+    <nav class="gt-nav-top">
+      <a href="rules.html">← Back to Discussion Rules</a>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <a href="index.html" style="font-weight: 600;">Main Series →</a>
+        <button class="gt-theme-btn" onclick="toggleTheme()">🌓</button>
+      </div>
+    </nav>
+
+    <header class="gt-header">
+      <div class="gt-kicker">Macroeconomic Primer</div>
+      <h1 class="gt-title">Game Theory for Post-Labor Economics</h1>
+      <p class="gt-sub">Why rational self-interest is not naive greed, how the Prisoner’s Dilemma applies to machine automation, and why capital needs a universal dividend.</p>
+    </header>
+
+    <div id="gt-content"></div>
+
+    <footer class="footer-links">
+      <a href="rules.html">📜 Quora Discussion Ground Rules</a>
+      <a href="index.html">📚 The Robot Dividend Series</a>
+      <span style="color: var(--reader-muted, #64748b);">© 2026 Rob Brown</span>
+    </footer>
+  </div>
+
+  <script>
+    // Theme setup
+    (function() {
+      var saved = localStorage.getItem("robot_dividend_theme");
+      if (saved === "dark" || (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.body.classList.add("theme-dark");
+      }
+    })();
+
+    function toggleTheme() {
+      var isDark = document.body.classList.toggle("theme-dark");
+      localStorage.setItem("robot_dividend_theme", isDark ? "dark" : "light");
+    }
+
+    function renderGameTheory() {
+      var container = document.getElementById("gt-content");
+      var manifest = GameTheoryContent.manifest();
+
+      manifest.forEach(function(sec) {
+        var h2 = document.createElement("h2");
+        h2.className = "gt-section-title";
+        h2.textContent = sec.title;
+        container.appendChild(h2);
+
+        sec.blocks.forEach(function(b) {
+          var blockId = b.id;
+          if (b.type === "sidebar") {
+            var card = document.createElement("aside");
+            card.className = "gt-callout";
+            card.id = blockId;
+            var text = GameTheoryContent[blockId]()[0];
+            card.innerHTML = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+            container.appendChild(card);
+          } else {
+            var raw = GameTheoryContent[blockId]()[0];
+            var paras = raw.split(/\n\n+/);
+            paras.forEach(function(p) {
+              var pEl = document.createElement("p");
+              pEl.className = "gt-block-p";
+              pEl.id = blockId;
+              pEl.innerHTML = p.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+                               .replace(/\*(.*?)\*/g, "<em>$1</em>")
+                               .replace(/\[(.*?)\]\((.*?)\)/g, "<a href='$2' style='color:var(--reader-accent);font-weight:700;'>$1</a>");
+              container.appendChild(pEl);
+            });
+          }
+        });
+      });
+    }
+
+    function handleHashHighlight() {
+      var hash = window.location.hash ? window.location.hash.substring(1) : "";
+      if (!hash) return;
+      var target = document.getElementById(hash);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+        target.classList.add("target-highlight-active");
+        setTimeout(function() {
+          target.classList.remove("target-highlight-active");
+        }, 3500);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      renderGameTheory();
+      handleHashHighlight();
+      window.addEventListener("hashchange", handleHashHighlight);
+    });
+  </script>
+</body>
+</html>

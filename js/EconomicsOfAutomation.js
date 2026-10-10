@@ -321,271 +321,276 @@ class EconomicsOfAutomation {
   }
 
   renderBlock(blockDef) {
-    const doc = this.getCurrentDoc();
-    const blockId = blockDef.id;
+      const doc = this.getCurrentDoc();
+      const blockId = blockDef.id;
 
-    // Single-Click Copyable Markdown Payload Box (for AI Prompt Rules)
-    if (blockDef.type === "markdown-box") {
-      const rawMarkdown = typeof doc.getMasterMarkdown === "function" ? doc.getMasterMarkdown() : "";
-      const boxWrapper = makeElement("div", { className: "markdown-prompt-container", id: `block-${blockId}` });
+      // Single-Click Copyable Markdown Payload Box (for AI Prompt Rules)
+      if (blockDef.type === "markdown-box") {
+        const rawMarkdown = typeof doc.getMasterMarkdown === "function" ? doc.getMasterMarkdown() : "";
+        const boxWrapper = makeElement("div", { className: "markdown-prompt-container", id: `block-${blockId}` });
 
-      const topBar = makeElement("div", { className: "markdown-prompt-topbar" }, [
-        makeElement("div", { className: "markdown-prompt-title" }, [
-          makeElement("span", {}, "📄"),
-          makeElement("span", {}, blockDef.title || "Copy-Paste Master Prompt")
-        ]),
-        makeElement("button", {
-          className: "copy-prompt-btn primary",
+        const topBar = makeElement("div", { className: "markdown-prompt-topbar" }, [
+          makeElement("div", { className: "markdown-prompt-title" }, [
+            makeElement("span", {}, "📄"),
+            makeElement("span", {}, blockDef.title || "Copy-Paste Master Prompt")
+          ]),
+          makeElement("button", {
+            className: "copy-prompt-btn primary",
+            onclick: (e) => {
+              const btn = e.currentTarget;
+              navigator.clipboard.writeText(rawMarkdown).then(() => {
+                btn.textContent = "✓ Copied to Clipboard!";
+                setTimeout(() => { btn.textContent = "📋 Copy Master Markdown Prompt"; }, 2500);
+                if (typeof UITools !== "undefined" && typeof UITools.showHUD === "function") {
+                  UITools.showHUD({
+                    html: `<div style="padding:10px 16px;background:#065f46;color:#ecfdf5;border:1px solid #10b981;border-radius:8px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;"><span>✓</span><span>Master Markdown Prompt copied to clipboard!</span></div>`,
+                    position: "bottom-right",
+                    autoClose: 2400
+                  });
+                }
+              });
+            }
+          }, "📋 Copy Master Markdown Prompt")
+        ]);
+
+        const codeArea = makeElement("textarea", {
+          className: "markdown-prompt-textarea",
+          readonly: true,
+          spellcheck: false
+        });
+        codeArea.value = rawMarkdown;
+
+        boxWrapper.appendChild(topBar);
+        boxWrapper.appendChild(codeArea);
+        return boxWrapper;
+      }
+
+      // Interactive Custom Component Block (e.g. TaxChart, DoomerDebate)
+      if (blockDef.type === "component") {
+        const mountId = `comp-mount-${blockId}`;
+        const wrapper = makeElement("div", {
+          className: "interactive-component-wrap",
+          id: mountId
+        });
+
+        const compClass = globalThis[blockDef.component];
+        if (compClass && typeof compClass.render === "function") {
+          setTimeout(() => {
+            const el = document.getElementById(mountId);
+            if (el) compClass.render(el);
+          }, 0);
+        }
+        return wrapper;
+      }
+
+      // Sidebar / Callout Note Box with Multi-Paragraph & Ordered List Parsing
+      if (blockDef.type === "sidebar" || blockDef.type === "callout") {
+        const variants = (typeof doc[blockId] === "function") ? doc[blockId]() : ["[Missing block]"];
+        const variantKey = `${this.currentPageId}:${blockId}`;
+        const currentIdx = this.activeVariants[variantKey] || 0;
+        const currentText = variants[currentIdx] || variants[0];
+
+        const copyLinkBtn = makeElement("button", {
+          className: "block-share-badge",
+          title: `Copy direct link to #${blockId}`,
           onclick: (e) => {
-            const btn = e.currentTarget;
-            navigator.clipboard.writeText(rawMarkdown).then(() => {
-              btn.textContent = "✓ Copied to Clipboard!";
-              setTimeout(() => { btn.textContent = "📋 Copy Master Markdown Prompt"; }, 2500);
-              if (typeof UITools !== "undefined" && typeof UITools.showHUD === "function") {
-                UITools.showHUD({
-                  html: `<div style="padding:10px 16px;background:#065f46;color:#ecfdf5;border:1px solid #10b981;border-radius:8px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;"><span>✓</span><span>Master Markdown Prompt copied to clipboard!</span></div>`,
-                  position: "bottom-right",
-                  autoClose: 2400
-                });
+            e.stopPropagation();
+            this.copyAnchorLink(this.currentPageId, blockId, e.currentTarget);
+          }
+        }, "🔗 Copy Link");
+
+        const bodyContainer = makeElement("div", { className: "block-sidebar-body" });
+
+        // Multi-paragraph and list parser for sidebars
+        const paragraphs = currentText.split(/\n\s*\n/);
+        let activeList = null;
+
+        paragraphs.forEach((pText) => {
+          const trimmed = pText.trim();
+          if (!trimmed) return;
+
+          // Check if paragraph starts with a list item or contains list items
+          if (/^\d+\.\s+/.test(trimmed) || /\n\d+\.\s+/.test(trimmed)) {
+            const lines = trimmed.split("\n");
+            lines.forEach((l) => {
+              const lTrim = l.trim();
+              if (!lTrim) return;
+              const m = lTrim.match(/^(\d+)\.\s+(.*)$/);
+              if (m) {
+                if (!activeList) {
+                  activeList = makeElement("ol", { className: "sidebar-ol" });
+                  bodyContainer.appendChild(activeList);
+                }
+                const li = makeElement("li", { value: parseInt(m[1], 10) }, this.formatInlineText(m[2]));
+                activeList.appendChild(li);
+              } else {
+                if (activeList && activeList.lastChild) {
+                  activeList.lastChild.appendChild(document.createTextNode(" "));
+                  activeList.lastChild.appendChild(this.formatInlineText(lTrim));
+                } else {
+                  activeList = null;
+                  bodyContainer.appendChild(makeElement("p", {}, this.formatInlineText(lTrim)));
+                }
               }
             });
+          } else {
+            activeList = null;
+            bodyContainer.appendChild(makeElement("p", {}, this.formatInlineText(trimmed)));
           }
-        }, "📋 Copy Master Markdown Prompt")
-      ]);
+        });
 
-      const codeArea = makeElement("textarea", {
-        className: "markdown-prompt-textarea",
-        readonly: true,
-        spellcheck: false
-      });
-      codeArea.value = rawMarkdown;
-
-      boxWrapper.appendChild(topBar);
-      boxWrapper.appendChild(codeArea);
-      return boxWrapper;
-    }
-
-    // Interactive Custom Component Block (e.g. TaxChart, DoomerDebate)
-    if (blockDef.type === "component") {
-      const mountId = `comp-mount-${blockId}`;
-      const wrapper = makeElement("div", {
-        className: "interactive-component-wrap",
-        id: mountId
-      });
-
-      const compClass = globalThis[blockDef.component];
-      if (compClass && typeof compClass.render === "function") {
-        setTimeout(() => {
-          const el = document.getElementById(mountId);
-          if (el) compClass.render(el);
-        }, 0);
+        return makeElement("aside", {
+          className: "block-sidebar",
+          id: `block-${blockId}`,
+          "data-block-id": blockId
+        }, [
+          ["div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" } }, [
+            blockDef.kicker ? ["div", { className: "block-sidebar-kicker" }, blockDef.kicker] : makeElement("div"),
+            copyLinkBtn
+          ]],
+          blockDef.title ? ["div", { className: "block-sidebar-title" }, blockDef.title] : null,
+          bodyContainer
+        ]);
       }
-      return wrapper;
-    }
 
-    // Sidebar / Callout Note Box with Multi-Paragraph & Ordered List Parsing
-    if (blockDef.type === "sidebar" || blockDef.type === "callout") {
+      // Single Image
+      if (blockDef.type === "image") {
+        const card = this.createThumbCard(blockDef.file);
+        return makeElement("div", { className: "image-single-wrap", id: `block-${blockId}` }, [card]);
+      }
+
+      // Grouped Images
+      if (blockDef.type === "image-group") {
+        const isGrid4 = blockDef.layout === "grid-4";
+        const containerClass = isGrid4 ? "image-grid-four" : "image-row-pair";
+        const cards = (blockDef.images || []).map((imgDef) => this.createThumbCard(imgDef.file));
+        return makeElement("div", { className: containerClass, id: `block-${blockId}` }, cards);
+      }
+
+      // Regular Paragraphs & Multi-Line Blocks
       const variants = (typeof doc[blockId] === "function") ? doc[blockId]() : ["[Missing block]"];
       const variantKey = `${this.currentPageId}:${blockId}`;
       const currentIdx = this.activeVariants[variantKey] || 0;
       const currentText = variants[currentIdx] || variants[0];
 
-      const copyLinkBtn = makeElement("button", {
-        className: "block-share-badge",
-        title: `Copy direct link to #${blockId}`,
+      const wrapper = makeElement("div", {
+        className: `block-wrapper ${this.selectedBlockId === blockId ? "block-selected" : ""}`,
+        id: `block-${blockId}`,
+        "data-block-id": blockId
+      });
+
+      let contentEl;
+      if (blockDef.type === "quote") {
+        contentEl = makeElement("blockquote", { className: "block-quote" }, this.formatInlineText(currentText));
+      } else {
+        if (/\n\d+\.\s/.test(currentText) || /^\d+\.\s/.test(currentText)) {
+          contentEl = makeElement("div", { className: "block-text-multi" });
+          const lines = currentText.split("\n");
+          let currentParagraph = [];
+          let currentList = null;
+
+          const flushParagraph = () => {
+            if (currentParagraph.length > 0) {
+              const pText = currentParagraph.join(" ").trim();
+              if (pText) contentEl.appendChild(makeElement("p", { className: "block-p" }, this.formatInlineText(pText)));
+              currentParagraph = [];
+            }
+          };
+
+          const flushList = () => {
+            if (currentList) {
+              contentEl.appendChild(currentList);
+              currentList = null;
+            }
+          };
+
+          lines.forEach((line) => {
+            const trimmed = line.trim();
+            if (!trimmed) {
+              flushParagraph();
+              flushList();
+              return;
+            }
+
+            const listMatch = trimmed.match(/^(\d+)\.\s+(.*)$/);
+            if (listMatch) {
+              flushParagraph();
+              if (!currentList) currentList = makeElement("ol", { className: "block-ol" });
+              currentList.appendChild(makeElement("li", { value: parseInt(listMatch[1], 10) }, this.formatInlineText(listMatch[2])));
+            } else {
+              flushList();
+              currentParagraph.push(trimmed);
+            }
+          });
+
+          flushParagraph();
+          flushList();
+        } else if (currentText.includes("\n\n")) {
+          contentEl = makeElement("div", { className: "block-text-multi" });
+          const parts = currentText.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+          parts.forEach((p) => {
+            contentEl.appendChild(makeElement("p", { className: "block-p" }, this.formatInlineText(p)));
+          });
+        } else {
+          contentEl = makeElement("p", { className: "block-p" }, this.formatInlineText(currentText));
+        }
+      }
+
+      wrapper.appendChild(contentEl);
+
+      // Gutter Controls
+      const gutterControls = makeElement("div", { className: "block-gutter-controls" });
+
+      if (variants.length > 1) {
+        const vCol = makeElement("div", { className: "gutter-v-col" });
+        variants.forEach((_, idx) => {
+          const badge = makeElement("button", {
+            className: `gutter-v-badge ${idx === currentIdx ? "active" : ""}`,
+            title: `Switch to variant ${idx + 1}`,
+            onclick: (e) => {
+              e.stopPropagation();
+              this.activeVariants[variantKey] = idx;
+              this.renderArticle();
+              if (this.assistantDialog && this.assistantDialog.element?.isConnected) {
+                this.updateAssistant(blockId);
+              }
+            }
+          }, `${idx + 1}`);
+          vCol.appendChild(badge);
+        });
+        gutterControls.appendChild(vCol);
+      }
+
+      const shareBtn = makeElement("button", {
+        className: "gutter-inspect-btn",
+        title: `Copy shareable link for #${blockId}`,
         onclick: (e) => {
           e.stopPropagation();
           this.copyAnchorLink(this.currentPageId, blockId, e.currentTarget);
         }
-      }, "🔗 Copy Link");
+      }, "🔗");
+      gutterControls.appendChild(shareBtn);
 
-      const bodyContainer = makeElement("div", { className: "block-sidebar-body" });
-
-      // Multi-paragraph and list parser for sidebars
-      const paragraphs = currentText.split(/\n\s*\n/);
-      paragraphs.forEach((pText) => {
-        const trimmed = pText.trim();
-        if (!trimmed) return;
-
-        // Check if this paragraph contains a numbered list
-        if (/\n\d+\.\s/.test(trimmed) || /^\d+\.\s/.test(trimmed)) {
-          const lines = trimmed.split("\n");
-          let listEl = null;
-
-          lines.forEach((l) => {
-            const lTrim = l.trim();
-            const listMatch = lTrim.match(/^(\d+)\.\s+(.*)$/);
-            if (listMatch) {
-              if (!listEl) listEl = makeElement("ol", { className: "sidebar-ol" });
-              listEl.appendChild(makeElement("li", {}, this.formatInlineText(listMatch[2])));
-            } else if (lTrim) {
-              if (listEl) {
-                bodyContainer.appendChild(listEl);
-                listEl = null;
-              }
-              bodyContainer.appendChild(makeElement("p", {}, this.formatInlineText(lTrim)));
-            }
-          });
-
-          if (listEl) bodyContainer.appendChild(listEl);
-        } else {
-          // Standalone paragraph
-          bodyContainer.appendChild(makeElement("p", {}, this.formatInlineText(trimmed)));
+      const inspectBtn = makeElement("button", {
+        className: "gutter-inspect-btn",
+        title: `Edit & AI studio for #${blockId}`,
+        onclick: (e) => {
+          e.stopPropagation();
+          this.selectBlock(blockId, true);
         }
-      });
+      }, "✎");
+      gutterControls.appendChild(inspectBtn);
 
-      return makeElement("aside", {
-        className: "block-sidebar",
-        id: `block-${blockId}`,
-        "data-block-id": blockId
-      }, [
-        ["div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" } }, [
-          blockDef.kicker ? ["div", { className: "block-sidebar-kicker" }, blockDef.kicker] : makeElement("div"),
-          copyLinkBtn
-        ]],
-        blockDef.title ? ["div", { className: "block-sidebar-title" }, blockDef.title] : null,
-        bodyContainer
-      ]);
+      const idTip = makeElement("span", {
+        className: "gutter-id-tip"
+      }, `#${blockId}`);
+      gutterControls.appendChild(idTip);
+
+      wrapper.appendChild(gutterControls);
+      wrapper.addEventListener("click", () => this.selectBlock(blockId, true));
+
+      return wrapper;
     }
-
-    // Single Image
-    if (blockDef.type === "image") {
-      const card = this.createThumbCard(blockDef.file);
-      return makeElement("div", { className: "image-single-wrap", id: `block-${blockId}` }, [card]);
-    }
-
-    // Grouped Images
-    if (blockDef.type === "image-group") {
-      const isGrid4 = blockDef.layout === "grid-4";
-      const containerClass = isGrid4 ? "image-grid-four" : "image-row-pair";
-      const cards = (blockDef.images || []).map((imgDef) => this.createThumbCard(imgDef.file));
-      return makeElement("div", { className: containerClass, id: `block-${blockId}` }, cards);
-    }
-
-    // Regular Paragraphs & Multi-Line Blocks
-    const variants = (typeof doc[blockId] === "function") ? doc[blockId]() : ["[Missing block]"];
-    const variantKey = `${this.currentPageId}:${blockId}`;
-    const currentIdx = this.activeVariants[variantKey] || 0;
-    const currentText = variants[currentIdx] || variants[0];
-
-    const wrapper = makeElement("div", {
-      className: `block-wrapper ${this.selectedBlockId === blockId ? "block-selected" : ""}`,
-      id: `block-${blockId}`,
-      "data-block-id": blockId
-    });
-
-    let contentEl;
-    if (blockDef.type === "quote") {
-      contentEl = makeElement("blockquote", { className: "block-quote" }, this.formatInlineText(currentText));
-    } else {
-      if (/\n\d+\.\s/.test(currentText) || /^\d+\.\s/.test(currentText)) {
-        contentEl = makeElement("div", { className: "block-text-multi" });
-        const lines = currentText.split("\n");
-        let currentParagraph = [];
-        let currentList = null;
-
-        const flushParagraph = () => {
-          if (currentParagraph.length > 0) {
-            const pText = currentParagraph.join(" ").trim();
-            if (pText) contentEl.appendChild(makeElement("p", { className: "block-p" }, this.formatInlineText(pText)));
-            currentParagraph = [];
-          }
-        };
-
-        const flushList = () => {
-          if (currentList) {
-            contentEl.appendChild(currentList);
-            currentList = null;
-          }
-        };
-
-        lines.forEach((line) => {
-          const trimmed = line.trim();
-          if (!trimmed) {
-            flushParagraph();
-            flushList();
-            return;
-          }
-
-          const listMatch = trimmed.match(/^(\d+)\.\s+(.*)$/);
-          if (listMatch) {
-            flushParagraph();
-            if (!currentList) currentList = makeElement("ol", { className: "block-ol" });
-            currentList.appendChild(makeElement("li", {}, this.formatInlineText(listMatch[2])));
-          } else {
-            flushList();
-            currentParagraph.push(trimmed);
-          }
-        });
-
-        flushParagraph();
-        flushList();
-      } else if (currentText.includes("\n\n")) {
-        contentEl = makeElement("div", { className: "block-text-multi" });
-        const parts = currentText.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
-        parts.forEach((p) => {
-          contentEl.appendChild(makeElement("p", { className: "block-p" }, this.formatInlineText(p)));
-        });
-      } else {
-        contentEl = makeElement("p", { className: "block-p" }, this.formatInlineText(currentText));
-      }
-    }
-
-    wrapper.appendChild(contentEl);
-
-    // Gutter Controls
-    const gutterControls = makeElement("div", { className: "block-gutter-controls" });
-
-    if (variants.length > 1) {
-      const vCol = makeElement("div", { className: "gutter-v-col" });
-      variants.forEach((_, idx) => {
-        const badge = makeElement("button", {
-          className: `gutter-v-badge ${idx === currentIdx ? "active" : ""}`,
-          title: `Switch to variant ${idx + 1}`,
-          onclick: (e) => {
-            e.stopPropagation();
-            this.activeVariants[variantKey] = idx;
-            this.renderArticle();
-            if (this.assistantDialog && this.assistantDialog.element?.isConnected) {
-              this.updateAssistant(blockId);
-            }
-          }
-        }, `${idx + 1}`);
-        vCol.appendChild(badge);
-      });
-      gutterControls.appendChild(vCol);
-    }
-
-    const shareBtn = makeElement("button", {
-      className: "gutter-inspect-btn",
-      title: `Copy shareable link for #${blockId}`,
-      onclick: (e) => {
-        e.stopPropagation();
-        this.copyAnchorLink(this.currentPageId, blockId, e.currentTarget);
-      }
-    }, "🔗");
-    gutterControls.appendChild(shareBtn);
-
-    const inspectBtn = makeElement("button", {
-      className: "gutter-inspect-btn",
-      title: `Edit & AI studio for #${blockId}`,
-      onclick: (e) => {
-        e.stopPropagation();
-        this.selectBlock(blockId, true);
-      }
-    }, "✎");
-    gutterControls.appendChild(inspectBtn);
-
-    const idTip = makeElement("span", {
-      className: "gutter-id-tip"
-    }, `#${blockId}`);
-    gutterControls.appendChild(idTip);
-
-    wrapper.appendChild(gutterControls);
-    wrapper.addEventListener("click", () => this.selectBlock(blockId, true));
-
-    return wrapper;
-  }
   selectBlock(blockId, openDialog = false) {
     this.selectedBlockId = blockId;
     document.querySelectorAll(".block-wrapper").forEach((el) => el.classList.remove("block-selected"));

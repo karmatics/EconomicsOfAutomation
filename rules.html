@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Ground Rules for Replying on Quora • The Robot Dividend</title>
+  <link rel="stylesheet" href="css/robotDividend.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      background-color: var(--reader-bg, #faf7f2);
+      color: var(--reader-text, #1f242e);
+      font-family: var(--reader-font-body, 'Newsreader', Georgia, serif);
+      line-height: 1.7;
+    }
+    body.theme-dark {
+      background-color: #0f141c;
+      color: #e2e8f0;
+    }
+    .rules-page-shell {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 40px 20px 100px;
+    }
+    .rules-nav-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 36px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--reader-border, #e6dfd5);
+      font-family: var(--reader-font-sans, system-ui, sans-serif);
+      font-size: 0.82rem;
+    }
+    .rules-nav-top a {
+      color: var(--reader-accent, #2563eb);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .rules-nav-top a:hover {
+      text-decoration: underline;
+    }
+    .rules-theme-btn {
+      background: var(--reader-surface, #ffffff);
+      border: 1px solid var(--reader-border, #e6dfd5);
+      padding: 4px 10px;
+      border-radius: 16px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .rules-header {
+      margin-bottom: 32px;
+    }
+    .rules-kicker {
+      font-family: var(--reader-font-sans, system-ui, sans-serif);
+      font-size: 0.74rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--reader-accent, #2563eb);
+      margin-bottom: 6px;
+    }
+    .rules-title {
+      font-family: var(--reader-font-sans, system-ui, sans-serif);
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+    .rules-sub {
+      font-size: 1.12rem;
+      font-style: italic;
+      color: var(--reader-text-subtle, #475569);
+    }
+    /* Rule Card */
+    .rule-card {
+      margin: 28px 0;
+      padding: 22px 24px;
+      background: var(--reader-card-bg, #f3efe7);
+      border-left: 4px solid var(--reader-accent, #2563eb);
+      border-top: 1px solid var(--reader-border, #e6dfd5);
+      border-right: 1px solid var(--reader-border, #e6dfd5);
+      border-bottom: 1px solid var(--reader-border, #e6dfd5);
+      border-radius: 0 10px 10px 0;
+      transition: all 0.3s ease;
+    }
+    .rule-kicker {
+      font-family: var(--reader-font-sans, system-ui, sans-serif);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--reader-accent, #2563eb);
+      margin-bottom: 4px;
+    }
+    .rule-title {
+      font-family: var(--reader-font-sans, system-ui, sans-serif);
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    .rule-body {
+      font-size: 1.08rem;
+      line-height: 1.75;
+      color: var(--reader-text-subtle, #475569);
+    }
+    .rule-body strong {
+      color: var(--reader-text, #1f242e);
+    }
+    /* Clean Sub-OL formatting for Rule 2 subsections */
+    .rule-sub-ol {
+      margin: 14px 0 14px 22px;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .rule-sub-ol li {
+      padding-left: 4px;
+      line-height: 1.7;
+    }
+    .rule-sub-ol li::marker {
+      font-family: var(--reader-font-sans, system-ui, sans-serif);
+      font-weight: 800;
+      color: var(--reader-accent, #2563eb);
+    }
+    .rule-body p + p {
+      margin-top: 12px;
+    }
+    /* Dynamic Fading Highlight */
+    .target-highlight-active {
+      box-shadow: 0 0 0 3px #f59e0b, 0 8px 24px rgba(245, 158, 11, 0.35) !important;
+      border-left-color: #f59e0b !important;
+      transition: box-shadow 0.8s ease, border-color 0.8s ease;
+    }
+    /* Author Tool Box at Bottom */
+    .author-tool-box {
+      margin-top: 60px;
+      padding: 20px;
+      background: var(--reader-card-bg, #f3efe7);
+      border: 1px dashed var(--reader-border, #e6dfd5);
+      border-radius: 12px;
+      font-family: var(--reader-font-sans, system-ui, sans-serif);
+    }
+    .author-tool-hdr {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .author-tool-lbl {
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--reader-muted, #64748b);
+    }
+    .blurb-controls {
+      display: flex;
+      gap: 8px;
+    }
+    .blurb-btn {
+      background: var(--reader-surface, #ffffff);
+      border: 1px solid var(--reader-border, #e6dfd5);
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .blurb-btn.active {
+      background: var(--reader-accent, #2563eb);
+      color: #ffffff;
+      border-color: var(--reader-accent, #2563eb);
+    }
+    .blurb-copy-act {
+      background: var(--reader-accent, #2563eb);
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .blurb-copy-act:hover {
+      filter: brightness(1.1);
+    }
+    .blurb-text-area {
+      width: 100%;
+      height: 84px;
+      background: var(--reader-surface, #ffffff);
+      border: 1px solid var(--reader-border, #e6dfd5);
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-family: monospace;
+      font-size: 0.76rem;
+      line-height: 1.45;
+      color: var(--reader-text, #1f242e);
+      resize: none;
+      outline: none;
+    }
+    .footer-links {
+      margin-top: 36px;
+      padding-top: 24px;
+      border-top: 1px solid var(--reader-border, #e6dfd5);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-family: var(--reader-font-sans, system-ui, sans-serif);
+      font-size: 0.82rem;
+    }
+    .footer-links a {
+      color: var(--reader-accent, #2563eb);
+      text-decoration: none;
+      font-weight: 700;
+    }
+  </style>
+  <script src="js/RulesContent.js"></script>
+</head>
+<body>
+  <div class="rules-page-shell">
+    <nav class="rules-nav-top">
+      <a href="index.html">← The Robot Dividend Series</a>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <a href="gametheory.html" style="font-weight: 600;">Game Theory Primer →</a>
+        <button class="rules-theme-btn" id="theme-btn" onclick="toggleTheme()">🌓</button>
+      </div>
+    </nav>
+
+    <header class="rules-header">
+      <div class="rules-kicker">Quora Discussion Standards</div>
+      <h1 class="rules-title">Ground Rules for Replying</h1>
+      <p class="rules-sub">Basic expectations for fair discussion, rational game theory, and why bad-faith comments get removed.</p>
+    </header>
+
+    <div id="rules-content"></div>
+
+    <!-- Bottom Author Tool Box for Quora Blurbs -->
+    <section class="author-tool-box">
+      <div class="author-tool-hdr">
+        <span class="author-tool-lbl">📋 Author Tool: Copyable Blurb for Quora Posts</span>
+        <div class="blurb-controls">
+          <button class="blurb-btn active" id="btn-blurb-compact" onclick="setBlurbMode('compact')">Short (2-Line)</button>
+          <button class="blurb-btn" id="btn-blurb-detailed" onclick="setBlurbMode('detailed')">Detailed (4-Point)</button>
+          <button class="blurb-copy-act" id="btn-copy-act" onclick="copyBlurb()">Copy Text</button>
+        </div>
+      </div>
+      <textarea id="blurb-text" class="blurb-text-area" readonly spellcheck="false"></textarea>
+    </section>
+
+    <footer class="footer-links">
+      <a href="index.html">📚 The Robot Dividend Series</a>
+      <a href="gametheory.html">⚖️ Game Theory for Automation</a>
+      <span style="color: var(--reader-muted, #64748b);">© 2026 Rob Brown</span>
+    </footer>
+  </div>
+
+  <script>
+    // Theme persistence
+    (function() {
+      var saved = localStorage.getItem("robot_dividend_theme");
+      if (saved === "dark" || (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.body.classList.add("theme-dark");
+      }
+    })();
+
+    function toggleTheme() {
+      var isDark = document.body.classList.toggle("theme-dark");
+      localStorage.setItem("robot_dividend_theme", isDark ? "dark" : "light");
+    }
+
+    // Blurb generator view
+    var currentBlurbMode = "compact";
+    function updateBlurbView() {
+      var blurbs = RulesContent.getQuoraBlurbs();
+      var textarea = document.getElementById("blurb-text");
+      textarea.value = blurbs[currentBlurbMode];
+      document.getElementById("btn-blurb-compact").classList.toggle("active", currentBlurbMode === "compact");
+      document.getElementById("btn-blurb-detailed").classList.toggle("active", currentBlurbMode === "detailed");
+      textarea.style.height = currentBlurbMode === "compact" ? "78px" : "130px";
+    }
+
+    function setBlurbMode(mode) {
+      currentBlurbMode = mode;
+      updateBlurbView();
+    }
+
+    function copyBlurb() {
+      var textarea = document.getElementById("blurb-text");
+      textarea.select();
+      navigator.clipboard.writeText(textarea.value).then(function() {
+        var btn = document.getElementById("btn-copy-act");
+        var orig = btn.textContent;
+        btn.textContent = "✓ Copied!";
+        setTimeout(function() { btn.textContent = orig; }, 2000);
+      });
+    }
+
+    // Helper to format inline markdown
+    function formatText(str) {
+      return str.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+                .replace(/\*(.*?)\*/g, "<em>$1</em>")
+                .replace(/\[(.*?)\]\((.*?)\)/g, "<a href='$2' style='color:var(--reader-accent);font-weight:700;'>$1</a>");
+    }
+
+    // Render rule cards with robust list parsing
+    function renderContent() {
+      var container = document.getElementById("rules-content");
+      container.innerHTML = "";
+
+      var introP = document.createElement("div");
+      introP.style.fontSize = "1.2rem";
+      introP.style.lineHeight = "1.85";
+      introP.style.marginBottom = "28px";
+      var introParas = RulesContent.p_quora_intro()[0].split(/\n\n+/);
+      introParas.forEach(function(p) {
+        var pEl = document.createElement("p");
+        pEl.style.marginBottom = "16px";
+        pEl.innerHTML = formatText(p);
+        introP.appendChild(pEl);
+      });
+      container.appendChild(introP);
+
+      var sections = [
+        { id: "mirror", kicker: "Rule 1 • The Mirror Test", title: "What Would You Do in Their Position?", fn: RulesContent.rule_mirror },
+        { id: "gametheory", kicker: "Rule 2 • Game Theory & The Law", title: "Paying Taxes vs. Supporting the Rules", fn: RulesContent.rule_gametheory },
+        { id: "sandbox", kicker: "Rule 3 • Respect the Sandbox", title: "Don't Break the Thought Experiment", fn: RulesContent.rule_sandbox },
+        { id: "civility", kicker: "Rule 4 • Civility & Substance", title: "Critique the Mechanics, Not the Person", fn: RulesContent.rule_civility }
+      ];
+
+      sections.forEach(function(s) {
+        var card = document.createElement("article");
+        card.className = "rule-card";
+        card.id = s.id;
+
+        var k = document.createElement("div");
+        k.className = "rule-kicker";
+        k.textContent = s.kicker;
+        card.appendChild(k);
+
+        var t = document.createElement("h2");
+        t.className = "rule-title";
+        t.textContent = s.title;
+        card.appendChild(t);
+
+        var body = document.createElement("div");
+        body.className = "rule-body";
+        var rawText = s.fn()[0];
+        var paras = rawText.split(/\n\n+/);
+        var currentOl = null;
+
+        paras.forEach(function(p) {
+          var trimmed = p.trim();
+          var match = trimmed.match(/^(\d+)\.\s+([\s\S]+)$/);
+          if (match) {
+            if (!currentOl) {
+              currentOl = document.createElement("ol");
+              currentOl.className = "rule-sub-ol";
+              body.appendChild(currentOl);
+            }
+            var li = document.createElement("li");
+            li.innerHTML = formatText(match[2]);
+            currentOl.appendChild(li);
+          } else {
+            currentOl = null;
+            var pEl = document.createElement("p");
+            pEl.innerHTML = formatText(trimmed);
+            body.appendChild(pEl);
+          }
+        });
+
+        card.appendChild(body);
+        container.appendChild(card);
+      });
+
+      var closingP = document.createElement("p");
+      closingP.style.fontSize = "1.18rem";
+      closingP.style.marginTop = "32px";
+      closingP.style.lineHeight = "1.8";
+      closingP.innerHTML = formatText(RulesContent.p_quora_closing()[0]);
+      container.appendChild(closingP);
+    }
+
+    // Hash anchor highlighting and auto-fade
+    function handleHashHighlight() {
+      var hash = window.location.hash ? window.location.hash.substring(1) : "";
+      if (!hash) return;
+
+      var target = document.getElementById(hash);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+        target.classList.add("target-highlight-active");
+        setTimeout(function() {
+          target.classList.remove("target-highlight-active");
+        }, 3500);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      updateBlurbView();
+      renderContent();
+      handleHashHighlight();
+      window.addEventListener("hashchange", handleHashHighlight);
+    });
+  </script>
+</body>
+</html>
