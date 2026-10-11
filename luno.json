@@ -1,7 +1,7 @@
 {
   "name": "EconomicsOfAutomation",
-  "version": "1.8.0",
-  "description": "The Robot Dividend & Economics of Automation - Complete Series with Dedicated Standalone Quora Discourse Rules and Game Theory Primer",
+  "version": "1.9.0",
+  "description": "The Robot Dividend & Economics of Automation - Complete Series with Dedicated Standalone Quora Discourse Rules and The Kinetic Illusion",
   "type": "luno-web-app",
   "mainClass": "EconomicsOfAutomation",
   "entrypoint": {
@@ -19,6 +19,7 @@
     "js/ParadigmsContent.js",
     "js/ParadigmsComparisonComponent.js",
     "js/ObjectionsContent.js",
+    "js/KineticContent.js",
     "js/RulesContent.js",
     "js/GameTheoryContent.js",
     "js/AiRulesContent.js",
@@ -31,15 +32,13 @@
   "styles": [
     "css/robotDividend.css"
   ],
-  "processedCountSinceCheckpoint": 26,
-  "lastCheckpointTime": "2026-10-09T22:50:00.000Z",
-  "pendingCheckpointDescription": "Added standalone rules.html and gametheory.html pages",
+  "processedCountSinceCheckpoint": 6,
+  "lastCheckpointTime": "2026-10-10T18:40:00.000Z",
+  "pendingCheckpointDescription": "Added The Kinetic Illusion chapter and separated rules into standalone lightweight page",
   "changedMethods": {
-    "luno.json": "2026-10-09T22:56:26.176Z",
-    "js/RulesContent.js": "2026-10-10T01:54:38.963Z",
-    "js/GameTheoryContent.js": "2026-10-10T01:54:38.963Z",
-    "rules.html": "2026-10-10T01:21:08.212Z",
-    "gametheory.html": "2026-10-10T01:21:08.212Z",
-    "js/EconomicsOfAutomation.js": "2026-10-10T01:26:47.281Z"
+    "luno.json": "2026-10-11T01:49:15.305Z",
+    "js/KineticContent.js": "2026-10-11T02:47:12.586Z",
+    "rules.html": "2026-10-11T01:49:15.305Z",
+    "js/EconomicsOfAutomation.js": "2026-10-11T02:47:12.586Z"
   }
 }

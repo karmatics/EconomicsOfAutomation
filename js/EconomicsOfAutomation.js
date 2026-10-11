@@ -1,325 +1,406 @@
 class EconomicsOfAutomation {
 
   async run(env) {
-    if (!env || !env.container) {
-      throw new Error("[EconomicsOfAutomation] run() requires an environment object with a valid container.");
+      if (!env || !env.container) {
+        throw new Error("[EconomicsOfAutomation] run() requires an environment object with a valid container.");
+      }
+      this.env = env;
+      this.container = env.container;
+      this.activeVariants = {};
+      this.selectedBlockId = null;
+      this.assistantDialog = null;
+
+      // Structured into Core 3-Part Treatise + Targeted Responses
+      this.pages = [
+        // Core 3-Part Spine
+        { id: "dividend", title: "1. The Robot Dividend", group: "core", docClass: () => globalThis.ArticleContent, isMain: true },
+        { id: "colony", title: "2. The 100,000 Colony", group: "core", docClass: () => globalThis.ColonyContent, isMain: true },
+        { id: "earth", title: "3. Earth Transition", group: "core", docClass: () => globalThis.EarthContent, isMain: true },
+
+        // Targeted Responses to Specific Objections
+        { id: "statusquo", title: "The Status Quo Trap", group: "response", docClass: () => globalThis.KineticContent, isMain: true },
+        { id: "doomer", title: "The Doomer Loop", group: "response", docClass: () => globalThis.DoomerContent, isMain: true },
+        { id: "paradigms", title: "The Three Visions", group: "response", docClass: () => globalThis.ParadigmsContent, isMain: true },
+        { id: "objections", title: "The Adversarial Gauntlet", group: "response", docClass: () => globalThis.ObjectionsContent, isMain: true },
+
+        // Reference Directives
+        { id: "ai-rules", title: "AI Prompt Rules", group: "reference", docClass: () => globalThis.AiRulesContent, isMain: false }
+      ];
+
+      // Resolve initial page strictly from URL route if specified; otherwise always start at root "dividend"
+      const parsed = this._parseUrlRoute();
+      const initialPage = (parsed.pageId && this.pages.some((p) => p.id === parsed.pageId)) ? parsed.pageId : "dividend";
+      this.currentPageId = initialPage;
+
+      // Restore preferred theme
+      const savedTheme = localStorage.getItem("robot_dividend_theme") || "light";
+      if (savedTheme === "dark") {
+        document.body.classList.add("theme-dark");
+      } else {
+        document.body.classList.remove("theme-dark");
+      }
+
+      this.initUI();
+      this.renderArticle();
+
+      // Handle direct anchor deep-linking
+      if (parsed.anchorId) {
+        setTimeout(() => this.highlightTargetElement(parsed.anchorId), 300);
+      }
+
+      // Listen to popstate / hashchange for instant deep-linking from shared links
+      window.addEventListener("hashchange", () => this.handleUrlRouting(), { passive: true });
     }
-    this.env = env;
-    this.container = env.container;
-    this.activeVariants = {};
-    this.selectedBlockId = null;
-    this.assistantDialog = null;
-
-    // Supported pages: Main 6 chapters + auxiliary Discourse Rules and AI Directives
-    this.pages = [
-      { id: "dividend", title: "1. The Robot Dividend", docClass: () => globalThis.ArticleContent, isMain: true },
-      { id: "colony", title: "2. The 100,000 Colony", docClass: () => globalThis.ColonyContent, isMain: true },
-      { id: "earth", title: "3. Earth Transition", docClass: () => globalThis.EarthContent, isMain: true },
-      { id: "doomer", title: "4. The Doomer Loop", docClass: () => globalThis.DoomerContent, isMain: true },
-      { id: "paradigms", title: "5. The Three Visions", docClass: () => globalThis.ParadigmsContent, isMain: true },
-      { id: "objections", title: "6. The Adversarial Gauntlet", docClass: () => globalThis.ObjectionsContent, isMain: true },
-      { id: "rules", title: "Discourse Rules", docClass: () => globalThis.RulesContent, isMain: false },
-      { id: "ai-rules", title: "AI Prompt Rules", docClass: () => globalThis.AiRulesContent, isMain: false }
-    ];
-
-    // Resolve initial page from URL hash or query param if present
-    const parsed = this._parseUrlRoute();
-    const initialPage = parsed.pageId || localStorage.getItem("robot_dividend_active_page") || "dividend";
-    this.currentPageId = this.pages.some((p) => p.id === initialPage) ? initialPage : "dividend";
-
-    // Restore preferred theme
-    const savedTheme = localStorage.getItem("robot_dividend_theme") || "light";
-    if (savedTheme === "dark") {
-      document.body.classList.add("theme-dark");
-    } else {
-      document.body.classList.remove("theme-dark");
-    }
-
-    this.initUI();
-    this.renderArticle();
-
-    // Handle direct anchor deep-linking
-    if (parsed.anchorId) {
-      setTimeout(() => this.highlightTargetElement(parsed.anchorId), 300);
-    }
-
-    // Listen to popstate / hashchange for instant deep-linking from shared links
-    window.addEventListener("hashchange", () => this.handleUrlRouting(), { passive: true });
-  }
 
   initUI() {
-    this.container.innerHTML = "";
+      this.container.innerHTML = "";
 
-    // Build Page Switcher Buttons for the main 6 chapters only
-    this.navPageButtons = {};
-    const visiblePages = this.pages.filter(p => p.isMain !== false);
+      // Build Page Switcher Buttons grouped by Core Series vs Targeted Responses
+      this.navPageButtons = {};
+      const visiblePages = this.pages.filter(p => p.isMain !== false);
 
-    const pageTabElements = visiblePages.map((p) => {
-      const btn = makeElement("button", {
-        className: `nav-page-btn ${this.currentPageId === p.id ? "active" : ""}`,
-        title: `Switch to ${p.title}`,
-        onclick: () => this.switchPage(p.id)
-      }, p.title);
-      this.navPageButtons[p.id] = btn;
-      return btn;
-    });
+      const pageTabElements = [];
 
-    this.pageSelector = makeElement("div", { className: "reader-nav-pages" }, pageTabElements);
+      // Core Series Group Header / Badge
+      const coreLabel = makeElement("span", {
+        className: "nav-group-label",
+        style: {
+          fontSize: "0.68rem",
+          fontWeight: "800",
+          textTransform: "uppercase",
+          letterSpacing: "0.08em",
+          color: "var(--reader-accent)",
+          padding: "0 6px",
+          userSelect: "none"
+        }
+      }, "Core Series:");
+      pageTabElements.push(coreLabel);
 
-    // Support mouse-wheel horizontal translation
-    this.pageSelector.addEventListener("wheel", (e) => {
-      if (e.deltaY !== 0) {
-        e.preventDefault();
-        this.pageSelector.scrollLeft += e.deltaY * 1.2;
-        this._updateNavScrollIndicators();
-      }
-    }, { passive: false });
+      visiblePages.filter(p => p.group === "core").forEach((p) => {
+        const btn = makeElement("button", {
+          className: `nav-page-btn ${this.currentPageId === p.id ? "active" : ""}`,
+          title: `Read ${p.title}`,
+          onclick: () => this.switchPage(p.id)
+        }, p.title);
+        this.navPageButtons[p.id] = btn;
+        pageTabElements.push(btn);
+      });
 
-    // Dedicated Scroll Buttons
-    this.navScrollLeftBtn = makeElement("button", {
-      className: "nav-scroll-btn nav-scroll-left",
-      title: "Scroll tabs left",
-      onclick: () => {
-        this.pageSelector.scrollBy({ left: -240, behavior: "smooth" });
-        setTimeout(() => this._updateNavScrollIndicators(), 250);
-      }
-    }, "‹");
+      // Divider
+      pageTabElements.push(makeElement("span", {
+        style: { color: "var(--reader-border)", padding: "0 4px", userSelect: "none" }
+      }, "|"));
 
-    this.navScrollRightBtn = makeElement("button", {
-      className: "nav-scroll-btn nav-scroll-right",
-      title: "Scroll tabs right",
-      onclick: () => {
-        this.pageSelector.scrollBy({ left: 240, behavior: "smooth" });
-        setTimeout(() => this._updateNavScrollIndicators(), 250);
-      }
-    }, "›");
+      // Deep-Dives / Responses Group Header
+      const responsesLabel = makeElement("span", {
+        className: "nav-group-label",
+        style: {
+          fontSize: "0.68rem",
+          fontWeight: "800",
+          textTransform: "uppercase",
+          letterSpacing: "0.08em",
+          color: "var(--reader-muted)",
+          padding: "0 6px",
+          userSelect: "none"
+        }
+      }, "Deep Dives:");
+      pageTabElements.push(responsesLabel);
 
-    this.navCarousel = makeElement("div", { className: "reader-nav-carousel" }, [
-      this.navScrollLeftBtn,
-      this.pageSelector,
-      this.navScrollRightBtn
-    ]);
+      visiblePages.filter(p => p.group === "response").forEach((p) => {
+        const btn = makeElement("button", {
+          className: `nav-page-btn ${this.currentPageId === p.id ? "active" : ""}`,
+          title: `Read ${p.title}`,
+          onclick: () => this.switchPage(p.id)
+        }, p.title);
+        this.navPageButtons[p.id] = btn;
+        pageTabElements.push(btn);
+      });
 
-    // Responsive Chapter Dropdown Selector
-    const selectOptions = this.pages.map((p) => {
-      return makeElement("option", {
-        value: p.id,
-        selected: this.currentPageId === p.id
-      }, p.title);
-    });
+      this.pageSelector = makeElement("div", { className: "reader-nav-pages" }, pageTabElements);
 
-    this.navSelect = makeElement("select", {
-      className: "nav-chapter-select",
-      "aria-label": "Choose Chapter",
-      onchange: (e) => this.switchPage(e.target.value)
-    }, selectOptions);
+      // Support mouse-wheel horizontal translation
+      this.pageSelector.addEventListener("wheel", (e) => {
+        if (e.deltaY !== 0) {
+          e.preventDefault();
+          this.pageSelector.scrollLeft += e.deltaY * 1.2;
+          this._updateNavScrollIndicators();
+        }
+      }, { passive: false });
 
-    // Floating Navigation Bar
-    this.navBar = makeElement("nav", { className: "reader-nav-bar" }, [
-      ["div", { className: "reader-nav-brand", onclick: () => this.switchPage("dividend") }, [
-        ["span", { className: "nav-brand-icon" }, "⚡"],
-        ["span", { className: "nav-brand-text" }, "Economics of Automation"]
-      ]],
-      this.navCarousel,
-      this.navSelect,
-      ["div", { className: "reader-nav-actions" }, [
-        ["button", {
-          className: "nav-btn theme-toggle-btn",
-          title: "Toggle Light / Dark mode",
-          onclick: () => this.toggleTheme()
-        }, "🌓"],
-        ["button", {
-          className: "nav-btn primary export-btn",
-          title: "Export series as Markdown or Formatted Text",
-          onclick: () => this.showExportDialog()
-        }, [
-          ["span", {}, "📤"],
-          ["span", { className: "btn-label-long" }, "Export"]
+      // Dedicated Scroll Buttons
+      this.navScrollLeftBtn = makeElement("button", {
+        className: "nav-scroll-btn nav-scroll-left",
+        title: "Scroll tabs left",
+        onclick: () => {
+          this.pageSelector.scrollBy({ left: -240, behavior: "smooth" });
+          setTimeout(() => this._updateNavScrollIndicators(), 250);
+        }
+      }, "‹");
+
+      this.navScrollRightBtn = makeElement("button", {
+        className: "nav-scroll-btn nav-scroll-right",
+        title: "Scroll tabs right",
+        onclick: () => {
+          this.pageSelector.scrollBy({ left: 240, behavior: "smooth" });
+          setTimeout(() => this._updateNavScrollIndicators(), 250);
+        }
+      }, "›");
+
+      this.navCarousel = makeElement("div", { className: "reader-nav-carousel" }, [
+        this.navScrollLeftBtn,
+        this.pageSelector,
+        this.navScrollRightBtn
+      ]);
+
+      // Responsive Dropdown with Group Optgroups
+      const selectEl = makeElement("select", {
+        className: "nav-chapter-select",
+        "aria-label": "Choose Chapter or Deep Dive",
+        onchange: (e) => this.switchPage(e.target.value)
+      });
+
+      const coreOptGroup = makeElement("optgroup", { label: "The Core Series" });
+      visiblePages.filter(p => p.group === "core").forEach(p => {
+        coreOptGroup.appendChild(makeElement("option", {
+          value: p.id,
+          selected: this.currentPageId === p.id
+        }, p.title));
+      });
+      selectEl.appendChild(coreOptGroup);
+
+      const respOptGroup = makeElement("optgroup", { label: "Responses to Common Objections" });
+      visiblePages.filter(p => p.group === "response").forEach(p => {
+        respOptGroup.appendChild(makeElement("option", {
+          value: p.id,
+          selected: this.currentPageId === p.id
+        }, p.title));
+      });
+      selectEl.appendChild(respOptGroup);
+
+      this.navSelect = selectEl;
+
+      // Floating Navigation Bar
+      this.navBar = makeElement("nav", { className: "reader-nav-bar" }, [
+        ["div", { className: "reader-nav-brand", onclick: () => this.switchPage("dividend") }, [
+          ["span", { className: "nav-brand-icon" }, "⚡"],
+          ["span", { className: "nav-brand-text" }, "Economics of Automation"]
+        ]],
+        this.navCarousel,
+        this.navSelect,
+        ["div", { className: "reader-nav-actions" }, [
+          ["button", {
+            className: "nav-btn theme-toggle-btn",
+            title: "Toggle Light / Dark mode",
+            onclick: () => this.toggleTheme()
+          }, "🌓"],
+          ["button", {
+            className: "nav-btn primary export-btn",
+            title: "Export series as Markdown or Formatted Text",
+            onclick: () => this.showExportDialog()
+          }, [
+            ["span", {}, "📤"],
+            ["span", { className: "btn-label-long" }, "Export"]
+          ]]
         ]]
-      ]]
-    ]);
-    document.body.appendChild(this.navBar);
+      ]);
+      document.body.appendChild(this.navBar);
 
-    // Reading Progress Bar
-    this.progressTrack = makeElement("div", { className: "reading-progress-track" });
-    this.progressBar = makeElement("div", { className: "reading-progress-bar" });
-    this.progressTrack.appendChild(this.progressBar);
-    document.body.appendChild(this.progressTrack);
+      // Reading Progress Bar
+      this.progressTrack = makeElement("div", { className: "reading-progress-track" });
+      this.progressBar = makeElement("div", { className: "reading-progress-bar" });
+      this.progressTrack.appendChild(this.progressBar);
+      document.body.appendChild(this.progressTrack);
 
-    this._scrollHandler = () => {
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      if (totalHeight > 0) {
-        const progress = Math.min(100, Math.max(0, (window.scrollY / totalHeight) * 100));
-        this.progressBar.style.width = `${progress}%`;
-      }
-    };
-    window.addEventListener("scroll", this._scrollHandler, { passive: true });
+      this._scrollHandler = () => {
+        const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+        if (totalHeight > 0) {
+          const progress = Math.min(100, Math.max(0, (window.scrollY / totalHeight) * 100));
+          this.progressBar.style.width = `${progress}%`;
+        }
+      };
+      window.addEventListener("scroll", this._scrollHandler, { passive: true });
 
-    this.shell = makeElement("div", { className: "article-shell" });
-    this.articleContainer = makeElement("div", { className: "article-container" });
-    this.shell.appendChild(this.articleContainer);
-    this.container.appendChild(this.shell);
+      this.shell = makeElement("div", { className: "article-shell" });
+      this.articleContainer = makeElement("div", { className: "article-container" });
+      this.shell.appendChild(this.articleContainer);
+      this.container.appendChild(this.shell);
 
-    setTimeout(() => this._updateNavScrollIndicators(), 50);
-    window.addEventListener("resize", () => this._updateNavScrollIndicators(), { passive: true });
-  }
+      setTimeout(() => this._updateNavScrollIndicators(), 50);
+      window.addEventListener("resize", () => this._updateNavScrollIndicators(), { passive: true });
+    }
 
   renderArticle() {
-    this.articleContainer.innerHTML = "";
-    const doc = this.getCurrentDoc();
-    const meta = doc.getMeta();
-    const manifest = doc.manifest();
+      this.articleContainer.innerHTML = "";
+      const doc = this.getCurrentDoc();
+      const meta = doc.getMeta();
+      const manifest = doc.manifest();
 
-    // Dynamically calculate word count and estimated reading time
-    let totalWords = 0;
-    manifest.forEach((sec) => {
-      sec.blocks.forEach((b) => {
-        const variants = (typeof doc[b.id] === "function") ? doc[b.id]() : [];
-        const variantKey = `${this.currentPageId}:${b.id}`;
-        const curIdx = this.activeVariants[variantKey] || 0;
-        const txt = variants[curIdx] || variants[0] || "";
-        totalWords += txt.split(/\s+/).filter(Boolean).length;
+      // Dynamically calculate word count and estimated reading time
+      let totalWords = 0;
+      manifest.forEach((sec) => {
+        sec.blocks.forEach((b) => {
+          const variants = (typeof doc[b.id] === "function") ? doc[b.id]() : [];
+          const variantKey = `${this.currentPageId}:${b.id}`;
+          const curIdx = this.activeVariants[variantKey] || 0;
+          const txt = variants[curIdx] || variants[0] || "";
+          totalWords += txt.split(/\s+/).filter(Boolean).length;
+        });
       });
-    });
-    const estMinutes = Math.max(1, Math.round(totalWords / 220));
+      const estMinutes = Math.max(1, Math.round(totalWords / 220));
 
-    const mainPages = this.pages.filter(p => p.isMain !== false);
-    const currentIdx = mainPages.findIndex((p) => p.id === this.currentPageId);
-    const prevPage = currentIdx > 0 ? mainPages[currentIdx - 1] : null;
-    const nextPage = currentIdx >= 0 && currentIdx < mainPages.length - 1 ? mainPages[currentIdx + 1] : null;
+      const pageCfg = this.pages.find(p => p.id === this.currentPageId);
+      const isCore = pageCfg?.group === "core";
+      const corePages = this.pages.filter(p => p.group === "core");
+      const coreIdx = corePages.findIndex(p => p.id === this.currentPageId);
 
-    const header = makeElement("header", { className: "article-header" }, [
-      ["div", { className: "article-meta-row" }, [
-        ["span", { className: "article-kicker" }, meta.kicker],
-        currentIdx >= 0
-          ? ["span", { className: "article-read-time" }, `Part ${currentIdx + 1} of ${mainPages.length} • ${estMinutes} min read`]
-          : ["span", { className: "article-read-time" }, "Reference Document"]
-      ]],
-      ["h1", { className: "article-title" }, meta.title],
-      ["p", { className: "article-subtitle" }, meta.subtitle]
-    ]);
-    this.articleContainer.appendChild(header);
+      const prevPage = isCore && coreIdx > 0 ? corePages[coreIdx - 1] : null;
+      const nextPage = isCore && coreIdx < corePages.length - 1 ? corePages[coreIdx + 1] : null;
 
-    manifest.forEach((sec) => {
-      const secWrap = makeElement("section", { className: "section-divider" });
+      const readLabel = isCore
+        ? `Core Series • Part ${coreIdx + 1} of 3 • ${estMinutes} min read`
+        : `Deep-Dive Briefing • ${estMinutes} min read`;
 
-      if (sec.partLabel) {
-        secWrap.appendChild(makeElement("div", { className: "section-part-label" }, sec.partLabel));
-      }
-      secWrap.appendChild(makeElement("h2", { className: "section-heading" }, sec.title));
-
-      sec.blocks.forEach((b) => {
-        const blockEl = this.renderBlock(b);
-        secWrap.appendChild(blockEl);
-      });
-
-      this.articleContainer.appendChild(secWrap);
-    });
-
-    // Footer Navigation and Small Discourse Reference Link
-    const footerNav = makeElement("nav", {
-      className: "article-chapter-footer",
-      style: {
-        marginTop: "80px",
-        paddingTop: "36px",
-        borderTop: "2px solid var(--reader-border)",
-        display: "flex",
-        flexDirection: "column",
-        gap: "22px"
-      }
-    });
-
-    const navRow = makeElement("div", {
-      style: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "stretch",
-        flexWrap: "wrap",
-        gap: "14px"
-      }
-    });
-
-    if (prevPage) {
-      const prevDocMeta = prevPage.docClass().getMeta();
-      const prevBtn = makeElement("button", {
-        className: "nav-btn",
-        style: {
-          flex: "1",
-          minWidth: "240px",
-          padding: "16px 20px",
-          borderRadius: "10px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-start",
-          gap: "4px",
-          textAlign: "left"
-        },
-        onclick: () => this.switchPage(prevPage.id)
-      }, [
-        makeElement("span", { style: { fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--reader-accent)" } }, "← Previous Chapter"),
-        makeElement("span", { style: { fontSize: "1.05rem", fontWeight: "700" } }, prevDocMeta.title)
+      const header = makeElement("header", { className: "article-header" }, [
+        ["div", { className: "article-meta-row" }, [
+          ["span", { className: "article-kicker" }, meta.kicker],
+          ["span", { className: "article-read-time" }, readLabel]
+        ]],
+        ["h1", { className: "article-title" }, meta.title],
+        ["p", { className: "article-subtitle" }, meta.subtitle]
       ]);
-      navRow.appendChild(prevBtn);
-    } else {
-      navRow.appendChild(makeElement("div", { style: { flex: "1" } }));
-    }
+      this.articleContainer.appendChild(header);
 
-    if (nextPage) {
-      const nextDocMeta = nextPage.docClass().getMeta();
-      const nextBtn = makeElement("button", {
-        className: "nav-btn primary",
-        style: {
-          flex: "1",
-          minWidth: "240px",
-          padding: "16px 20px",
-          borderRadius: "10px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-end",
-          gap: "4px",
-          textAlign: "right"
-        },
-        onclick: () => this.switchPage(nextPage.id)
-      }, [
-        makeElement("span", { style: { fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em", opacity: "0.9" } }, "Next Chapter →"),
-        makeElement("span", { style: { fontSize: "1.05rem", fontWeight: "700" } }, nextDocMeta.title)
-      ]);
-      navRow.appendChild(nextBtn);
-    }
+      manifest.forEach((sec) => {
+        const secWrap = makeElement("section", { className: "section-divider" });
 
-    footerNav.appendChild(navRow);
-
-    // Subtle bottom utility row: Discourse Rules Link
-    const subUtilityRow = makeElement("div", {
-      style: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: "18px",
-        fontSize: "0.76rem",
-        color: "var(--reader-muted)",
-        paddingTop: "12px",
-        borderTop: "1px dashed var(--reader-border)"
-      }
-    }, [
-      makeElement("a", {
-        href: "#rules",
-        style: { color: "var(--reader-muted)", textDecoration: "none", transition: "color 0.15s" },
-        onmouseover: (e) => e.target.style.color = "var(--reader-accent)",
-        onmouseout: (e) => e.target.style.color = "var(--reader-muted)",
-        onclick: (e) => {
-          e.preventDefault();
-          this.switchPage("rules");
+        if (sec.partLabel) {
+          secWrap.appendChild(makeElement("div", { className: "section-part-label" }, sec.partLabel));
         }
-      }, "📜 Rules for Replying on Quora"),
-      makeElement("span", {}, "•"),
-      makeElement("span", {}, "The Robot Dividend Series © 2026")
-    ]);
+        secWrap.appendChild(makeElement("h2", { className: "section-heading" }, sec.title));
 
-    footerNav.appendChild(subUtilityRow);
-    this.articleContainer.appendChild(footerNav);
-  }
+        sec.blocks.forEach((b) => {
+          const blockEl = this.renderBlock(b);
+          secWrap.appendChild(blockEl);
+        });
 
+        this.articleContainer.appendChild(secWrap);
+      });
+
+      // Footer Navigation: Only step through next/prev if reading the 3-part Core Series
+      const footerNav = makeElement("nav", {
+        className: "article-chapter-footer",
+        style: {
+          marginTop: "80px",
+          paddingTop: "36px",
+          borderTop: "2px solid var(--reader-border)",
+          display: "flex",
+          flexDirection: "column",
+          gap: "22px"
+        }
+      });
+
+      if (isCore) {
+        const navRow = makeElement("div", {
+          style: {
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "stretch",
+            flexWrap: "wrap",
+            gap: "14px"
+          }
+        });
+
+        if (prevPage) {
+          const prevDocMeta = prevPage.docClass().getMeta();
+          const prevBtn = makeElement("button", {
+            className: "nav-btn",
+            style: {
+              flex: "1",
+              minWidth: "240px",
+              padding: "16px 20px",
+              borderRadius: "10px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              gap: "4px",
+              textAlign: "left"
+            },
+            onclick: () => this.switchPage(prevPage.id)
+          }, [
+            makeElement("span", { style: { fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--reader-accent)" } }, "← Previous Part"),
+            makeElement("span", { style: { fontSize: "1.05rem", fontWeight: "700" } }, prevDocMeta.title)
+          ]);
+          navRow.appendChild(prevBtn);
+        } else {
+          navRow.appendChild(makeElement("div", { style: { flex: "1" } }));
+        }
+
+        if (nextPage) {
+          const nextDocMeta = nextPage.docClass().getMeta();
+          const nextBtn = makeElement("button", {
+            className: "nav-btn primary",
+            style: {
+              flex: "1",
+              minWidth: "240px",
+              padding: "16px 20px",
+              borderRadius: "10px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-end",
+              gap: "4px",
+              textAlign: "right"
+            },
+            onclick: () => this.switchPage(nextPage.id)
+          }, [
+            makeElement("span", { style: { fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em", opacity: "0.9" } }, "Next Part →"),
+            makeElement("span", { style: { fontSize: "1.05rem", fontWeight: "700" } }, nextDocMeta.title)
+          ]);
+          navRow.appendChild(nextBtn);
+        }
+
+        footerNav.appendChild(navRow);
+      } else {
+        // For Deep-Dive Briefings: Provide a clear "Back to Core Series" button
+        const returnBtn = makeElement("button", {
+          className: "nav-btn primary",
+          style: {
+            alignSelf: "center",
+            padding: "12px 28px",
+            borderRadius: "24px",
+            fontSize: "0.92rem",
+            fontWeight: "700"
+          },
+          onclick: () => this.switchPage("dividend")
+        }, "← Read The Core 3-Part Series");
+        footerNav.appendChild(returnBtn);
+      }
+
+      // Bottom utility row: Direct link to standalone rules.html
+      const subUtilityRow = makeElement("div", {
+        style: {
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "18px",
+          fontSize: "0.76rem",
+          color: "var(--reader-muted)",
+          paddingTop: "12px",
+          borderTop: "1px dashed var(--reader-border)"
+        }
+      }, [
+        makeElement("a", {
+          href: "rules.html",
+          style: { color: "var(--reader-muted)", textDecoration: "none", transition: "color 0.15s" },
+          onmouseover: (e) => e.target.style.color = "var(--reader-accent)",
+          onmouseout: (e) => e.target.style.color = "var(--reader-muted)"
+        }, "📜 Quora Moderation Rules & The Mirror Test"),
+        makeElement("span", {}, "•"),
+        makeElement("span", {}, "The Robot Dividend Series © 2026")
+      ]);
+
+      footerNav.appendChild(subUtilityRow);
+      this.articleContainer.appendChild(footerNav);
+    }
   renderBlock(blockDef) {
       const doc = this.getCurrentDoc();
       const blockId = blockDef.id;
