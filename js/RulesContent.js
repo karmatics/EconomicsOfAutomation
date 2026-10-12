@@ -15,23 +15,28 @@ class RulesContent {
   }
 
   static manifest() {
-    return [
-      {
-        section: "quora_rules",
-        partLabel: "Discussion Standards",
-        title: "Guidelines for Fair Discussion",
-        blocks: [
-          { id: "p_quora_intro", type: "p" },
-          { id: "rule_mirror", type: "sidebar", kicker: "Rule 1 • The Mirror Test", title: "What Would You Do in Their Position?" },
-          { id: "rule_gametheory", type: "sidebar", kicker: "Rule 2 • Game Theory & The Law", title: "Paying Taxes vs. Supporting the Rules" },
-          { id: "rule_sandbox", type: "sidebar", kicker: "Rule 3 • Respect the Sandbox", title: "Don't Break the Thought Experiment" },
-          { id: "rule_civility", type: "sidebar", kicker: "Rule 4 • Civility & Homework", title: "Critique the Mechanics, Not the Person" },
-          { id: "p_quora_closing", type: "p" }
-        ]
-      }
-    ];
-  }
-
+      return [
+        {
+          section: "quora_rules",
+          partLabel: "Discussion Standards",
+          title: "Guidelines for Fair Discussion",
+          blocks: [
+            {
+              id: "sidebar_5sec_summary",
+              type: "sidebar",
+              kicker: "5-Second Takeaway • Why These Rules Exist",
+              title: "Don't Dodge The Mirror Test or The Equilibrium"
+            },
+            { id: "p_quora_intro", type: "p" },
+            { id: "rule_mirror", type: "sidebar", kicker: "Rule 1 • The Mirror Test", title: "What Would You Do in Their Position?" },
+            { id: "rule_gametheory", type: "sidebar", kicker: "Rule 2 • Game Theory & The Law", title: "Paying Taxes vs. Supporting the Rules" },
+            { id: "rule_sandbox", type: "sidebar", kicker: "Rule 3 • Respect the Sandbox", title: "Don't Break the Thought Experiment" },
+            { id: "rule_civility", type: "sidebar", kicker: "Rule 4 • Civility & Homework", title: "Critique the Mechanics, Not the Person" },
+            { id: "p_quora_closing", type: "p" }
+          ]
+        }
+      ];
+    }
   static p_quora_intro() {
     return [
       "If you followed a link here from one of my Quora answers or posts, welcome. I don't own Quora, and these are not 'house rules' for the whole platform. But within my own comment threads, I do remove comments that refuse to engage with basic economics, rely on bad-faith deflections, or ignore simple game theory.\n\nThis is not censorship, and it is not an attempt to silence disagreement. If you believe the progressive tax schedule is flawed, that border-adjusted consumption taxes have enforcement gaps, or that Land Value Taxes face political hurdles, please post your critique! Detailed economic pushback is what makes these discussions valuable.\n\nHowever, discussions about AI and automation frequently derail into unexamined cynicism—assuming that people in power will always act out of cartoon greed, or calling people 'naive' without analyzing incentives. To keep the signal-to-noise ratio high, comments under my posts are held to the four basic standards below."
@@ -66,6 +71,12 @@ class RulesContent {
       "Keep your argument focused on the economic mechanisms, incentives, and game theory, and your comment will always stand.\n\nTo read the complete six-part series, visit [The Robot Dividend: Complete Series](index.html)."
     ];
   }
+
+  static sidebar_5sec_summary() {
+      return [
+        "**The 5-Second Summary:**\nDiscussions about automation almost always collapse into performative cynicism (*'elites will just murder everyone'* or sneering *'you're so naive'*).\n\nTo keep discussion productive, comments under my answers must confront two required questions:\n1. **The Mirror Test:** What would YOU do in their position? If you wouldn't choose cartoon genocide or living in a bunker, why assume everyone else will?\n2. **The Equilibrium Test:** What is YOUR concrete proposal for how it actually plays out? If you claim a dividend won't happen, specify an alternative equilibrium where factories don't shut down from a total lack of customers.\n\nBad-faith sneering without analyzing incentives will simply be removed."
+      ];
+    }
 }
 
 globalThis.RulesContent = RulesContent;

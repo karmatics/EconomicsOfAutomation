@@ -27,7 +27,7 @@ class EconomicsOfAutomation {
         { id: "ai-rules", title: "AI Prompt Rules", group: "reference", docClass: () => globalThis.AiRulesContent, isMain: false }
       ];
 
-      // Resolve initial page strictly from URL route if specified; otherwise always start at root "dividend"
+      // Resolve initial page strictly from URL route if specified; otherwise default to "dividend"
       const parsed = this._parseUrlRoute();
       const initialPage = (parsed.pageId && this.pages.some((p) => p.id === parsed.pageId)) ? parsed.pageId : "dividend";
       this.currentPageId = initialPage;
@@ -43,15 +43,23 @@ class EconomicsOfAutomation {
       this.initUI();
       this.renderArticle();
 
+      // Sync address bar hash on cold start if not already aligned
+      if (!window.location.hash || window.location.hash === "#") {
+        if (window.history && window.history.replaceState) {
+          window.history.replaceState(null, "", `#${initialPage}`);
+        }
+      }
+
       // Handle direct anchor deep-linking
       if (parsed.anchorId) {
         setTimeout(() => this.highlightTargetElement(parsed.anchorId), 300);
       }
 
-      // Listen to popstate / hashchange for instant deep-linking from shared links
-      window.addEventListener("hashchange", () => this.handleUrlRouting(), { passive: true });
+      // Listen to hashchange and popstate for responsive navigation and browser back/forward buttons
+      this._popStateHandler = () => this.handleUrlRouting();
+      window.addEventListener("hashchange", this._popStateHandler, { passive: true });
+      window.addEventListener("popstate", this._popStateHandler, { passive: true });
     }
-
   initUI() {
       this.container.innerHTML = "";
 
@@ -401,6 +409,7 @@ class EconomicsOfAutomation {
       footerNav.appendChild(subUtilityRow);
       this.articleContainer.appendChild(footerNav);
     }
+
   renderBlock(blockDef) {
       const doc = this.getCurrentDoc();
       const blockId = blockDef.id;
@@ -507,7 +516,12 @@ class EconomicsOfAutomation {
               } else {
                 if (activeList && activeList.lastChild) {
                   activeList.lastChild.appendChild(document.createTextNode(" "));
-                  activeList.lastChild.appendChild(this.formatInlineText(lTrim));
+                  const inlineNode = this.formatInlineText(lTrim);
+                  if (inlineNode instanceof Node) {
+                    activeList.lastChild.appendChild(inlineNode);
+                  } else {
+                    activeList.lastChild.appendChild(document.createTextNode(String(inlineNode)));
+                  }
                 } else {
                   activeList = null;
                   bodyContainer.appendChild(makeElement("p", {}, this.formatInlineText(lTrim)));
@@ -1130,47 +1144,58 @@ class EconomicsOfAutomation {
       return resolved || globalThis.ArticleContent;
     }
 
-  switchPage(pageId) {
-        if (this.currentPageId === pageId) return;
-        this.currentPageId = pageId;
-        localStorage.setItem("robot_dividend_active_page", pageId);
+  switchPage(pageId, updateUrl = true) {
+      if (this.currentPageId === pageId) return;
+      this.currentPageId = pageId;
+      localStorage.setItem("robot_dividend_active_page", pageId);
 
-        // Update navigation button active styles and scroll active tab into view
-        if (this.navPageButtons) {
-          Object.entries(this.navPageButtons).forEach(([id, btn]) => {
-            const isActive = id === pageId;
-            btn.classList.toggle("active", isActive);
-            if (isActive && this.pageSelector) {
-              // Smoothly align active tab within the scrollable container
-              const btnLeft = btn.offsetLeft;
-              const btnWidth = btn.offsetWidth;
-              const containerWidth = this.pageSelector.clientWidth;
-              const targetScroll = btnLeft - (containerWidth / 2) + (btnWidth / 2);
-              this.pageSelector.scrollTo({ left: Math.max(0, targetScroll), behavior: "smooth" });
-            }
-          });
-        }
-
-        // Update mobile select menu if present
-        if (this.navSelect) {
-          this.navSelect.value = pageId;
-        }
-
-        // Scroll smoothly to top of the article
-        window.scrollTo({ top: 0, behavior: "smooth" });
-
-        // Render new document
-        this.renderArticle();
-        this._updateNavScrollIndicators();
-
-        // Update assistant if open
-        if (this.assistantDialog && this.assistantDialog.element?.isConnected) {
-          const doc = this.getCurrentDoc();
-          const firstBlock = doc.manifest()?.[0]?.blocks?.[0]?.id || "p_scarcity_1";
-          this.selectBlock(firstBlock, false);
-          this.updateAssistant(firstBlock);
+      // Update browser URL hash so the current sub-page is directly copyable & linkable
+      if (updateUrl) {
+        const currentHash = window.location.hash.replace(/^#\/?/, '').split('/')[0];
+        if (currentHash !== pageId) {
+          if (window.history && window.history.pushState) {
+            window.history.pushState(null, "", `#${pageId}`);
+          } else {
+            window.location.hash = pageId;
+          }
         }
       }
+
+      // Update navigation button active styles and scroll active tab into view
+      if (this.navPageButtons) {
+        Object.entries(this.navPageButtons).forEach(([id, btn]) => {
+          const isActive = id === pageId;
+          btn.classList.toggle("active", isActive);
+          if (isActive && this.pageSelector) {
+            const btnLeft = btn.offsetLeft;
+            const btnWidth = btn.offsetWidth;
+            const containerWidth = this.pageSelector.clientWidth;
+            const targetScroll = btnLeft - (containerWidth / 2) + (btnWidth / 2);
+            this.pageSelector.scrollTo({ left: Math.max(0, targetScroll), behavior: "smooth" });
+          }
+        });
+      }
+
+      // Update mobile select menu if present
+      if (this.navSelect) {
+        this.navSelect.value = pageId;
+      }
+
+      // Scroll smoothly to top of the article
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      // Render new document
+      this.renderArticle();
+      this._updateNavScrollIndicators();
+
+      // Update assistant if open
+      if (this.assistantDialog && this.assistantDialog.element?.isConnected) {
+        const doc = this.getCurrentDoc();
+        const firstBlock = doc.manifest()?.[0]?.blocks?.[0]?.id || "p_scarcity_1";
+        this.selectBlock(firstBlock, false);
+        this.updateAssistant(firstBlock);
+      }
+    }
   getImageDescription(fileName) {
       const descriptions = {
         // First page (ArticleContent) images
@@ -1516,10 +1541,15 @@ class EconomicsOfAutomation {
     }
 
   formatInlineText(text) {
-      if (!text || typeof text !== "string") return text || "";
-      if (!text.includes("*")) return text;
+      if (!text) return document.createTextNode("");
+      if (typeof text !== "string") return document.createTextNode(String(text));
 
       const frag = document.createDocumentFragment();
+      if (!text.includes("*")) {
+        frag.appendChild(document.createTextNode(text));
+        return frag;
+      }
+
       const parts = text.split(/(\*\*.*?\*\*|\*.*?\*)/g);
       for (const part of parts) {
         if (part.startsWith("**") && part.endsWith("**") && part.length >= 4) {
@@ -1536,48 +1566,50 @@ class EconomicsOfAutomation {
       }
       return frag;
     }
-
   _parseUrlRoute() {
-    let pageId = null;
-    let anchorId = null;
+      let pageId = null;
+      let anchorId = null;
 
-    // 1. Check Query Params: ?page=rules&anchor=rule_reciprocity
-    try {
-      const params = new URLSearchParams(window.location.search);
-      if (params.has("page")) pageId = params.get("page");
-      if (params.has("anchor")) anchorId = params.get("anchor");
-    } catch (e) {}
+      // 1. Check Query Params: ?page=rules&anchor=rule_mirror
+      try {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("page")) pageId = params.get("page");
+        if (params.has("anchor")) anchorId = params.get("anchor");
+      } catch (e) {}
 
-    // 2. Check Hash Route: #rules/rule_reciprocity or #doomer/sidebar_east_india_fallacy or #rule_tone
-    if (window.location.hash) {
-      const hashStr = window.location.hash.replace(/^#\/?/, "");
-      if (hashStr.includes("/")) {
-        const parts = hashStr.split("/");
-        pageId = parts[0];
-        anchorId = parts[1];
-      } else {
-        const matchedPage = this.pages.find(p => p.id === hashStr);
-        if (matchedPage) {
-          pageId = matchedPage.id;
+      // 2. Check Hash Route: #doomer, #doomer/p_doomer_front_thesis_1, #rules#rule_mirror
+      if (window.location.hash) {
+        const hashStr = window.location.hash.replace(/^#\/?/, "");
+        if (hashStr.includes("/")) {
+          const parts = hashStr.split("/");
+          pageId = parts[0];
+          anchorId = parts[1];
+        } else if (hashStr.includes("#")) {
+          const parts = hashStr.split("#");
+          pageId = parts[0];
+          anchorId = parts[1];
         } else {
-          anchorId = hashStr;
+          const matchedPage = this.pages.find(p => p.id === hashStr);
+          if (matchedPage) {
+            pageId = matchedPage.id;
+          } else {
+            anchorId = hashStr;
+          }
         }
       }
-    }
 
-    return { pageId, anchorId };
-  }
+      return { pageId, anchorId };
+    }
 
   handleUrlRouting() {
-    const { pageId, anchorId } = this._parseUrlRoute();
-    if (pageId && pageId !== this.currentPageId) {
-      this.switchPage(pageId, false);
+      const { pageId, anchorId } = this._parseUrlRoute();
+      if (pageId && pageId !== this.currentPageId) {
+        this.switchPage(pageId, false);
+      }
+      if (anchorId) {
+        setTimeout(() => this.highlightTargetElement(anchorId), 250);
+      }
     }
-    if (anchorId) {
-      setTimeout(() => this.highlightTargetElement(anchorId), 250);
-    }
-  }
-
   highlightTargetElement(targetId) {
     if (!targetId) return;
     const cleanId = targetId.replace(/^#/, "");
@@ -1610,25 +1642,26 @@ class EconomicsOfAutomation {
   }
 
   copyAnchorLink(pageId, anchorId, btnElement = null) {
-    const url = `${window.location.origin}${window.location.pathname}#${pageId}/${anchorId}`;
+      const cleanPage = pageId || this.currentPageId || "dividend";
+      const url = `${window.location.origin}${window.location.pathname}#${cleanPage}/${anchorId}`;
 
-    navigator.clipboard.writeText(url).then(() => {
-      if (btnElement) {
-        const orig = btnElement.textContent;
-        btnElement.textContent = "✓ Copied!";
-        setTimeout(() => { btnElement.textContent = orig; }, 2000);
-      }
-      if (typeof UITools !== "undefined" && typeof UITools.showHUD === "function") {
-        UITools.showHUD({
-          html: `<div style="padding:10px 16px;background:#065f46;color:#ecfdf5;border:1px solid #10b981;border-radius:8px;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.45);display:flex;align-items:center;gap:8px;"><span>✓</span><span>Copied deep-link for <b>#${anchorId}</b> to clipboard!</span></div>`,
-          position: "bottom-right",
-          autoClose: 2500
-        });
-      }
-    }).catch(() => {
-      prompt("Copy this direct anchor URL:", url);
-    });
-  }
+      navigator.clipboard.writeText(url).then(() => {
+        if (btnElement) {
+          const orig = btnElement.textContent;
+          btnElement.textContent = "✓ Link Copied!";
+          setTimeout(() => { btnElement.textContent = orig; }, 2200);
+        }
+        if (typeof UITools !== "undefined" && typeof UITools.showHUD === "function") {
+          UITools.showHUD({
+            html: `<div style="padding:10px 16px;background:#065f46;color:#ecfdf5;border:1px solid #10b981;border-radius:8px;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.45);display:flex;align-items:center;gap:8px;"><span>✓</span><span>Copied direct share link for <b>#${cleanPage}/${anchorId}</b> to clipboard!</span></div>`,
+            position: "bottom-right",
+            autoClose: 2500
+          });
+        }
+      }).catch(() => {
+        prompt("Copy this direct anchor URL:", url);
+      });
+    }
 }
 
 globalThis.EconomicsOfAutomation = EconomicsOfAutomation;
