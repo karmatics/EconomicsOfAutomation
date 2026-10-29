@@ -1,1675 +1,238 @@
 class EconomicsOfAutomation {
+  constructor() {
+    this.reader = null;
+    this.sidePanel = null;
+  }
+
+  static async run(env) {
+    const instance = new EconomicsOfAutomation();
+    return await instance.run(env);
+  }
 
   async run(env) {
-      if (!env || !env.container) {
-        throw new Error("[EconomicsOfAutomation] run() requires an environment object with a valid container.");
-      }
-      this.env = env;
-      this.container = env.container;
-      this.activeVariants = {};
-      this.selectedBlockId = null;
-      this.assistantDialog = null;
-
-      // Structured into Core 3-Part Treatise + Targeted Responses
-      this.pages = [
-        // Core 3-Part Spine
-        { id: "dividend", title: "1. The Robot Dividend", group: "core", docClass: () => globalThis.ArticleContent, isMain: true },
-        { id: "colony", title: "2. The 100,000 Colony", group: "core", docClass: () => globalThis.ColonyContent, isMain: true },
-        { id: "earth", title: "3. Earth Transition", group: "core", docClass: () => globalThis.EarthContent, isMain: true },
-
-        // Targeted Responses to Specific Objections
-        { id: "statusquo", title: "The Status Quo Trap", group: "response", docClass: () => globalThis.KineticContent, isMain: true },
-        { id: "doomer", title: "The Doomer Loop", group: "response", docClass: () => globalThis.DoomerContent, isMain: true },
-        { id: "paradigms", title: "The Three Visions", group: "response", docClass: () => globalThis.ParadigmsContent, isMain: true },
-        { id: "objections", title: "The Adversarial Gauntlet", group: "response", docClass: () => globalThis.ObjectionsContent, isMain: true },
-
-        // Reference Directives
-        { id: "ai-rules", title: "AI Prompt Rules", group: "reference", docClass: () => globalThis.AiRulesContent, isMain: false }
-      ];
-
-      // Resolve initial page strictly from URL route if specified; otherwise default to "dividend"
-      const parsed = this._parseUrlRoute();
-      const initialPage = (parsed.pageId && this.pages.some((p) => p.id === parsed.pageId)) ? parsed.pageId : "dividend";
-      this.currentPageId = initialPage;
-
-      // Restore preferred theme
-      const savedTheme = localStorage.getItem("robot_dividend_theme") || "light";
-      if (savedTheme === "dark") {
-        document.body.classList.add("theme-dark");
-      } else {
-        document.body.classList.remove("theme-dark");
-      }
-
-      this.initUI();
-      this.renderArticle();
-
-      // Sync address bar hash on cold start if not already aligned
-      if (!window.location.hash || window.location.hash === "#") {
-        if (window.history && window.history.replaceState) {
-          window.history.replaceState(null, "", `#${initialPage}`);
-        }
-      }
-
-      // Handle direct anchor deep-linking
-      if (parsed.anchorId) {
-        setTimeout(() => this.highlightTargetElement(parsed.anchorId), 300);
-      }
-
-      // Listen to hashchange and popstate for responsive navigation and browser back/forward buttons
-      this._popStateHandler = () => this.handleUrlRouting();
-      window.addEventListener("hashchange", this._popStateHandler, { passive: true });
-      window.addEventListener("popstate", this._popStateHandler, { passive: true });
-    }
-  initUI() {
-      this.container.innerHTML = "";
-
-      // Build Page Switcher Buttons grouped by Core Series vs Targeted Responses
-      this.navPageButtons = {};
-      const visiblePages = this.pages.filter(p => p.isMain !== false);
-
-      const pageTabElements = [];
-
-      // Core Series Group Header / Badge
-      const coreLabel = makeElement("span", {
-        className: "nav-group-label",
-        style: {
-          fontSize: "0.68rem",
-          fontWeight: "800",
-          textTransform: "uppercase",
-          letterSpacing: "0.08em",
-          color: "var(--reader-accent)",
-          padding: "0 6px",
-          userSelect: "none"
-        }
-      }, "Core Series:");
-      pageTabElements.push(coreLabel);
-
-      visiblePages.filter(p => p.group === "core").forEach((p) => {
-        const btn = makeElement("button", {
-          className: `nav-page-btn ${this.currentPageId === p.id ? "active" : ""}`,
-          title: `Read ${p.title}`,
-          onclick: () => this.switchPage(p.id)
-        }, p.title);
-        this.navPageButtons[p.id] = btn;
-        pageTabElements.push(btn);
-      });
-
-      // Divider
-      pageTabElements.push(makeElement("span", {
-        style: { color: "var(--reader-border)", padding: "0 4px", userSelect: "none" }
-      }, "|"));
-
-      // Deep-Dives / Responses Group Header
-      const responsesLabel = makeElement("span", {
-        className: "nav-group-label",
-        style: {
-          fontSize: "0.68rem",
-          fontWeight: "800",
-          textTransform: "uppercase",
-          letterSpacing: "0.08em",
-          color: "var(--reader-muted)",
-          padding: "0 6px",
-          userSelect: "none"
-        }
-      }, "Deep Dives:");
-      pageTabElements.push(responsesLabel);
-
-      visiblePages.filter(p => p.group === "response").forEach((p) => {
-        const btn = makeElement("button", {
-          className: `nav-page-btn ${this.currentPageId === p.id ? "active" : ""}`,
-          title: `Read ${p.title}`,
-          onclick: () => this.switchPage(p.id)
-        }, p.title);
-        this.navPageButtons[p.id] = btn;
-        pageTabElements.push(btn);
-      });
-
-      this.pageSelector = makeElement("div", { className: "reader-nav-pages" }, pageTabElements);
-
-      // Support mouse-wheel horizontal translation
-      this.pageSelector.addEventListener("wheel", (e) => {
-        if (e.deltaY !== 0) {
-          e.preventDefault();
-          this.pageSelector.scrollLeft += e.deltaY * 1.2;
-          this._updateNavScrollIndicators();
-        }
-      }, { passive: false });
-
-      // Dedicated Scroll Buttons
-      this.navScrollLeftBtn = makeElement("button", {
-        className: "nav-scroll-btn nav-scroll-left",
-        title: "Scroll tabs left",
-        onclick: () => {
-          this.pageSelector.scrollBy({ left: -240, behavior: "smooth" });
-          setTimeout(() => this._updateNavScrollIndicators(), 250);
-        }
-      }, "‹");
-
-      this.navScrollRightBtn = makeElement("button", {
-        className: "nav-scroll-btn nav-scroll-right",
-        title: "Scroll tabs right",
-        onclick: () => {
-          this.pageSelector.scrollBy({ left: 240, behavior: "smooth" });
-          setTimeout(() => this._updateNavScrollIndicators(), 250);
-        }
-      }, "›");
-
-      this.navCarousel = makeElement("div", { className: "reader-nav-carousel" }, [
-        this.navScrollLeftBtn,
-        this.pageSelector,
-        this.navScrollRightBtn
-      ]);
-
-      // Responsive Dropdown with Group Optgroups
-      const selectEl = makeElement("select", {
-        className: "nav-chapter-select",
-        "aria-label": "Choose Chapter or Deep Dive",
-        onchange: (e) => this.switchPage(e.target.value)
-      });
-
-      const coreOptGroup = makeElement("optgroup", { label: "The Core Series" });
-      visiblePages.filter(p => p.group === "core").forEach(p => {
-        coreOptGroup.appendChild(makeElement("option", {
-          value: p.id,
-          selected: this.currentPageId === p.id
-        }, p.title));
-      });
-      selectEl.appendChild(coreOptGroup);
-
-      const respOptGroup = makeElement("optgroup", { label: "Responses to Common Objections" });
-      visiblePages.filter(p => p.group === "response").forEach(p => {
-        respOptGroup.appendChild(makeElement("option", {
-          value: p.id,
-          selected: this.currentPageId === p.id
-        }, p.title));
-      });
-      selectEl.appendChild(respOptGroup);
-
-      this.navSelect = selectEl;
-
-      // Floating Navigation Bar
-      this.navBar = makeElement("nav", { className: "reader-nav-bar" }, [
-        ["div", { className: "reader-nav-brand", onclick: () => this.switchPage("dividend") }, [
-          ["span", { className: "nav-brand-icon" }, "⚡"],
-          ["span", { className: "nav-brand-text" }, "Economics of Automation"]
-        ]],
-        this.navCarousel,
-        this.navSelect,
-        ["div", { className: "reader-nav-actions" }, [
-          ["button", {
-            className: "nav-btn theme-toggle-btn",
-            title: "Toggle Light / Dark mode",
-            onclick: () => this.toggleTheme()
-          }, "🌓"],
-          ["button", {
-            className: "nav-btn primary export-btn",
-            title: "Export series as Markdown or Formatted Text",
-            onclick: () => this.showExportDialog()
-          }, [
-            ["span", {}, "📤"],
-            ["span", { className: "btn-label-long" }, "Export"]
-          ]]
-        ]]
-      ]);
-      document.body.appendChild(this.navBar);
-
-      // Reading Progress Bar
-      this.progressTrack = makeElement("div", { className: "reading-progress-track" });
-      this.progressBar = makeElement("div", { className: "reading-progress-bar" });
-      this.progressTrack.appendChild(this.progressBar);
-      document.body.appendChild(this.progressTrack);
-
-      this._scrollHandler = () => {
-        const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-        if (totalHeight > 0) {
-          const progress = Math.min(100, Math.max(0, (window.scrollY / totalHeight) * 100));
-          this.progressBar.style.width = `${progress}%`;
-        }
-      };
-      window.addEventListener("scroll", this._scrollHandler, { passive: true });
-
-      this.shell = makeElement("div", { className: "article-shell" });
-      this.articleContainer = makeElement("div", { className: "article-container" });
-      this.shell.appendChild(this.articleContainer);
-      this.container.appendChild(this.shell);
-
-      setTimeout(() => this._updateNavScrollIndicators(), 50);
-      window.addEventListener("resize", () => this._updateNavScrollIndicators(), { passive: true });
+    if (!env || !env.container) {
+      throw new Error("[EconomicsOfAutomation] run() requires an environment with a valid container.");
     }
 
-  renderArticle() {
-    this.articleContainer.innerHTML = "";
-    const doc = this.getCurrentDoc();
-    const meta = doc.getMeta();
-    const manifest = doc.manifest();
+    if (this.rootElement) {
+      this.destroy();
+    }
 
-    // Dynamically calculate word count and estimated reading time
-    let totalWords = 0;
-    manifest.forEach((sec) => {
-      sec.blocks.forEach((b) => {
-        const variants = (typeof doc[b.id] === "function") ? doc[b.id]() : [];
-        const variantKey = `${this.currentPageId}:${b.id}`;
-        const curIdx = this.activeVariants[variantKey] || 0;
-        const txt = variants[curIdx] || variants[0] || "";
-        totalWords += txt.split(/\s+/).filter(Boolean).length;
+    this.env = env;
+    this.rootElement = env.container;
+    this.rootElement.innerHTML = '';
+    this.rootElement.style.overflowY = 'auto';
+    this.rootElement.style.minHeight = '100vh';
+    this.rootElement.style.boxSizing = 'border-box';
+    this.rootElement.style.transition = 'margin-left 0.25s cubic-bezier(0.2, 0.0, 0.2, 1), width 0.25s cubic-bezier(0.2, 0.0, 0.2, 1)';
+
+    const pages = [
+      { id: 'dividend', title: '1. The Robot Dividend', group: 'core', docClass: () => globalThis.ArticleContent },
+      { id: 'colony', title: '2. The 100,000 Colony', group: 'core', docClass: () => globalThis.ColonyContent },
+      { id: 'earth', title: '3. Earth Transition', group: 'core', docClass: () => globalThis.EarthContent },
+      { id: 'statusquo', title: '4. The Status Quo Trap', group: 'response', docClass: () => globalThis.KineticContent },
+      { id: 'doomer', title: '5. The Doomer Loop', group: 'response', docClass: () => globalThis.DoomerContent },
+      { id: 'paradigms', title: '6. The Three Visions', group: 'response', docClass: () => globalThis.ParadigmsContent },
+      { id: 'objections', title: '7. The Adversarial Gauntlet', group: 'response', docClass: () => globalThis.ObjectionsContent },
+      { id: 'gametheory', title: '8. Game Theory & The Law', group: 'reference', docClass: () => globalThis.GameTheoryContent },
+      { id: 'rules', title: '9. Discussion Ground Rules', group: 'reference', docClass: () => globalThis.RulesContent },
+      { id: 'ai-rules', title: '10. AI Prompt Directives', group: 'reference', docClass: () => globalThis.AiRulesContent }
+    ];
+
+    this.pages = pages;
+
+    if (typeof DocumentReader !== 'undefined') {
+      this.reader = new DocumentReader({
+        container: this.rootElement,
+        brandTitle: 'The Robot Dividend',
+        brandIcon: '⚡',
+        dossierId: 'EconomicsOfAutomation',
+        pages: pages
       });
-    });
-    const estMinutes = Math.max(1, Math.round(totalWords / 220));
+      await this.reader.init();
 
-    const pageCfg = this.pages.find(p => p.id === this.currentPageId);
-    const isCore = pageCfg?.group === "core";
-    const corePages = this.pages.filter(p => p.group === "core");
-    const coreIdx = corePages.findIndex(p => p.id === this.currentPageId);
+      if (typeof SidePanel !== 'undefined') {
+        this.sidePanel = new SidePanel('left', 340, null);
+        this._buildSidePanelNavigation(pages);
 
-    const prevPage = isCore && coreIdx > 0 ? corePages[coreIdx - 1] : null;
-    const nextPage = isCore && coreIdx < corePages.length - 1 ? corePages[coreIdx + 1] : null;
-
-    const readLabel = isCore
-      ? `Core Series • Part ${coreIdx + 1} of 3 • ${estMinutes} min read`
-      : `Deep-Dive Briefing • ${estMinutes} min read`;
-
-    const header = makeElement("header", { className: "article-header" }, [
-      ["div", { className: "article-meta-row" }, [
-        ["span", { className: "article-kicker" }, meta.kicker],
-        ["span", { className: "article-read-time" }, readLabel]
-      ]],
-      ["h1", { className: "article-title" }, meta.title],
-      ["p", { className: "article-subtitle" }, meta.subtitle]
-    ]);
-    this.articleContainer.appendChild(header);
-
-    manifest.forEach((sec) => {
-      const secWrap = makeElement("section", { className: "section-divider" });
-
-      if (sec.partLabel) {
-        secWrap.appendChild(makeElement("div", { className: "section-part-label" }, sec.partLabel));
+        this._safeAreaHandler = (e) => {
+          const left = e.detail?.left || 0;
+          if (this.rootElement) {
+            this.rootElement.style.marginLeft = `${left}px`;
+            this.rootElement.style.width = left > 0 ? `calc(100% - ${left}px)` : '100%';
+          }
+        };
+        window.addEventListener('layout-safe-area-change', this._safeAreaHandler);
+        this.sidePanel.open();
       }
-      secWrap.appendChild(makeElement("h2", { className: "section-heading" }, sec.title));
 
-      sec.blocks.forEach((b) => {
-        const blockEl = this.renderBlock(b);
-        secWrap.appendChild(blockEl);
-      });
+      window.economicsApp = this;
+      globalThis._economicsInstance = this;
+    }
 
-      this.articleContainer.appendChild(secWrap);
-    });
+    return this;
+  }
 
-    // Footer Navigation
-    const footerNav = makeElement("nav", {
-      className: "article-chapter-footer",
+  _buildSidePanelNavigation(pages) {
+    if (!this.sidePanel) return;
+
+    this.sidePanel.header.innerHTML = '';
+    const headerTitle = makeElement('div', {
       style: {
-        marginTop: "80px",
-        paddingTop: "36px",
-        borderTop: "2px solid var(--reader-border)",
-        display: "flex",
-        flexDirection: "column",
-        gap: "22px"
-      }
-    });
-
-    if (isCore) {
-      const navRow = makeElement("div", {
-        style: {
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "stretch",
-          flexWrap: "wrap",
-          gap: "14px"
-        }
-      });
-
-      if (prevPage) {
-        const prevDocMeta = prevPage.docClass().getMeta();
-        const prevBtn = makeElement("button", {
-          className: "nav-btn",
-          style: {
-            flex: "1",
-            minWidth: "240px",
-            padding: "16px 20px",
-            borderRadius: "10px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            gap: "4px",
-            textAlign: "left"
-          },
-          onclick: () => this.switchPage(prevPage.id)
-        }, [
-          makeElement("span", { style: { fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--reader-accent)" } }, "← Previous Part"),
-          makeElement("span", { style: { fontSize: "1.05rem", fontWeight: "700" } }, prevDocMeta.title)
-        ]);
-        navRow.appendChild(prevBtn);
-      } else {
-        navRow.appendChild(makeElement("div", { style: { flex: "1" } }));
-      }
-
-      if (nextPage) {
-        const nextDocMeta = nextPage.docClass().getMeta();
-        const nextBtn = makeElement("button", {
-          className: "nav-btn primary",
-          style: {
-            flex: "1",
-            minWidth: "240px",
-            padding: "16px 20px",
-            borderRadius: "10px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-end",
-            gap: "4px",
-            textAlign: "right"
-          },
-          onclick: () => this.switchPage(nextPage.id)
-        }, [
-          makeElement("span", { style: { fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em", opacity: "0.9" } }, "Next Part →"),
-          makeElement("span", { style: { fontSize: "1.05rem", fontWeight: "700" } }, nextDocMeta.title)
-        ]);
-        navRow.appendChild(nextBtn);
-      }
-
-      footerNav.appendChild(navRow);
-    } else {
-      const returnBtn = makeElement("button", {
-        className: "nav-btn primary",
-        style: {
-          alignSelf: "center",
-          padding: "12px 28px",
-          borderRadius: "24px",
-          fontSize: "0.92rem",
-          fontWeight: "700"
-        },
-        onclick: () => this.switchPage("dividend")
-      }, "← Read The Core 3-Part Series");
-      footerNav.appendChild(returnBtn);
-    }
-
-    const subUtilityRow = makeElement("div", {
-      style: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: "18px",
-        fontSize: "0.76rem",
-        color: "var(--reader-muted)",
-        paddingTop: "12px",
-        borderTop: "1px dashed var(--reader-border)"
+        fontFamily: 'monospace',
+        fontSize: '11px',
+        fontWeight: 'bold',
+        color: '#00f2fe',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        flex: 1
       }
     }, [
-      makeElement("a", {
-        href: "rules.html",
-        style: { color: "var(--reader-muted)", textDecoration: "none", transition: "color 0.15s" },
-        onmouseover: (e) => e.target.style.color = "var(--reader-accent)",
-        onmouseout: (e) => e.target.style.color = "var(--reader-muted)"
-      }, "📜 Quora Moderation Rules & The Mirror Test"),
-      makeElement("span", {}, "•"),
-      makeElement("span", {}, "The Robot Dividend Series © 2026")
+      makeElement('span', {}, '⚡'),
+      makeElement('span', {}, 'The Robot Dividend Series')
     ]);
 
-    footerNav.appendChild(subUtilityRow);
-    this.articleContainer.appendChild(footerNav);
+    const closeBtn = makeElement('button', {
+      className: 'dr-nav-btn',
+      style: { padding: '2px 8px', fontSize: '10px' },
+      onclick: () => this.sidePanel.close()
+    }, '✕');
 
-    // Universal In-Situ Annotation and Block Decoration Bridge
-    if (typeof DocumentReader !== 'undefined' && typeof DocumentReader.decorateContainer === 'function') {
-      setTimeout(() => {
-        DocumentReader.decorateContainer(this.articleContainer, {
-          dossierId: 'EconomicsOfAutomation',
-          pageId: this.currentPageId
-        });
-      }, 0);
-    }
-  }
-  renderBlock(blockDef) {
-      const doc = this.getCurrentDoc();
-      const blockId = blockDef.id;
+    this.sidePanel.header.append(headerTitle, closeBtn);
 
-      // Single-Click Copyable Markdown Payload Box (for AI Prompt Rules)
-      if (blockDef.type === "markdown-box") {
-        const rawMarkdown = typeof doc.getMasterMarkdown === "function" ? doc.getMasterMarkdown() : "";
-        const boxWrapper = makeElement("div", { className: "markdown-prompt-container", id: `block-${blockId}` });
+    const container = this.sidePanel.contentContainer;
+    container.innerHTML = '';
+    container.style.cssText = 'flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 12px;';
 
-        const topBar = makeElement("div", { className: "markdown-prompt-topbar" }, [
-          makeElement("div", { className: "markdown-prompt-title" }, [
-            makeElement("span", {}, "📄"),
-            makeElement("span", {}, blockDef.title || "Copy-Paste Master Prompt")
-          ]),
-          makeElement("button", {
-            className: "copy-prompt-btn primary",
-            onclick: (e) => {
-              const btn = e.currentTarget;
-              navigator.clipboard.writeText(rawMarkdown).then(() => {
-                btn.textContent = "✓ Copied to Clipboard!";
-                setTimeout(() => { btn.textContent = "📋 Copy Master Markdown Prompt"; }, 2500);
-                if (typeof UITools !== "undefined" && typeof UITools.showHUD === "function") {
-                  UITools.showHUD({
-                    html: `<div style="padding:10px 16px;background:#065f46;color:#ecfdf5;border:1px solid #10b981;border-radius:8px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;"><span>✓</span><span>Master Markdown Prompt copied to clipboard!</span></div>`,
-                    position: "bottom-right",
-                    autoClose: 2400
-                  });
-                }
-              });
-            }
-          }, "📋 Copy Master Markdown Prompt")
-        ]);
-
-        const codeArea = makeElement("textarea", {
-          className: "markdown-prompt-textarea",
-          readonly: true,
-          spellcheck: false
-        });
-        codeArea.value = rawMarkdown;
-
-        boxWrapper.appendChild(topBar);
-        boxWrapper.appendChild(codeArea);
-        return boxWrapper;
-      }
-
-      // Interactive Custom Component Block (e.g. TaxChart, DoomerDebate)
-      if (blockDef.type === "component") {
-        const mountId = `comp-mount-${blockId}`;
-        const wrapper = makeElement("div", {
-          className: "interactive-component-wrap",
-          id: mountId
-        });
-
-        const compClass = globalThis[blockDef.component];
-        if (compClass && typeof compClass.render === "function") {
-          setTimeout(() => {
-            const el = document.getElementById(mountId);
-            if (el) compClass.render(el);
-          }, 0);
-        }
-        return wrapper;
-      }
-
-      // Sidebar / Callout Note Box with Multi-Paragraph & Ordered List Parsing
-      if (blockDef.type === "sidebar" || blockDef.type === "callout") {
-        const variants = (typeof doc[blockId] === "function") ? doc[blockId]() : ["[Missing block]"];
-        const variantKey = `${this.currentPageId}:${blockId}`;
-        const currentIdx = this.activeVariants[variantKey] || 0;
-        const currentText = variants[currentIdx] || variants[0];
-
-        const copyLinkBtn = makeElement("button", {
-          className: "block-share-badge",
-          title: `Copy direct link to #${blockId}`,
-          onclick: (e) => {
-            e.stopPropagation();
-            this.copyAnchorLink(this.currentPageId, blockId, e.currentTarget);
-          }
-        }, "🔗 Copy Link");
-
-        const bodyContainer = makeElement("div", { className: "block-sidebar-body" });
-
-        // Multi-paragraph and list parser for sidebars
-        const paragraphs = currentText.split(/\n\s*\n/);
-        let activeList = null;
-
-        paragraphs.forEach((pText) => {
-          const trimmed = pText.trim();
-          if (!trimmed) return;
-
-          // Check if paragraph starts with a list item or contains list items
-          if (/^\d+\.\s+/.test(trimmed) || /\n\d+\.\s+/.test(trimmed)) {
-            const lines = trimmed.split("\n");
-            lines.forEach((l) => {
-              const lTrim = l.trim();
-              if (!lTrim) return;
-              const m = lTrim.match(/^(\d+)\.\s+(.*)$/);
-              if (m) {
-                if (!activeList) {
-                  activeList = makeElement("ol", { className: "sidebar-ol" });
-                  bodyContainer.appendChild(activeList);
-                }
-                const li = makeElement("li", { value: parseInt(m[1], 10) }, this.formatInlineText(m[2]));
-                activeList.appendChild(li);
-              } else {
-                if (activeList && activeList.lastChild) {
-                  activeList.lastChild.appendChild(document.createTextNode(" "));
-                  const inlineNode = this.formatInlineText(lTrim);
-                  if (inlineNode instanceof Node) {
-                    activeList.lastChild.appendChild(inlineNode);
-                  } else {
-                    activeList.lastChild.appendChild(document.createTextNode(String(inlineNode)));
-                  }
-                } else {
-                  activeList = null;
-                  bodyContainer.appendChild(makeElement("p", {}, this.formatInlineText(lTrim)));
-                }
-              }
-            });
-          } else {
-            activeList = null;
-            bodyContainer.appendChild(makeElement("p", {}, this.formatInlineText(trimmed)));
-          }
-        });
-
-        return makeElement("aside", {
-          className: "block-sidebar",
-          id: `block-${blockId}`,
-          "data-block-id": blockId
-        }, [
-          ["div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" } }, [
-            blockDef.kicker ? ["div", { className: "block-sidebar-kicker" }, blockDef.kicker] : makeElement("div"),
-            copyLinkBtn
-          ]],
-          blockDef.title ? ["div", { className: "block-sidebar-title" }, blockDef.title] : null,
-          bodyContainer
-        ]);
-      }
-
-      // Single Image
-      if (blockDef.type === "image") {
-        const card = this.createThumbCard(blockDef.file);
-        return makeElement("div", { className: "image-single-wrap", id: `block-${blockId}` }, [card]);
-      }
-
-      // Grouped Images
-      if (blockDef.type === "image-group") {
-        const isGrid4 = blockDef.layout === "grid-4";
-        const containerClass = isGrid4 ? "image-grid-four" : "image-row-pair";
-        const cards = (blockDef.images || []).map((imgDef) => this.createThumbCard(imgDef.file));
-        return makeElement("div", { className: containerClass, id: `block-${blockId}` }, cards);
-      }
-
-      // Regular Paragraphs & Multi-Line Blocks
-      const variants = (typeof doc[blockId] === "function") ? doc[blockId]() : ["[Missing block]"];
-      const variantKey = `${this.currentPageId}:${blockId}`;
-      const currentIdx = this.activeVariants[variantKey] || 0;
-      const currentText = variants[currentIdx] || variants[0];
-
-      const wrapper = makeElement("div", {
-        className: `block-wrapper ${this.selectedBlockId === blockId ? "block-selected" : ""}`,
-        id: `block-${blockId}`,
-        "data-block-id": blockId
-      });
-
-      let contentEl;
-      if (blockDef.type === "quote") {
-        contentEl = makeElement("blockquote", { className: "block-quote" }, this.formatInlineText(currentText));
-      } else {
-        if (/\n\d+\.\s/.test(currentText) || /^\d+\.\s/.test(currentText)) {
-          contentEl = makeElement("div", { className: "block-text-multi" });
-          const lines = currentText.split("\n");
-          let currentParagraph = [];
-          let currentList = null;
-
-          const flushParagraph = () => {
-            if (currentParagraph.length > 0) {
-              const pText = currentParagraph.join(" ").trim();
-              if (pText) contentEl.appendChild(makeElement("p", { className: "block-p" }, this.formatInlineText(pText)));
-              currentParagraph = [];
-            }
-          };
-
-          const flushList = () => {
-            if (currentList) {
-              contentEl.appendChild(currentList);
-              currentList = null;
-            }
-          };
-
-          lines.forEach((line) => {
-            const trimmed = line.trim();
-            if (!trimmed) {
-              flushParagraph();
-              flushList();
-              return;
-            }
-
-            const listMatch = trimmed.match(/^(\d+)\.\s+(.*)$/);
-            if (listMatch) {
-              flushParagraph();
-              if (!currentList) currentList = makeElement("ol", { className: "block-ol" });
-              currentList.appendChild(makeElement("li", { value: parseInt(listMatch[1], 10) }, this.formatInlineText(listMatch[2])));
-            } else {
-              flushList();
-              currentParagraph.push(trimmed);
-            }
-          });
-
-          flushParagraph();
-          flushList();
-        } else if (currentText.includes("\n\n")) {
-          contentEl = makeElement("div", { className: "block-text-multi" });
-          const parts = currentText.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
-          parts.forEach((p) => {
-            contentEl.appendChild(makeElement("p", { className: "block-p" }, this.formatInlineText(p)));
-          });
-        } else {
-          contentEl = makeElement("p", { className: "block-p" }, this.formatInlineText(currentText));
-        }
-      }
-
-      wrapper.appendChild(contentEl);
-
-      // Gutter Controls
-      const gutterControls = makeElement("div", { className: "block-gutter-controls" });
-
-      if (variants.length > 1) {
-        const vCol = makeElement("div", { className: "gutter-v-col" });
-        variants.forEach((_, idx) => {
-          const badge = makeElement("button", {
-            className: `gutter-v-badge ${idx === currentIdx ? "active" : ""}`,
-            title: `Switch to variant ${idx + 1}`,
-            onclick: (e) => {
-              e.stopPropagation();
-              this.activeVariants[variantKey] = idx;
-              this.renderArticle();
-              if (this.assistantDialog && this.assistantDialog.element?.isConnected) {
-                this.updateAssistant(blockId);
-              }
-            }
-          }, `${idx + 1}`);
-          vCol.appendChild(badge);
-        });
-        gutterControls.appendChild(vCol);
-      }
-
-      const shareBtn = makeElement("button", {
-        className: "gutter-inspect-btn",
-        title: `Copy shareable link for #${blockId}`,
-        onclick: (e) => {
-          e.stopPropagation();
-          this.copyAnchorLink(this.currentPageId, blockId, e.currentTarget);
-        }
-      }, "🔗");
-      gutterControls.appendChild(shareBtn);
-
-      const inspectBtn = makeElement("button", {
-        className: "gutter-inspect-btn",
-        title: `Edit & AI studio for #${blockId}`,
-        onclick: (e) => {
-          e.stopPropagation();
-          this.selectBlock(blockId, true);
-        }
-      }, "✎");
-      gutterControls.appendChild(inspectBtn);
-
-      const idTip = makeElement("span", {
-        className: "gutter-id-tip"
-      }, `#${blockId}`);
-      gutterControls.appendChild(idTip);
-
-      wrapper.appendChild(gutterControls);
-      wrapper.addEventListener("click", () => this.selectBlock(blockId, true));
-
-      return wrapper;
-    }
-  selectBlock(blockId, openDialog = false) {
-    this.selectedBlockId = blockId;
-    document.querySelectorAll(".block-wrapper").forEach((el) => el.classList.remove("block-selected"));
-    const el = document.getElementById(`block-${blockId}`);
-    if (el) el.classList.add("block-selected");
-
-    if (openDialog) {
-      this.setupAssistantDialog(blockId);
-    } else if (this.assistantDialog && this.assistantDialog.element?.isConnected) {
-      this.updateAssistant(blockId);
-    }
-  }
-
-  setupAssistantDialog(blockId = "p_scarcity_1") {
-    // If dialog exists and is alive on screen, merely bring to front and refresh content
-    if (this.assistantDialog && this.assistantDialog.element && this.assistantDialog.element.isConnected) {
-      this.assistantDialog.bringToFront();
-      this.updateAssistant(blockId);
-      return;
-    }
-
-    this.assistantContent = makeElement("div", { style: { padding: "4px" } });
-
-    this.assistantDialog = UITools.makeDialog({
-      appendTo: document.body,
-      title: "AI Editing Studio & Variant Manager",
-      size: [410, 520],
-      position: [Math.max(20, window.innerWidth - 440), 68],
-      contentElement: this.assistantContent,
-      onClose: () => {
-        this.assistantDialog = null;
-      }
+    // Group 1: Core 3-Part Series
+    const coreBox = makeElement('div', {
+      style: { display: 'flex', flexDirection: 'column', gap: '6px' }
     });
+    coreBox.appendChild(makeElement('span', {
+      style: { fontSize: '10px', textTransform: 'uppercase', color: '#00f2fe', fontWeight: '800', letterSpacing: '0.08em', padding: '0 4px' }
+    }, 'Core Treatise:'));
 
-    this.updateAssistant(blockId);
-  }
+    pages.filter(p => p.group === 'core').forEach(page => {
+      coreBox.appendChild(this._createChapterCard(page));
+    });
+    container.appendChild(coreBox);
 
-  updateAssistant(blockId) {
-      if (!this.assistantContent) return;
-      this.assistantContent.innerHTML = "";
-      const doc = this.getCurrentDoc();
+    // Group 2: Deep Dives & Targeted Responses
+    const respBox = makeElement('div', {
+      style: { display: 'flex', flexDirection: 'column', gap: '6px' }
+    });
+    respBox.appendChild(makeElement('span', {
+      style: { fontSize: '10px', textTransform: 'uppercase', color: '#c084fc', fontWeight: '800', letterSpacing: '0.08em', padding: '0 4px' }
+    }, 'Targeted Responses:'));
 
-      const isFigure = blockId.startsWith("fig_");
-      const imgPrompts = doc.getImagePrompts?.() || {};
-      const specificPrompt = imgPrompts[blockId];
+    pages.filter(p => p.group === 'response').forEach(page => {
+      respBox.appendChild(this._createChapterCard(page));
+    });
+    container.appendChild(respBox);
 
-      const variants = (typeof doc[blockId] === "function") ? doc[blockId]() : [];
-      const variantKey = `${this.currentPageId}:${blockId}`;
-      const activeIdx = this.activeVariants[variantKey] || 0;
-      const docName = doc.name || "ArticleContent";
+    // Group 3: Reference & Governance Directives
+    const refBox = makeElement('div', {
+      style: { display: 'flex', flexDirection: 'column', gap: '6px' }
+    });
+    refBox.appendChild(makeElement('span', {
+      style: { fontSize: '10px', textTransform: 'uppercase', color: '#f59e0b', fontWeight: '800', letterSpacing: '0.08em', padding: '0 4px' }
+    }, 'Governance & Directives:'));
 
-      const header = makeElement("div", { 
-        style: { 
-          marginBottom: "14px", 
-          borderBottom: "1px solid rgba(255,255,255,0.1)", 
-          paddingBottom: "10px" 
-        } 
-      }, [
-        ["div", { style: { fontSize: "11px", color: "rgba(255,255,255,0.5)", textTransform: "uppercase", letterSpacing: "0.06em" } }, isFigure ? "Figure Image Specification" : "Active Method Anchor"],
-        ["div", { style: { fontSize: "14px", fontWeight: "700", color: "#60a5fa", marginTop: "2px" } }, `${docName}.${blockId}()`],
-        ["div", { style: { fontSize: "11px", color: "rgba(255,255,255,0.6)", marginTop: "3px" } }, isFigure ? "Photorealistic Frontier Sci-Fi Image" : `Available text versions: ${variants.length}`]
-      ]);
-      this.assistantContent.appendChild(header);
+    pages.filter(p => p.group === 'reference').forEach(page => {
+      refBox.appendChild(this._createChapterCard(page));
+    });
+    container.appendChild(refBox);
 
-      if (isFigure && specificPrompt) {
-        const promptCard = makeElement("div", {
-          style: {
-            background: "rgba(37,99,235,0.15)",
-            border: "1px solid rgba(96,165,250,0.35)",
-            borderRadius: "8px",
-            padding: "12px",
-            marginBottom: "14px"
-          }
-        }, [
-          ["div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" } }, [
-            ["span", { style: { fontWeight: "700", fontSize: "11px", color: "#93c5fd", textTransform: "uppercase" } }, "Midjourney / DALL-E Prompt"],
-            ["span", { style: { fontSize: "10px", color: "rgba(255,255,255,0.5)" } }, "Frontier Sci-Fi Style"]
-          ]],
-          ["div", { style: { fontSize: "12px", color: "#e2e8f0", lineHeight: "1.45", maxHeight: "150px", overflowY: "auto" } }, specificPrompt]
-        ]);
-        this.assistantContent.appendChild(promptCard);
-
-        const copyImagePromptBtn = makeElement("button", {
-          className: "uw-btn primary",
-          style: { width: "100%", marginBottom: "10px", padding: "8px" },
-          onclick: () => {
-            const fullPrompt = `${imgPrompts.masterAnchor || ""} -- Scene: ${specificPrompt}`;
-            navigator.clipboard.writeText(fullPrompt);
-            alert(`Copied full photorealistic prompt for #${blockId} to your clipboard!`);
-          }
-        }, "🎨 Copy Image Prompt (With Master Style)");
-        this.assistantContent.appendChild(copyImagePromptBtn);
+    // Footer tools
+    const toolsBox = makeElement('div', {
+      style: {
+        marginTop: 'auto',
+        paddingTop: '10px',
+        borderTop: '1px solid #1e293b',
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '6px'
       }
-
-      const listWrap = makeElement("div", { style: { display: "flex", flexDirection: "column", gap: "10px", marginBottom: "16px" } });
-      variants.forEach((txt, idx) => {
-        const isCur = idx === activeIdx;
-        const vCard = makeElement("div", {
-          style: {
-            background: isCur ? "rgba(37,99,235,0.2)" : "rgba(255,255,255,0.04)",
-            border: isCur ? "1px solid #3b82f6" : "1px solid rgba(255,255,255,0.08)",
-            borderRadius: "6px",
-            padding: "10px",
-            cursor: "pointer"
-          },
-          onclick: () => {
-            this.activeVariants[variantKey] = idx;
-            this.renderArticle();
-            this.updateAssistant(blockId);
+    }, [
+      makeElement('button', {
+        className: 'dr-nav-btn',
+        style: { color: '#00f2fe', fontSize: '10px', padding: '6px' },
+        onclick: () => {
+          if (this.reader && typeof this.reader.showExportDialog === 'function') {
+            this.reader.showExportDialog();
           }
-        }, [
-          ["div", { style: { display: "flex", justifyContent: "space-between", marginBottom: "4px" } }, [
-            ["span", { style: { fontWeight: "700", fontSize: "11px", color: isCur ? "#93c5fd" : "#94a3b8" } }, `Version ${idx + 1}${isCur ? " (Active)" : ""}`],
-            ["span", { style: { fontSize: "10px", color: "rgba(255,255,255,0.4)" } }, `${txt.length} chars`]
-          ]],
-          ["div", { style: { fontSize: "12px", color: "#cbd5e1", lineHeight: "1.4" } }, txt]
-        ]);
-        listWrap.appendChild(vCard);
-      });
-      this.assistantContent.appendChild(listWrap);
-
-      const copyPromptBtn = makeElement("button", {
-        className: "uw-btn",
-        style: { width: "100%", marginBottom: "10px" },
-        onclick: () => {
-          const patchPrompt = 
-  `Please rewrite or provide an alternative version for paragraph method \`${docName}.${blockId}\`.
-  Output the change as a surgical method patch container:
-
-  <` + `script data-file="EconomicsOfAutomation/js/${docName}.js" data-method="${docName}.${blockId}" data-action="patch">
-  static ${blockId}() {
-    return [
-      ${JSON.stringify(variants[activeIdx] || "")},
-      "Your alternative version goes here..."
-    ];
+        }
+      }, '📤 Export Series'),
+      makeElement('button', {
+        className: 'dr-nav-btn',
+        style: { color: '#10b981', fontSize: '10px', padding: '6px' },
+        onclick: () => this.selectChapter('ai-rules')
+      }, '🤖 Copy Prompt')
+    ]);
+    container.appendChild(toolsBox);
   }
-  <` + `/script>`;
 
-          navigator.clipboard.writeText(patchPrompt);
-          alert(`Copied prompt template to clipboard!\n\nYou can paste this directly to the AI to request alternative versions for #${blockId}.`);
+  _createChapterCard(page) {
+    const isCur = page.id === (this.activePageId || this.reader?.currentPageId || 'dividend');
+    return makeElement('div', {
+      className: `cp-chapter-card ${isCur ? 'active' : ''}`,
+      id: `nav-card-${page.id}`,
+      style: {
+        padding: '8px 10px',
+        border: '1px solid ' + (isCur ? '#00f2fe' : '#1e293b'),
+        borderRadius: '6px',
+        background: isCur ? 'rgba(0, 242, 254, 0.08)' : 'rgba(255, 255, 255, 0.02)',
+        cursor: 'pointer',
+        transition: 'all 0.15s ease'
+      },
+      onclick: () => this.selectChapter(page.id)
+    }, [
+      makeElement('strong', {
+        style: {
+          fontSize: '11px',
+          color: isCur ? '#00f2fe' : '#f8fafc',
+          display: 'block'
         }
-      }, "📋 Copy AI Text Patch Prompt");
-      this.assistantContent.appendChild(copyPromptBtn);
+      }, page.title)
+    ]);
+  }
 
-      const viewTopBtn = makeElement("button", {
-        className: "uw-btn",
-        style: { width: "100%" },
-        onclick: () => {
-          const el = document.getElementById(`block-${blockId}`);
-          if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-      }, "🔍 Scroll to this block in article");
-      this.assistantContent.appendChild(viewTopBtn);
+  selectChapter(pageId) {
+    this.activePageId = pageId;
+    if (this.reader && typeof this.reader.switchPage === 'function') {
+      this.reader.switchPage(pageId);
     }
+    if (this.sidePanel) {
+      this.sidePanel.contentContainer.querySelectorAll('.cp-chapter-card').forEach(c => {
+        c.classList.toggle('active', c.id === `nav-card-${pageId}`);
+        c.style.borderColor = c.id === `nav-card-${pageId}` ? '#00f2fe' : '#1e293b';
+        c.style.background = c.id === `nav-card-${pageId}` ? 'rgba(0, 242, 254, 0.08)' : 'rgba(255, 255, 255, 0.02)';
+        const strong = c.querySelector('strong');
+        if (strong) strong.style.color = c.id === `nav-card-${pageId}` ? '#00f2fe' : '#f8fafc';
+      });
+    }
+    if (this.rootElement) {
+      this.rootElement.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
   destroy() {
-    if (this._scrollHandler) {
-      window.removeEventListener("scroll", this._scrollHandler);
+    if (this._safeAreaHandler) {
+      window.removeEventListener('layout-safe-area-change', this._safeAreaHandler);
+      this._safeAreaHandler = null;
     }
-    if (this.progressTrack && this.progressTrack.parentNode) {
-      this.progressTrack.remove();
+    if (this.sidePanel) {
+      this.sidePanel.destroy();
+      this.sidePanel = null;
     }
-    if (this.navBar && this.navBar.parentNode) {
-      this.navBar.remove();
+    if (this.reader && typeof this.reader.destroy === 'function') {
+      this.reader.destroy();
+      this.reader = null;
     }
-    if (this.assistantDialog && typeof this.assistantDialog.close === "function") {
-      this.assistantDialog.close();
-      this.assistantDialog = null;
-    }
+    this.rootElement = null;
   }
-  toggleTheme() {
-    const isDark = document.body.classList.toggle("theme-dark");
-    localStorage.setItem("robot_dividend_theme", isDark ? "dark" : "light");
-  }
-
-  showExportDialog(defaultMode = "markdown") {
-      // 1. Generate full content across all six pages
-      const markdownContent = this.generateMarkdown();
-      const formattedHtml = this.generateFormattedHtml();
-
-      // Calculate total series statistics
-      let totalSeriesWords = 0;
-      this.pages.forEach((pageDef) => {
-        const doc = pageDef.docClass();
-        if (!doc) return;
-        const manifest = doc.manifest();
-        manifest.forEach((sec) => {
-          sec.blocks.forEach((b) => {
-            const variants = (typeof doc[b.id] === "function") ? doc[b.id]() : [];
-            const variantKey = `${pageDef.id}:${b.id}`;
-            const curIdx = this.activeVariants[variantKey] || 0;
-            const txt = variants[curIdx] || variants[0] || "";
-            totalSeriesWords += txt.split(/\s+/).filter(Boolean).length;
-          });
-        });
-      });
-      const estTotalMinutes = Math.max(1, Math.round(totalSeriesWords / 220));
-
-      const plainText = formattedHtml
-        .replace(/<h1>(.*?)<\/h1>/g, "$1\n\n")
-        .replace(/<h2>(.*?)<\/h2>/g, "$1\n\n")
-        .replace(/<h3>(.*?)<\/h3>/g, "$1\n\n")
-        .replace(/<blockquote><p>(.*?)<\/p><\/blockquote>/g, "> $1\n\n")
-        .replace(/<ol>(.*?)<\/ol>/gs, "$1\n")
-        .replace(/<li>(.*?)<\/li>/g, "• $1\n")
-        .replace(/<p><em>(.*?)<\/em><\/p>/g, "$1\n\n")
-        .replace(/<p>(.*?)<\/p>/g, "$1\n\n")
-        .replace(/<hr>/g, "\n---\n\n");
-
-      let activeTab = defaultMode; // "markdown" | "html"
-
-      // Textarea for Markdown preview & direct editing/selection
-      const mdEditor = makeElement("textarea", {
-        className: "export-code-view",
-        style: {
-          display: activeTab === "markdown" ? "block" : "none",
-          flex: "1",
-          width: "100%",
-          minHeight: "300px",
-          background: "var(--reader-surface, #1e293b)",
-          color: "var(--reader-text, #f8fafc)",
-          border: "1px solid var(--reader-border, #334155)",
-          borderRadius: "8px",
-          padding: "16px",
-          boxSizing: "border-box",
-          fontFamily: "var(--reader-font-mono, monospace)",
-          fontSize: "12.5px",
-          lineHeight: "1.6",
-          whiteSpace: "pre-wrap",
-          wordBreak: "break-word",
-          resize: "none"
-        }
-      });
-      mdEditor.value = markdownContent;
-
-      // Rich rendered HTML view for visual inspection before copying into Gmail or Word
-      const richPreview = makeElement("div", {
-        className: "export-rendered-preview",
-        style: {
-          display: activeTab === "html" ? "block" : "none",
-          flex: "1",
-          minHeight: "300px",
-          overflowY: "auto",
-          background: "var(--reader-surface, #ffffff)",
-          color: "var(--reader-text, #1f242e)",
-          border: "1px solid var(--reader-border, #e2e8f0)",
-          borderRadius: "8px",
-          padding: "18px 22px",
-          boxSizing: "border-box"
-        },
-        innerHTML: formattedHtml
-      });
-
-      const tabMarkdownBtn = makeElement("button", {
-        className: `nav-page-btn ${activeTab === "markdown" ? "active" : ""}`,
-        onclick: () => {
-          activeTab = "markdown";
-          tabMarkdownBtn.classList.add("active");
-          tabHtmlBtn.classList.remove("active");
-          mdEditor.style.display = "block";
-          richPreview.style.display = "none";
-          copyBtn.textContent = "📋 Copy Markdown";
-        }
-      }, "📝 Markdown (for LLMs & text)");
-
-      const tabHtmlBtn = makeElement("button", {
-        className: `nav-page-btn ${activeTab === "html" ? "active" : ""}`,
-        onclick: () => {
-          activeTab = "html";
-          tabHtmlBtn.classList.add("active");
-          tabMarkdownBtn.classList.remove("active");
-          richPreview.style.display = "block";
-          mdEditor.style.display = "none";
-          copyBtn.textContent = "📋 Copy Formatted Text";
-        }
-      }, "🌐 Formatted Text (for Gmail & rich text)");
-
-      const copyBtn = makeElement("button", {
-        className: "uw-btn primary",
-        style: { padding: "7px 18px", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "6px" },
-        onclick: (e) => {
-          const btn = e.currentTarget;
-          if (activeTab === "markdown") {
-            const textToCopy = mdEditor.value || markdownContent;
-            navigator.clipboard.writeText(textToCopy).then(() => {
-              btn.textContent = "✓ Copied Markdown!";
-              setTimeout(() => { btn.textContent = "📋 Copy Markdown"; }, 2400);
-            }).catch(() => {
-              this._fallbackCopy(textToCopy, btn);
-            });
-          } else {
-            if (navigator.clipboard && window.ClipboardItem) {
-              const htmlBlob = new Blob([formattedHtml], { type: "text/html" });
-              const textBlob = new Blob([plainText], { type: "text/plain" });
-              navigator.clipboard.write([
-                new ClipboardItem({ "text/html": htmlBlob, "text/plain": textBlob })
-              ]).then(() => {
-                btn.textContent = "✓ Copied Formatted Text!";
-                setTimeout(() => { btn.textContent = "📋 Copy Formatted Text"; }, 2400);
-              }).catch(() => {
-                this._fallbackCopy(formattedHtml, btn);
-              });
-            } else {
-              this._fallbackCopy(formattedHtml, btn);
-            }
-          }
-        }
-      }, activeTab === "markdown" ? "📋 Copy Markdown" : "📋 Copy Formatted Text");
-
-      const statsBanner = makeElement("div", {
-        style: {
-          background: "var(--reader-card-bg)",
-          border: "1px solid var(--reader-border)",
-          borderRadius: "8px",
-          padding: "8px 14px",
-          fontSize: "12px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: "6px"
-        }
-      }, [
-        makeElement("span", { style: { fontWeight: "700", color: "var(--reader-accent)" } }, `📚 Complete Series (${this.pages.length} Chapters)`),
-        makeElement("span", { style: { color: "var(--reader-muted)" } }, `~${totalSeriesWords.toLocaleString()} words • ${estTotalMinutes} min read`),
-        makeElement("span", { style: { color: "var(--reader-text-subtle)", fontStyle: "italic" } }, "Active paragraph selections preserved")
-      ]);
-
-      const dialogContent = makeElement("div", {
-        className: "export-container",
-        style: { display: "flex", flexDirection: "column", height: "100%", gap: "12px", boxSizing: "border-box" }
-      }, [
-        makeElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" } }, [
-          makeElement("div", { className: "reader-nav-pages" }, [tabMarkdownBtn, tabHtmlBtn]),
-          copyBtn
-        ]),
-        statsBanner,
-        makeElement("div", {
-          className: "export-view-container",
-          style: { flex: "1", minHeight: "320px", display: "flex", position: "relative" }
-        }, [
-          mdEditor,
-          richPreview
-        ])
-      ]);
-
-      UITools.makeDialog({
-        appendTo: document.body,
-        title: "Export All 6 Chapters",
-        size: [740, 600],
-        position: [Math.max(16, Math.floor(window.innerWidth / 2 - 370)), 45],
-        contentElement: dialogContent
-      });
-    }
-  _fallbackCopy(text, btn) {
-    navigator.clipboard.writeText(text).then(() => {
-      if (btn) {
-        btn.textContent = "✓ HTML Copied!";
-        setTimeout(() => { btn.textContent = "📋 Copy for Quora (Direct Paste)"; }, 2500);
-      }
-    });
-  }
-
-  createThumbCard(fileName) {
-    const thumbPath = `images/thumbs/${fileName}`;
-    const fullPath = `images/${fileName}`;
-
-    const card = makeElement("div", {
-      className: "thumb-card",
-      title: "Click to expand image"
-    });
-
-    const img = makeElement("img", {
-      className: "thumb-img",
-      loading: "lazy",
-      decoding: "async",
-      src: thumbPath
-    });
-
-    // Automated graceful fallback: if images/thumbs/ doesn't exist yet or extension is .jpg
-    img.onerror = () => {
-      if (img.src.indexOf("/thumbs/") !== -1) {
-        img.src = fullPath;
-      } else if (img.src.endsWith(".jpeg")) {
-        img.src = img.src.replace(/\.jpeg$/, ".jpg");
-      } else if (img.src.endsWith(".jpg")) {
-        img.src = img.src.replace(/\.jpg$/, ".jpeg");
-      }
-    };
-
-    card.addEventListener("click", (e) => {
-      e.stopPropagation();
-      this.showLargePopout(fullPath);
-    });
-
-    card.appendChild(img);
-    return card;
-  }
-
-  showLargePopout(imagePath) {
-    // Remove any existing popout
-    const existing = document.querySelector(".popout-large-frame");
-    if (existing) existing.remove();
-
-    const frame = makeElement("div", {
-      className: "popout-large-frame",
-      title: "Click anywhere on image to close"
-    });
-
-    const img = makeElement("img", {
-      className: "popout-large-img",
-      src: imagePath
-    });
-
-    img.onerror = () => {
-      if (img.src.endsWith(".jpeg")) {
-        img.src = img.src.replace(/\.jpeg$/, ".jpg");
-      }
-    };
-
-    frame.appendChild(img);
-    document.body.appendChild(frame);
-
-    requestAnimationFrame(() => frame.classList.add("visible"));
-
-    const closePopout = () => {
-      frame.classList.remove("visible");
-      setTimeout(() => frame.remove(), 190);
-      window.removeEventListener("keydown", keyHandler);
-      window.removeEventListener("click", outsideClickHandler);
-    };
-
-    const keyHandler = (e) => {
-      if (e.key === "Escape") closePopout();
-    };
-
-    const outsideClickHandler = (e) => {
-      if (!frame.contains(e.target)) {
-        closePopout();
-      }
-    };
-
-    frame.addEventListener("click", (e) => {
-      e.stopPropagation();
-      closePopout();
-    });
-
-    window.addEventListener("keydown", keyHandler);
-    setTimeout(() => {
-      window.addEventListener("click", outsideClickHandler);
-    }, 50);
-  }
-
-  getCurrentDoc() {
-      const pageCfg = this.pages.find((p) => p.id === this.currentPageId) || this.pages[0];
-      const resolved = pageCfg.docClass();
-      return resolved || globalThis.ArticleContent;
-    }
-
-  switchPage(pageId, updateUrl = true) {
-      if (this.currentPageId === pageId) return;
-      this.currentPageId = pageId;
-      localStorage.setItem("robot_dividend_active_page", pageId);
-
-      // Update browser URL hash so the current sub-page is directly copyable & linkable
-      if (updateUrl) {
-        const currentHash = window.location.hash.replace(/^#\/?/, '').split('/')[0];
-        if (currentHash !== pageId) {
-          if (window.history && window.history.pushState) {
-            window.history.pushState(null, "", `#${pageId}`);
-          } else {
-            window.location.hash = pageId;
-          }
-        }
-      }
-
-      // Update navigation button active styles and scroll active tab into view
-      if (this.navPageButtons) {
-        Object.entries(this.navPageButtons).forEach(([id, btn]) => {
-          const isActive = id === pageId;
-          btn.classList.toggle("active", isActive);
-          if (isActive && this.pageSelector) {
-            const btnLeft = btn.offsetLeft;
-            const btnWidth = btn.offsetWidth;
-            const containerWidth = this.pageSelector.clientWidth;
-            const targetScroll = btnLeft - (containerWidth / 2) + (btnWidth / 2);
-            this.pageSelector.scrollTo({ left: Math.max(0, targetScroll), behavior: "smooth" });
-          }
-        });
-      }
-
-      // Update mobile select menu if present
-      if (this.navSelect) {
-        this.navSelect.value = pageId;
-      }
-
-      // Scroll smoothly to top of the article
-      window.scrollTo({ top: 0, behavior: "smooth" });
-
-      // Render new document
-      this.renderArticle();
-      this._updateNavScrollIndicators();
-
-      // Update assistant if open
-      if (this.assistantDialog && this.assistantDialog.element?.isConnected) {
-        const doc = this.getCurrentDoc();
-        const firstBlock = doc.manifest()?.[0]?.blocks?.[0]?.id || "p_scarcity_1";
-        this.selectBlock(firstBlock, false);
-        this.updateAssistant(firstBlock);
-      }
-    }
-  getImageDescription(fileName) {
-      const descriptions = {
-        // First page (ArticleContent) images
-        "dinner.jpeg": "The pioneer colonists gather outdoors around a hand-hewn wooden table in front of their prefab shelter, sharing an evening meal earned through collective human sweat before the arrival of machines.",
-        "robotsarrive.jpeg": "A scorched automated supply pod rests in a clearing as rugged, solar-powered utility automatons descend its ramp to take over the colony's heavy agricultural labor.",
-        "sawmill.jpeg": "Frontier settlers work at a community timber mill, preparing standardized yellow-pine 2×4 boards that serve as the tangible physical backing for the settlement's Credit currency.",
-        "market.jpeg": "Colonists exchange timber-backed Credits on data slates for fresh produce and household goods in a lively open-air settlement market without hauling lumber around.",
-        "transition.jpeg": "Autonomous multi-tread harvesters fell and stack giant alien trees in the background while relaxed colonists sit on an electric truck tailgate checking their monthly Credit dividend ledgers.",
-        "robotandcarpenter.jpeg": "A human woodworker crafts fine furnishings side-by-side with an articulated robotic assistant, demonstrating how automation elevates necessary labor into voluntary creative craftsmanship.",
-        "musicandart.jpeg": "With survival decoupled from compulsory labor, colonists gather on open-air café verandas to play acoustic guitar, sketch, and drink tea purely for the pleasure of creative expression.",
-        "vehicle.jpeg": "A colonist enjoys an open-air leisure cruise in a custom recreational explorer rover, using automated manufacturing to pursue personal exploration without commercial barriers.",
-        "treehouses.jpeg": "As machine abundance deepens into true luxury, colonists have their tireless utility robots build whimsical, multi-tiered treehouses woven high into the alien canopy for relaxation and panoramic views.",
-        "whimsicalhouse.jpeg": "A breathtaking cottage featuring intricately fitted stone arches and hand-masonry—obviously not the easiest or most practical way to build a house, but constructed purely for aesthetic beauty and personal taste because tireless robots performed all the quarrying and heavy lifting.",
-
-        // Colony / Doomer / Paradigms / Earth / Objections images
-        "fig_dozen": "Twelve frontier colonists and a squad of rugged utility robots stepping off an arrival cargo pod.",
-        "fig_hundred": "The sawmill Credit standard: standardized lumber backing digital currency for everyday trade.",
-        "fig_trans": "Public automated combines reaping record crops while citizens receive an unconditional Robot Dividend.",
-        "fig_auto": "A bustling frontier town where machines run the utilities and citizens devote their time to chosen vocations.",
-        "fig_colony_gov": "Citizens at public voting terminals casting ranked ballots to directly select fiscal consensus curves.",
-        "fig_colony_depot": "Overhead gantry cranes moving standardized containers of energy cells, timber, and grain in a public reserve depot.",
-        "fig_colony_bots": "Engineers supervising newly unpacked utility robots as open-source AI models coordinate the manufacturing of duplicate machines.",
-        "fig_bunker_contrast": "A stark contrast between an isolated billionaire alone in a concrete shelter and a vibrant sunlit city park where citizens thrive together.",
-        "fig_empty_showroom": "A futuristic showroom packed with high-tech autonomous vehicles sitting empty because displaced workers lack purchasing power to buy them.",
-        "fig_earth_gridlock": "Autonomous delivery vehicles navigating modern glass office towers alongside anxious citizens demanding economic updates to legacy payroll systems.",
-        "fig_earth_dialogue": "A televised gigafactory interview contrasting traditional economic dogma with first-principles physical abundance.",
-        "fig_triad_matrix": "A three-part panoramic juxtaposition of financialized crypto servers, centralized AI clusters, and an open sunlit post-labor agricultural commons.",
-        "fig_gold_fallacy": "A symbolic composition illustrating the Wheelbarrow of Gold paradox: dying of thirst surrounded by bullion vs. abundance reaped by autonomous combines.",
-        "fig_bridge_persuasion": "A transparent civic town hall where citizens and entrepreneurs achieve consensus around machine surplus capture and universal dividends."
-      };
-
-      return descriptions[fileName] || `Photorealistic depiction of frontier colony life and automated infrastructure (${fileName}).`;
-    }
-
-  getComponentMarkdown(blockDef) {
-    if (blockDef.component === "TaxChartComponent" || blockDef.id?.includes("tax_chart")) {
-      return [
-        "> ### Interactive Simulation: Algorithmic Negative Income Tax & Dividend Schedule",
-        ">",
-        "> **Architecture & Lineage:**",
-        "> This simulation implements a continuous negative income tax schedule—in the tradition of Milton Friedman and James Meade—governed by two parameters within a capacity safety corridor $[T_{\\min}, T_{\\max}]$:",
-        "> 1. **Total Collection Rate ($T$):** The share of economic surplus captured through a consumption VAT, excess-profit surtaxes (with 100% immediate capital expensing), and resource royalties on land, power throughput, and mineral extraction:",
-        ">    $$R_{\\text{total}} = R_{\\text{VAT}} + R_{\\text{Surtax}} + R_{\\text{Resource}}$$",
-        ">    The upper bound ($T_{\\max}$) is calibrated to real physical telemetry (grain reserves, electrical grid operating margins, and critical trade staffing) to prevent overshooting productive capacity.",
-        "> 2. **Progressivity Index ($P$):** The curvature parameter ($P \\in [0, 100\\%]$), which maps into an equalizing curve parameter $p$:",
-        ">    - **$P = 0\\%$ ($p = 0$):** A lump-sum flat fee ($T_i = r \\cdot \\bar{Y}$), regressive on lower brackets.",
-        ">    - **$P = 30\\%$ ($p = 0.5$):** A proportional flat tax ($T_i = r \\cdot Y_i$), where each bracket pays target percentage $r = T/100$.",
-        ">    - **$P > 30\\%$ ($p > 0.5$):** Blends into a progressive negative income tax:",
-        ">      $$T_i = (1 - u)(r \\cdot Y_i) + u\\big(Y_i - (1 - r)\\bar{Y}\\big)$$",
-        ">      where $u = (p - 0.5) \\times 2 \\times 0.65$. The $0.65$ damping factor ensures that marginal tax rates remain well below 100%, so earning additional income always yields positive net take-home pay.",
-        ">",
-        "> **Negative Tax Credits & Dual-Channel Distribution:**",
-        "> When $P > 30\\%$, the schedule generates negative tax liabilities ($T_i < 0$) for lower percentiles, disbursed through two channels:",
-        "> - **Basic Services ($S_t$):** Broad access to zero-marginal-cost digital services (AI medical screening, legal advocacy, and personalized tutoring).",
-        "> - **Liquid Cash Floor ($C_t$):** Scaled to physical production capacity (housing starts, food tonnage, and power margins). Transitional surplus above current physical absorptive capacity funds milestone construction prizes to break physical bottlenecks.",
-        ">",
-        "> **Scenario Benchmarks:**",
-        "> - *Frontier (Pre-Auto):* Functions as a standard progressive tax, preserving work incentives when labor is required.",
-        "> - *Transition (50% Auto):* Recycles corporate automation rents to ensure displaced workers receive an expanding dividend baseline.",
-        "> - *Full Automation (100k Robots):* When wage sweat falls to zero for the majority, the formula automatically distributes the automated harvest as a universal dividend floor.",
-        "> - *Earth Benchmark (US 2024 Data):* Demonstrates Gini compression and poverty eradication while maintaining clear rewards for innovation and skill."
-      ].join("\n");
-    }
-
-    if (blockDef.component === "DoomerDebateComponent") {
-      return [
-        "> ### Case Study: The Anatomy of a Doomer Loop",
-        ">",
-        "> A breakdown of an online discussion tracing how anxiety over automation escalates into fatalistic extermination scenarios in five steps (The Scarcity Reflex, The 50-Year Stagnation Argument, The Assumption of Frictionless Tyranny, The Competitive Dilemma, and The Status Fallacy)—and the game-theoretic incentives showing why capital owners require solvent domestic consumers."
-      ].join("\n");
-    }
-
-    if (blockDef.component === "ParadigmsComparisonComponent") {
-      return [
-        "> ### Analytical Comparison: Three Post-Labor Blueprints",
-        ">",
-        "> A comparative matrix evaluating David Shapiro's Post-Labor Economics (Sovereign Wealth Funds & citizen equity trusts), Emad Mostaque's The Last Economy (compute vouchers & UBAI), and Rob Brown's Robot Dividend (algorithmic tax curves & physical claim checks) across thermodynamics, public finance, and human agency."
-      ].join("\n");
-    }
-
-    return `> *[Interactive Component: ${blockDef.title || blockDef.id}]*`;
-  }
-  generateMarkdown() {
-      const mdLines = [];
-
-      mdLines.push("# Economics of Automation: The Complete Series");
-      mdLines.push("");
-      mdLines.push("> *A First-Principles Exploration of Work, Money, and Machine Abundance*");
-      mdLines.push("");
-      mdLines.push("---");
-      mdLines.push("");
-
-      // Iterate across all 5 pages
-      this.pages.forEach((pageDef, pageIdx) => {
-        const doc = pageDef.docClass();
-        if (!doc) return;
-        const meta = doc.getMeta();
-        const manifest = doc.manifest();
-
-        mdLines.push(`# Part ${pageIdx + 1}: ${meta.title}`);
-        if (meta.kicker) {
-          mdLines.push(`**${meta.kicker}**`);
-        }
-        if (meta.subtitle) {
-          mdLines.push(`> *${meta.subtitle}*`);
-        }
-        mdLines.push("");
-
-        manifest.forEach((sec) => {
-          const secHeading = sec.partLabel ? `## ${sec.partLabel}: ${sec.title}` : `## ${sec.title}`;
-          mdLines.push(secHeading);
-          mdLines.push("");
-
-          sec.blocks.forEach((b) => {
-            // 1. Interactive Component Blocks (e.g. Tax Curve App, Doomer Ladder, Paradigms Matrix)
-            if (b.type === "component") {
-              mdLines.push(this.getComponentMarkdown(b));
-              mdLines.push("");
-              return;
-            }
-
-            // 2. Single Image
-            if (b.type === "image") {
-              mdLines.push(`> **[Illustration: ${b.file}]**`);
-              mdLines.push(`> *${this.getImageDescription(b.file)}*`);
-              mdLines.push("");
-              return;
-            }
-
-            // 3. Grouped Images (e.g. 2-column pairs or bottom 4-grid)
-            if (b.type === "image-group") {
-              mdLines.push(`> **[Illustrations & Visual Progression]**`);
-              (b.images || []).forEach((img) => {
-                const desc = this.getImageDescription(img.file);
-                mdLines.push(`> - **${img.file}:** ${desc}`);
-              });
-              mdLines.push("");
-              return;
-            }
-
-            // 4. Sidebar Callouts
-            if (b.type === "sidebar" || b.type === "callout") {
-              const variants = (typeof doc[b.id] === "function") ? doc[b.id]() : [];
-              const variantKey = `${pageDef.id}:${b.id}`;
-              const currentIdx = this.activeVariants[variantKey] || 0;
-              const text = variants[currentIdx] || variants[0] || "";
-
-              mdLines.push(`> ### 📌 ${b.title || "Note"}`);
-              if (b.kicker) mdLines.push(`> *${b.kicker}*`);
-              mdLines.push(">");
-              text.split("\n").forEach((line) => {
-                mdLines.push(`> ${line}`);
-              });
-              mdLines.push("");
-              return;
-            }
-
-            // 5. Quotes and Paragraphs (Strictly using current selection, defaulting to first)
-            const variants = (typeof doc[b.id] === "function") ? doc[b.id]() : [];
-            const variantKey = `${pageDef.id}:${b.id}`;
-            const currentIdx = this.activeVariants[variantKey] || 0;
-            const text = variants[currentIdx] || variants[0] || "";
-
-            if (b.type === "quote") {
-              mdLines.push(`> "${text}"`);
-              mdLines.push("");
-              return;
-            }
-
-            // Regular Paragraphs & Numbered Lists
-            if (/\n\d+\.\s/.test(text) || /^\d+\.\s/.test(text)) {
-              const lines = text.split("\n");
-              lines.forEach((l) => {
-                const trimmed = l.trim();
-                if (trimmed) mdLines.push(trimmed);
-              });
-              mdLines.push("");
-            } else if (text.includes("\n\n")) {
-              text.split(/\n\s*\n/).forEach((p) => {
-                const pTrim = p.trim();
-                if (pTrim) {
-                  mdLines.push(pTrim);
-                  mdLines.push("");
-                }
-              });
-            } else {
-              mdLines.push(text);
-              mdLines.push("");
-            }
-          });
-        });
-
-        if (pageIdx < this.pages.length - 1) {
-          mdLines.push("---");
-          mdLines.push("");
-        }
-      });
-
-      return mdLines.join("\n");
-    }
-  copyMarkdownToClipboard(btn = null) {
-      const md = this.generateMarkdown();
-      const origHTML = btn ? btn.innerHTML : null;
-
-      const showSuccess = () => {
-        if (btn) {
-          btn.innerHTML = '<span>✓</span><span class="btn-label-long">Copied Markdown!</span>';
-          setTimeout(() => {
-            if (btn && origHTML) btn.innerHTML = origHTML;
-          }, 2200);
-        }
-        if (typeof UITools !== "undefined" && typeof UITools.showHUD === "function") {
-          UITools.showHUD({
-            html: `<div style="padding:10px 16px;background:#065f46;color:#ecfdf5;border:1px solid #10b981;border-radius:8px;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.45);display:flex;align-items:center;gap:8px;"><span>✓</span><span>Copied current version of <b>${this.getCurrentDoc().getMeta().title}</b> to clipboard as Markdown!</span></div>`,
-            position: "bottom-right",
-            autoClose: 2600
-          });
-        }
-      };
-
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(md).then(showSuccess).catch(() => {
-          this._fallbackCopy(md, btn);
-        });
-      } else {
-        this._fallbackCopy(md, btn);
-      }
-    }
-
-  generateFormattedHtml() {
-      const htmlParts = [];
-      htmlParts.push(`<h1>Economics of Automation: The Complete Series</h1>`);
-      htmlParts.push(`<p><em>A First-Principles Exploration of Work, Money, and Machine Abundance</em></p><hr>`);
-
-      // Iterate through all 5 pages
-      this.pages.forEach((pageDef, pageIdx) => {
-        const doc = pageDef.docClass();
-        if (!doc) return;
-        const meta = doc.getMeta();
-        const manifest = doc.manifest();
-
-        htmlParts.push(`<h2>Part ${pageIdx + 1}: ${meta.title}</h2>`);
-        if (meta.subtitle) {
-          htmlParts.push(`<p><em>${meta.subtitle}</em></p>`);
-        }
-
-        manifest.forEach((sec) => {
-          const heading = sec.partLabel ? `${sec.partLabel}: ${sec.title}` : sec.title;
-          htmlParts.push(`<h3>${heading}</h3>`);
-
-          sec.blocks.forEach((b) => {
-            if (b.type === "component") {
-              if (b.component === "TaxChartComponent" || b.id?.includes("tax_chart")) {
-                htmlParts.push(`<blockquote><p><strong>[Interactive Simulation: Democratic Tax Curve & Dividend Simulator]</strong><br>A parameterized curve governed by Total Collection Rate (T) and Progressivity (P) voted on directly by citizens. Above 30% progressivity, the schedule creates negative tax credits for lower percentiles, distributing the machine harvest as a universal dividend floor without a separate welfare bureaucracy.</p></blockquote>`);
-              } else if (b.component === "DoomerDebateComponent") {
-                htmlParts.push(`<blockquote><p><strong>[Interactive Case Study: The Anatomy of a Doomer Loop]</strong><br>A step-by-step game-theoretic analysis showing why capital owners need solvent domestic consumers to prevent demand collapse.</p></blockquote>`);
-              } else if (b.component === "ParadigmsComparisonComponent") {
-                htmlParts.push(`<blockquote><p><strong>[Interactive Matrix: The Three Post-Labor Blueprints]</strong><br>Comparative evaluation of Shapiro's capital leverage, Mostaque's compute vouchers, and Brown's physical Robot Dividend.</p></blockquote>`);
-              }
-              return;
-            }
-
-            if (b.type === "image") {
-              htmlParts.push(`<p><em>[Illustration: ${b.file} — ${this.getImageDescription(b.file)}]</em></p>`);
-              return;
-            }
-
-            if (b.type === "image-group") {
-              const list = (b.images || []).map((img) => `<strong>${img.file}:</strong> ${this.getImageDescription(img.file)}`).join("<br>");
-              htmlParts.push(`<blockquote><p><em>[Illustrations]</em><br>${list}</p></blockquote>`);
-              return;
-            }
-
-            if (b.type === "sidebar" || b.type === "callout") {
-              const variants = (typeof doc[b.id] === "function") ? doc[b.id]() : [];
-              const variantKey = `${pageDef.id}:${b.id}`;
-              const idx = this.activeVariants[variantKey] || 0;
-              const text = variants[idx] || variants[0] || "";
-              htmlParts.push(`<blockquote><p><strong>${b.title || "Note"}</strong>: ${text}</p></blockquote>`);
-              return;
-            }
-
-            const variants = (typeof doc[b.id] === "function") ? doc[b.id]() : [];
-            const variantKey = `${pageDef.id}:${b.id}`;
-            const idx = this.activeVariants[variantKey] || 0;
-            const text = variants[idx] || variants[0] || "";
-
-            if (b.type === "quote") {
-              htmlParts.push(`<blockquote><p>${text}</p></blockquote>`);
-            } else if (/\n\d+\.\s/.test(text) || /^\d+\.\s/.test(text)) {
-              const lines = text.split("\n");
-              let inList = false;
-              lines.forEach((l) => {
-                const trimmed = l.trim();
-                if (!trimmed) return;
-                const m = trimmed.match(/^\d+\.\s+(.*)$/);
-                if (m) {
-                  if (!inList) {
-                    htmlParts.push("<ol>");
-                    inList = true;
-                  }
-                  htmlParts.push(`<li>${m[1]}</li>`);
-                } else {
-                  if (inList) {
-                    htmlParts.push("</ol>");
-                    inList = false;
-                  }
-                  htmlParts.push(`<p>${trimmed}</p>`);
-                }
-              });
-              if (inList) htmlParts.push("</ol>");
-            } else if (text.includes("\n\n")) {
-              text.split(/\n\s*\n/).forEach((p) => htmlParts.push(`<p>${p.trim()}</p>`));
-            } else {
-              htmlParts.push(`<p>${text}</p>`);
-            }
-          });
-        });
-
-        if (pageIdx < this.pages.length - 1) {
-          htmlParts.push("<hr>");
-        }
-      });
-
-      return htmlParts.join("\n");
-    }
-
-  _updateNavScrollIndicators() {
-      if (!this.pageSelector || !this.navCarousel) return;
-      const { scrollLeft, scrollWidth, clientWidth } = this.pageSelector;
-      const canScrollLeft = scrollLeft > 4;
-      const canScrollRight = scrollLeft < (scrollWidth - clientWidth - 4);
-
-      if (this.navScrollLeftBtn) {
-        this.navScrollLeftBtn.classList.toggle("disabled", !canScrollLeft);
-      }
-      if (this.navScrollRightBtn) {
-        this.navScrollRightBtn.classList.toggle("disabled", !canScrollRight);
-      }
-
-      this.navCarousel.classList.toggle("has-overflow-left", canScrollLeft);
-      this.navCarousel.classList.toggle("has-overflow-right", canScrollRight);
-    }
-
-  formatInlineText(text) {
-      if (!text) return document.createTextNode("");
-      if (typeof text !== "string") return document.createTextNode(String(text));
-
-      const frag = document.createDocumentFragment();
-      if (!text.includes("*")) {
-        frag.appendChild(document.createTextNode(text));
-        return frag;
-      }
-
-      const parts = text.split(/(\*\*.*?\*\*|\*.*?\*)/g);
-      for (const part of parts) {
-        if (part.startsWith("**") && part.endsWith("**") && part.length >= 4) {
-          const strong = document.createElement("strong");
-          strong.textContent = part.slice(2, -2);
-          frag.appendChild(strong);
-        } else if (part.startsWith("*") && part.endsWith("*") && part.length >= 2) {
-          const em = document.createElement("em");
-          em.textContent = part.slice(1, -1);
-          frag.appendChild(em);
-        } else if (part) {
-          frag.appendChild(document.createTextNode(part));
-        }
-      }
-      return frag;
-    }
-  _parseUrlRoute() {
-      let pageId = null;
-      let anchorId = null;
-
-      // 1. Check Query Params: ?page=rules&anchor=rule_mirror
-      try {
-        const params = new URLSearchParams(window.location.search);
-        if (params.has("page")) pageId = params.get("page");
-        if (params.has("anchor")) anchorId = params.get("anchor");
-      } catch (e) {}
-
-      // 2. Check Hash Route: #doomer, #doomer/p_doomer_front_thesis_1, #rules#rule_mirror
-      if (window.location.hash) {
-        const hashStr = window.location.hash.replace(/^#\/?/, "");
-        if (hashStr.includes("/")) {
-          const parts = hashStr.split("/");
-          pageId = parts[0];
-          anchorId = parts[1];
-        } else if (hashStr.includes("#")) {
-          const parts = hashStr.split("#");
-          pageId = parts[0];
-          anchorId = parts[1];
-        } else {
-          const matchedPage = this.pages.find(p => p.id === hashStr);
-          if (matchedPage) {
-            pageId = matchedPage.id;
-          } else {
-            anchorId = hashStr;
-          }
-        }
-      }
-
-      return { pageId, anchorId };
-    }
-
-  handleUrlRouting() {
-      const { pageId, anchorId } = this._parseUrlRoute();
-      if (pageId && pageId !== this.currentPageId) {
-        this.switchPage(pageId, false);
-      }
-      if (anchorId) {
-        setTimeout(() => this.highlightTargetElement(anchorId), 250);
-      }
-    }
-  highlightTargetElement(targetId) {
-    if (!targetId) return;
-    const cleanId = targetId.replace(/^#/, "");
-
-    // Search for block-{id}, sidebar-{id}, or exact id
-    let el = document.getElementById(`block-${cleanId}`) || 
-             document.getElementById(`sidebar-${cleanId}`) || 
-             document.getElementById(cleanId) ||
-             document.querySelector(`[data-block-id="${cleanId}"]`);
-
-    if (!el) {
-      // Fallback: look for aside or div with matching id attribute or substring
-      el = document.querySelector(`[id*="${cleanId}"]`);
-    }
-
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "center" });
-      el.classList.remove("target-pulse-highlight");
-      void el.offsetWidth; // re-flow
-      el.classList.add("target-pulse-highlight");
-
-      if (typeof UITools !== "undefined" && typeof UITools.showHUD === "function") {
-        UITools.showHUD({
-          html: `<div style="padding:8px 14px;background:#1e293b;color:#38bdf8;border:1px solid #0284c7;border-radius:8px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;"><span>🎯</span><span>Viewing Anchor: #${cleanId}</span></div>`,
-          position: "bottom-right",
-          autoClose: 2400
-        });
-      }
-    }
-  }
-
-  copyAnchorLink(pageId, anchorId, btnElement = null) {
-      const cleanPage = pageId || this.currentPageId || "dividend";
-      const url = `${window.location.origin}${window.location.pathname}#${cleanPage}/${anchorId}`;
-
-      navigator.clipboard.writeText(url).then(() => {
-        if (btnElement) {
-          const orig = btnElement.textContent;
-          btnElement.textContent = "✓ Link Copied!";
-          setTimeout(() => { btnElement.textContent = orig; }, 2200);
-        }
-        if (typeof UITools !== "undefined" && typeof UITools.showHUD === "function") {
-          UITools.showHUD({
-            html: `<div style="padding:10px 16px;background:#065f46;color:#ecfdf5;border:1px solid #10b981;border-radius:8px;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.45);display:flex;align-items:center;gap:8px;"><span>✓</span><span>Copied direct share link for <b>#${cleanPage}/${anchorId}</b> to clipboard!</span></div>`,
-            position: "bottom-right",
-            autoClose: 2500
-          });
-        }
-      }).catch(() => {
-        prompt("Copy this direct anchor URL:", url);
-      });
-    }
 }
 
 globalThis.EconomicsOfAutomation = EconomicsOfAutomation;
-if (typeof module !== "undefined" && module.exports) module.exports = EconomicsOfAutomation;
+if (typeof module !== 'undefined' && module.exports) module.exports = EconomicsOfAutomation;

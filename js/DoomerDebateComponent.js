@@ -6,178 +6,177 @@ class DoomerDebateComponent {
   }
 
   constructor(container) {
-    this.container = container;
-    this.activeStep = 0;
+      this.container = container;
+      this.activeStep = 0;
 
-    this.steps = [
-      {
-        id: "step1",
-        label: "Step 1: Scarcity Reflex",
-        dread: "“If machines take all the jobs, nobody earns money to buy food. We'll starve.”",
-        reality: "The food didn't vanish—it multiplied. The combines already reaped the wheat. The bread is physically on the shelf. The panic is about an obsolete rationing token, not a physical shortage.",
-        ledgerFix: "Update the ledger: issue an unconditional machine dividend so purchasing power matches physical harvest."
-      },
-      {
-        id: "step2",
-        label: "Step 2: 50-Year Stagnation",
-        dread: "“Look at the last 50 years! Wages stagnated while the top 10% took all the growth.”",
-        reality: "For 50 years, 95% of voters were employed wage-earners voting to protect individual paychecks. When machines displace 60%+ of labor while silos overflow, the median voter flips from a nervous employee into an unemployed majority demanding the dividend.",
-        ledgerFix: "Democratic arithmetic: when the overwhelming majority shares an identical existential need, no politician can survive defending locked granary doors."
-      },
-      {
-        id: "step3",
-        label: "Step 3: Frictionless Tyranny",
-        dread: "“The billionaires and politicians will just end democracy to stop us from taxing them.”",
-        reality: "Oligarchs don't enforce laws. Police, soldiers, and drone technicians do. Those workers have families facing the exact same displacement. Armed working-class soldiers will not machine-gun their own starving mothers to protect server racks.",
-        ledgerFix: "Enforcement friction: tyranny breaks down when the enforcers' own families are the victims of artificial starvation."
-      },
-      {
-        id: "step4",
-        label: "Step 4: The Prisoner's Dilemma",
-        dread: "“Companies will just lay off all their workers and hoard all the profits for themselves.”",
-        reality: "Companies *will* lay off workers—keeping humans for obsolete labor is commercial suicide. But if every company automates, aggregate consumer demand drops to zero. That is a classic Prisoner's Dilemma: no single company can fix it alone. It requires government collective action. Even billionaires will want this, because without solvent consumers, their own businesses and stock values crash to zero.",
-        ledgerFix: "Macro Coordination: The Robot Dividend solves the Prisoner's Dilemma for capital, ensuring continuous customer purchasing power without forcing individual firms into private charity."
-      },
-      {
-        id: "step5",
-        label: "Step 5: The Status Paradox",
-        dread: "“If AI and robots can do everything—even the medicine and engineering—billionaires will just exterminate humanity.”",
-        reality: "AI can do the engineering, the medicine, and the music. But wealth is an intersubjective human status game. You cannot flex a trillion dollars on a toaster or an android. Ruling over an empty wasteland with robot servants is solitary confinement. Billionaires don't need humans as laborers; they need humans as consumers, peers, and the living audience that makes status and prestige real.",
-        ledgerFix: "The Rational Equilibrium: Billionaires get to remain wealthy, admired, and secure at the top of a flourishing civilization; citizens get complete economic freedom and dignity. Both win."
-      }
-    ];
+      this.steps = [
+        {
+          id: "step1",
+          label: "1. The Scarcity Reflex",
+          dread: "“If machines take all the jobs, nobody earns money to buy food. We'll starve.”",
+          reality: "The food didn't vanish—there's more of it. Automated combines already reaped the wheat. The bread is sitting on the shelf. The fear is about an outdated ticket system, not an empty pantry.",
+          ledgerFix: "Update the rules: distribute a machine dividend so people have the tickets to buy what the machines already made."
+        },
+        {
+          id: "step2",
+          label: "2. The 50-Year Argument",
+          dread: "“Look at the last 50 years! Wages stagnated while the top 10% kept all the growth.”",
+          reality: "For 50 years, 95% of voters were wage-earners voting to protect their own paychecks. When machines take over most of the work, the median voter flips from a nervous employee into an unemployed majority demanding the dividend.",
+          ledgerFix: "Voter self-interest: when the overwhelming majority of voters share the same survival need, politicians have to pass the dividend to get elected."
+        },
+        {
+          id: "step3",
+          label: "3. The Tyranny Fantasy",
+          dread: "“The billionaires and politicians will just cancel democracy and bring in private drone armies.”",
+          reality: "Oligarchs don't enforce laws. Police, soldiers, and drone technicians do. Those workers have families facing the exact same job loss. Armed soldiers aren't going to turn their weapons on their own parents to protect server racks.",
+          ledgerFix: "Real-world friction: tyranny fails when the enforcers' own families are the ones getting squeezed."
+        },
+        {
+          id: "step4",
+          label: "4. The Competitive Trap",
+          dread: "“Companies will just fire everyone and hoard all the profits for themselves.”",
+          reality: "Companies *will* lay people off—paying humans for tasks machines do for pennies is commercial suicide. But if every company automates, consumer spending drops to zero. That's a classic dilemma: no single business can solve it alone. It takes public policy. Even the owners will support it, because without solvent customers, their companies and stocks are worthless.",
+          ledgerFix: "Coordination: The Robot Dividend provides the solvent consumer base that businesses need to stay profitable."
+        },
+        {
+          id: "step5",
+          label: "5. The Status Fallacy",
+          dread: "“If AI can do everything—even the medicine and engineering—the rich will just get rid of humanity.”",
+          reality: "Wealth is about human status and recognition. You can't show off a trillion dollars to an android. Sitting in an empty bunker surrounded by robot servants is solitary confinement, not success. The wealthy don't want to rule a graveyard; they want to be rich in a living, peaceful world.",
+          ledgerFix: "The Stable Outcome: The wealthy stay very rich and safe at the top of a thriving society; citizens get full economic security and their time back. Both sides do better."
+        }
+      ];
 
-    this.thread = [
-      {
-        speaker: "The Scientist",
-        role: "35+ yrs as working scientist • 2 patents",
-        badgeClass: "badge-scientist",
-        text: "AI can destroy humanity by doing what it is explicitly designed to do, performing intellectual labor otherwise performed by humans. In simpler words, by taking away our jobs, without doing anything about our need to eat. Knowledge workers displaced by AI have essentially nowhere to go. With all jobs done by AI, human governments have two choices: seize the assets of the billionaire creators of AI and order robots to serve us, or preserve the wealth of the rich while the masses of humanity starve and die of exposure and the human population collapses. Given what you’ve seen the last 50 years, which way do you expect that to go?",
-        tagTitle: "THE SCARCITY REFLEX",
-        tagDesc: "Assumes that because human sweat was required for 10,000 years, the disappearance of sweat must mean the disappearance of sustenance."
-      },
-      {
-        speaker: "Rob Brown",
-        role: "The Realist • First-Principles Economics",
-        badgeClass: "badge-realist",
-        text: "An appropriately shaped progressive tax curve could a) solve this elegantly and directly, and b) be referred to as “seizing assets” if you want to make it sound scary. I wouldn’t base a lot on the last 50 years because the median voter was employed and living fairly well in the US during that time period. When the median voter is unemployed, what kind of policies do you think will win out in a democracy? Starving homeless masses while the billionaires live in well protected bunkers? I’m not buying that.",
-        tagTitle: "THE MEDIAN VOTER FLIPS",
-        tagDesc: "An employed electorate votes to protect individual paychecks; an automated electorate votes to distribute the machine harvest."
-      },
-      {
-        speaker: "The Fatalist",
-        role: "Online Commenter",
-        badgeClass: "badge-fatalist",
-        text: "The median voter has not had a wage increase in 50 years in the US. All economic growth has gone to the top ten percent. That’s why Trump and the Republicans are trying to end democracy now.",
-        tagTitle: "THE TYRANNY FICTION",
-        tagDesc: "Assumes oligarchs can install tyranny like an app, ignoring that the soldiers and police tasked with enforcement have starving families too."
-      },
-      {
-        speaker: "Rob Brown",
-        role: "The Realist • First-Principles Economics",
-        badgeClass: "badge-realist",
-        text: "Companies will lay people off—they have to, because paying humans for obsolete labor is commercial suicide. But when every company automates, aggregate consumer demand drops to zero. That's a classic Prisoner's Dilemma that only collective government action can solve. If they are a billionaire that owns companies, and their companies lay off all employees and replace them with robots… why are they better off now that all their potential consumers are homeless and starving?",
-        tagTitle: "THE PRISONER'S DILEMMA",
-        tagDesc: "Individual firms must automate to compete, but capital collectively needs a solvent public. The dividend is the coordination mechanism capital needs to survive."
-      },
-      {
-        speaker: "The Fatalist",
-        role: "Online Commenter",
-        badgeClass: "badge-fatalist",
-        text: "It’s pretty clear the billionaires are planning to exterminate the human race at this point. Their support of Trump and his program to eliminate democracy, is prevent any wealth redistribution, and to implement mass starvation.",
-        tagTitle: "THE STATUS PARADOX",
-        tagDesc: "When every rational economic and game-theoretic door closes, the mind retreats into comic-book villainy because apocalypse is easier to imagine than updating a tax ledger."
-      }
-    ];
+      this.thread = [
+        {
+          speaker: "The Scientist",
+          role: "Working Scientist • 2 Patents",
+          badgeClass: "badge-scientist",
+          text: "AI can destroy humanity by doing what it is explicitly designed to do, performing intellectual labor otherwise performed by humans. In simpler words, by taking away our jobs, without doing anything about our need to eat. Knowledge workers displaced by AI have essentially nowhere to go. With all jobs done by AI, human governments have two choices: seize the assets of the billionaire creators of AI and order robots to serve us, or preserve the wealth of the rich while the masses of humanity starve and die of exposure and the human population collapses. Given what you’ve seen the last 50 years, which way do you expect that to go?",
+          tagTitle: "THE SCARCITY REFLEX",
+          tagDesc: "Assumes that because getting food used to require human sweat, losing the jobs must mean starving."
+        },
+        {
+          speaker: "Rob Brown",
+          role: "Author • First-Principles Economics",
+          badgeClass: "badge-realist",
+          text: "An appropriately shaped progressive tax curve could solve this directly—you could call it “seizing assets” if you want to make it sound scary. I wouldn’t base much on the last 50 years because the median voter was employed and getting by on wages. When the median voter is unemployed, what kind of policies do you think will win out in a democracy? Starving homeless masses while billionaires live in bunkers? I’m not buying that.",
+          tagTitle: "THE MEDIAN VOTER FLIPS",
+          tagDesc: "An employed public votes to protect paychecks; an automated public votes to distribute the machine harvest."
+        },
+        {
+          speaker: "The Fatalist",
+          role: "Online Commenter",
+          badgeClass: "badge-fatalist",
+          text: "The median voter has not had a wage increase in 50 years in the US. All economic growth has gone to the top ten percent. That’s why Trump and the Republicans are trying to end democracy now.",
+          tagTitle: "THE TYRANNY FANTASY",
+          tagDesc: "Assumes elites can install autocracy like an app, ignoring that soldiers and police have families facing the same displacement."
+        },
+        {
+          speaker: "Rob Brown",
+          role: "Author • First-Principles Economics",
+          badgeClass: "badge-realist",
+          text: "Companies will lay people off—they have to, because paying humans for obsolete work is commercial suicide. But when every company automates, total consumer spending drops to zero. That’s a classic dilemma that only collective rules can solve. If you’re a billionaire who owns companies, why are you better off once all your potential customers are broke?",
+          tagTitle: "CAPITAL NEEDS CUSTOMERS",
+          tagDesc: "Firms have to automate to survive, but capital collectively needs a solvent public to buy its goods."
+        },
+        {
+          speaker: "The Fatalist",
+          role: "Online Commenter",
+          badgeClass: "badge-fatalist",
+          text: "It’s pretty clear the billionaires are planning to exterminate the human race at this point. Their support of Trump and his program to eliminate democracy, is prevent any wealth redistribution, and to implement mass starvation.",
+          tagTitle: "THE STATUS TRAP",
+          tagDesc: "When the economic arguments fail, the mind retreats into comic-book plots because apocalypse is easier to imagine than updating tax rules."
+        }
+      ];
 
-    this.verbatimTranscript = [
-      {
-        speaker: "[The Scientist]",
-        time: "19h ago",
-        text: "How would it do that? Some say there might be no way for us to stop it.\n\nAI can destroy humanity by doing what it is explicitly designed to do, performing intellectual labor otherwise performed by humans. In simpler words, by taking away our jobs, without doing anything about our need to eat. Knowledge workers displaced by AI have essentially nowhere to go. They can become laborers or tradesmen, but AI can be embodied in robots to do those jobs too.\n\nWith all jobs done by AI, human governments have two choices, seize the assets of the billionaire creators of AI and order robots to serve us, or preserve the wealth of the rich while the masses of humanity starve and die of exposure and the human population collapses.\n\nGiven what you’ve seen the last 50 years, which way do you expect that to go?",
-        accent: "#f59e0b"
-      },
-      {
-        speaker: "Rob Brown",
-        time: "18h ago",
-        text: "An appropriately shaped progressive tax curve could a) solve this elegantly and directly, and b) be referred to as “seizing assets” if you want to make it sound scary.\n\nI wouldn’t base a lot on the last 50 years because the median voter was employed and living fairly well in the US during that time period. When the median voter is unemployed, what kind of policies do you think will win out in a democracy? Starving homeless masses while the billionaires live in well protected bunkers? I’m not buying that.",
-        accent: "#38bdf8"
-      },
-      {
-        speaker: "[The Fatalist]",
-        time: "18h ago",
-        text: "The median voter has not had a wage increase in 50 years in the US. All economic growth has gone to the top ten percent.",
-        accent: "#f43f5e"
-      },
-      {
-        speaker: "Rob Brown",
-        time: "17h ago",
-        text: "Even if we accept that wages stagnated, that actually proves the point about the median voter - for the past 50 years, the median American had a job/paycheck, and voted within a system built entirely around human employment. Because most people were still getting by on wages, there was never a broad political majority demanding a fundamental overhaul of how capital and corporate profits are distributed.\n\nWhen AI and robotics automate human labor at scale, the political math completely flips…. The median voter would no longer be an employee worried about their personal income taxes, they are someone whose job was replaced by a machine while the physical output of goods, food, and housing is higher than ever.\n\nI don’t see how a democratic majority is going to quietly sit on the sidewalk and starve to death in front of overflowing warehouses and granaries just to protect corporations and wealthy people…. (*) In a democracy, when 60% or 70% of the electorate is directly affected, the political pressure to implement progressive capital taxes and universal machine dividends becomes overwhelming.\n\nSorry, but you can't use the voting behavior of an employed, wage-earning electorate over the last 50 years to predict how voters will act when human labor is no longer the primary way wealth is produced...\n\n* most of whose wealth is dependent on having consumers",
-        accent: "#38bdf8"
-      },
-      {
-        speaker: "[The Fatalist]",
-        time: "15h ago",
-        text: "Of course that’s why Trump and the Republicans are trying to end democracy now.",
-        accent: "#f43f5e"
-      },
-      {
-        speaker: "Rob Brown",
-        time: "15h ago",
-        text: "I’m sorry…. why again?\n\nI am no fan of Trump and Republicans, but I also don’t see how “ending democracy” is a rational move for any of them in a scenario where AI takes all jobs.\n\nMost Republicans rely on a paycheck of their own or in their household. When they lose their job to AI and robots…. how does this dystopian outcome benefit them?\n\nIf they are a billionaire that owns companies, and their companies can lay off all their employees and replace them with robots…. why are they better off now that all their potential consumers are homeless and starving?",
-        accent: "#38bdf8"
-      },
-      {
-        speaker: "[The Fatalist]",
-        time: "14h ago",
-        text: "Nobody said they are smart. But the tremendous value of the AI companies is based on the assumption that a huge number of human workers can be replaced and somehow there will still be demand for the AI to do work. That’s the insane US stock market right now. Clearly something needs to give.",
-        accent: "#f43f5e"
-      },
-      {
-        speaker: "Rob Brown",
-        time: "11h ago",
-        text: "“But the tremendous value of the AI companies is based on the assumption that a huge number of human workers can be replaced and somehow there will still be demand for the AI to do work.”\n\nWhy wouldn’t there be?",
-        accent: "#38bdf8"
-      },
-      {
-        speaker: "[The Fatalist]",
-        time: "2h ago",
-        text: "Because without workers getting paid there will be an economic collapse as you suggest.",
-        accent: "#f43f5e"
-      },
-      {
-        speaker: "Rob Brown",
-        time: "2h ago",
-        text: "I think that was [The Scientist] that said there would be an economic collapse. He said that taking away our jobs without doing anything about our need to eat is a problem. But the reason the jobs are gone is because the AI and robots are doing the jobs. Which means the food is still being produced.",
-        accent: "#38bdf8"
-      },
-      {
-        speaker: "[The Fatalist]",
-        time: "2h ago",
-        text: "But without jobs people will not be able to afford food.",
-        accent: "#f43f5e"
-      },
-      {
-        speaker: "Rob Brown",
-        time: "2h ago",
-        text: "Today if you're without a job you get an EBT card and buy food with that.\n\nI asked this to [The Scientist] and I'll ask it to you: “When the median voter is unemployed, what kind of policies do you think will win out in a democracy? Starving homeless masses while the billionaires live in well protected bunkers?”\n\nAgain we've got the means of production taken care of.... we'd have robots and AI producing everything we need. So why would you expect people to be starving or homeless, rather than enjoying the abundance while not needing to work?",
-        accent: "#38bdf8"
-      },
-      {
-        speaker: "[The Fatalist]",
-        time: "1h ago",
-        text: "It’s pretty clear the billionaires are planning to exterminate the human race at this point. Their support of Trump and his program to eliminate democracy, is prevent any wealth redistribution, and to implement mass starvation ,",
-        accent: "#f43f5e"
-      },
-      {
-        speaker: "Rob Brown",
-        time: "1h ago",
-        text: "Bizarre and extreme assumption.\n\nThe vast majority of Trump voters are not billionaires or even particularly wealthy.\n\nBut anyway, aside from your extreme assumption about the motives of billionaires, why not step back and think about your simpler assumption, that without jobs everyone will starve. I suggest thinking that through more deeply before moving on to wild conspiracy theories about people you assume to have the goal of exterminating humanity.",
-        accent: "#38bdf8"
-      }
-    ];
-  }
-
+      this.verbatimTranscript = [
+        {
+          speaker: "[The Scientist]",
+          time: "19h ago",
+          text: "How would it do that? Some say there might be no way for us to stop it.\n\nAI can destroy humanity by doing what it is explicitly designed to do, performing intellectual labor otherwise performed by humans. In simpler words, by taking away our jobs, without doing anything about our need to eat. Knowledge workers displaced by AI have essentially nowhere to go. They can become laborers or tradesmen, but AI can be embodied in robots to do those jobs too.\n\nWith all jobs done by AI, human governments have two choices, seize the assets of the billionaire creators of AI and order robots to serve us, or preserve the wealth of the rich while the masses of humanity starve and die of exposure and the human population collapses.\n\nGiven what you’ve seen the last 50 years, which way do you expect that to go?",
+          accent: "#f59e0b"
+        },
+        {
+          speaker: "Rob Brown",
+          time: "18h ago",
+          text: "An appropriately shaped progressive tax curve could a) solve this elegantly and directly, and b) be referred to as “seizing assets” if you want to make it sound scary.\n\nI wouldn’t base a lot on the last 50 years because the median voter was employed and living fairly well in the US during that time period. When the median voter is unemployed, what kind of policies do you think will win out in a democracy? Starving homeless masses while the billionaires live in well protected bunkers? I’m not buying that.",
+          accent: "#38bdf8"
+        },
+        {
+          speaker: "[The Fatalist]",
+          time: "18h ago",
+          text: "The median voter has not had a wage increase in 50 years in the US. All economic growth has gone to the top ten percent.",
+          accent: "#f43f5e"
+        },
+        {
+          speaker: "Rob Brown",
+          time: "17h ago",
+          text: "Even if we accept that wages stagnated, that actually proves the point about the median voter - for the past 50 years, the median American had a job/paycheck, and voted within a system built entirely around human employment. Because most people were still getting by on wages, there was never a broad political majority demanding a fundamental overhaul of how capital and corporate profits are distributed.\n\nWhen AI and robotics automate human labor at scale, the political math completely flips…. The median voter would no longer be an employee worried about their personal income taxes, they are someone whose job was replaced by a machine while the physical output of goods, food, and housing is higher than ever.\n\nI don’t see how a democratic majority is going to quietly sit on the sidewalk and starve to death in front of overflowing warehouses and granaries just to protect corporations and wealthy people…. (*) In a democracy, when 60% or 70% of the electorate is directly affected, the political pressure to implement progressive capital taxes and universal machine dividends becomes overwhelming.\n\nSorry, but you can't use the voting behavior of an employed, wage-earning electorate over the last 50 years to predict how voters will act when human labor is no longer the primary way wealth is produced...\n\n* most of whose wealth is dependent on having consumers",
+          accent: "#38bdf8"
+        },
+        {
+          speaker: "[The Fatalist]",
+          time: "15h ago",
+          text: "Of course that’s why Trump and the Republicans are trying to end democracy now.",
+          accent: "#f43f5e"
+        },
+        {
+          speaker: "Rob Brown",
+          time: "15h ago",
+          text: "I’m sorry…. why again?\n\nI am no fan of Trump and Republicans, but I also don’t see how “ending democracy” is a rational move for any of them in a scenario where AI takes all jobs.\n\nMost Republicans rely on a paycheck of their own or in their household. When they lose their job to AI and robots…. how does this dystopian outcome benefit them?\n\nIf they are a billionaire that owns companies, and their companies can lay off all their employees and replace them with robots…. why are they better off now that all their potential consumers are homeless and starving?",
+          accent: "#38bdf8"
+        },
+        {
+          speaker: "[The Fatalist]",
+          time: "14h ago",
+          text: "Nobody said they are smart. But the tremendous value of the AI companies is based on the assumption that a huge number of human workers can be replaced and somehow there will still be demand for the AI to do work. That’s the insane US stock market right now. Clearly something needs to give.",
+          accent: "#f43f5e"
+        },
+        {
+          speaker: "Rob Brown",
+          time: "11h ago",
+          text: "“But the tremendous value of the AI companies is based on the assumption that a huge number of human workers can be replaced and somehow there will still be demand for the AI to do work.”\n\nWhy wouldn’t there be?",
+          accent: "#38bdf8"
+        },
+        {
+          speaker: "[The Fatalist]",
+          time: "2h ago",
+          text: "Because without workers getting paid there will be an economic collapse as you suggest.",
+          accent: "#f43f5e"
+        },
+        {
+          speaker: "Rob Brown",
+          time: "2h ago",
+          text: "I think that was [The Scientist] that said there would be an economic collapse. He said that taking away our jobs without doing anything about our need to eat is a problem. But the reason the jobs are gone is because the AI and robots are doing the jobs. Which means the food is still being produced.",
+          accent: "#38bdf8"
+        },
+        {
+          speaker: "[The Fatalist]",
+          time: "2h ago",
+          text: "But without jobs people will not be able to afford food.",
+          accent: "#f43f5e"
+        },
+        {
+          speaker: "Rob Brown",
+          time: "2h ago",
+          text: "Today if you're without a job you get an EBT card and buy food with that.\n\nI asked this to [The Scientist] and I'll ask it to you: “When the median voter is unemployed, what kind of policies do you think will win out in a democracy? Starving homeless masses while the billionaires live in well protected bunkers?”\n\nAgain we've got the means of production taken care of.... we'd have robots and AI producing everything we need. So why would you expect people to be starving or homeless, rather than enjoying the abundance while not needing to work?",
+          accent: "#38bdf8"
+        },
+        {
+          speaker: "[The Fatalist]",
+          time: "1h ago",
+          text: "It’s pretty clear the billionaires are planning to exterminate the human race at this point. Their support of Trump and his program to eliminate democracy, is prevent any wealth redistribution, and to implement mass starvation ,",
+          accent: "#f43f5e"
+        },
+        {
+          speaker: "Rob Brown",
+          time: "1h ago",
+          text: "Bizarre and extreme assumption.\n\nThe vast majority of Trump voters are not billionaires or even particularly wealthy.\n\nBut anyway, aside from your extreme assumption about the motives of billionaires, why not step back and think about your simpler assumption, that without jobs everyone will starve. I suggest thinking that through more deeply before moving on to wild conspiracy theories about people you assume to have the goal of exterminating humanity.",
+          accent: "#38bdf8"
+        }
+      ];
+    }
   init() {
     this.container.innerHTML = "";
     this.setupStyles();

@@ -2,122 +2,92 @@ class ColonyContent {
   static getMeta() {
     return {
       kicker: "Scaling the model to 100,000 pioneers, tangible money, and machine abundance",
-      title: "The Colony of 100,000",
-      subtitle: "Why an optimal democratic architecture and direct fiscal consensus make the transition to full automation effortless."
+      title: "2. The Colony of 100,000",
+      subtitle: "Why clear democratic rules and direct fiscal consensus make the transition to full automation manageable."
     };
   }
 
-  static getImagePrompts() {
-    return {
-      masterAnchor: "Cinematic 35mm film still, shot on Arri Alexa with anamorphic lenses, natural golden hour lighting. Authentic planetary frontier aesthetic: realistic wear, composite materials, solar array frames, hydraulic utility pistons, unpainted titanium, rough-hewn timber, canvas shade tarps, utilitarian denim and canvas workwear. Grounded practical sci-fi film still.",
-      fig_colony_gov: "A bustling civic assembly courtyard of a 100,000-person frontier city. In the foreground, diverse citizens view public transparent voting terminals displaying ranked preference consensus distribution curves under timber-and-glass arches. In the background, civic habitations and green terraformed hills.",
-      fig_colony_depot: "A massive multi-commodity automated warehouse on a frontier colony. Overhead gantry cranes move standard shipping pods containing solar storage cells, yellow-pine timber, grain sacks, and pure water containers. Colonists inspect rugged data slates showing basket-pegged credit reserves.",
-      fig_colony_bots: "An open industrial clearing outside the colony settlement. Human engineers and operators stand beside newly unpacked bipedal and tracked heavy-utility robots. Holographic diagnostics display open-source AI foundation models as the machines begin assembly of subsequent robotic units."
-    };
-  }
-
-  // Section 1: The Setup & Clean Canvas at Scale
   static p_colony_intro_1() {
     return [
-      "In our first thought experiment, we watched twelve settlers and then a hundred manage the arrival of automated machines. But critics will understandably ask: what happens when you scale up from a tiny frontier outpost to a real city of a hundred thousand people? Can the arithmetic of abundance survive in a society large enough to need complex infrastructure, hospitals, transit grids, and municipal governance?",
-      "The jump from a hundred people to a hundred thousand is the test that matters. At this scale, direct interpersonal memory is completely impossible. Society requires a real legal framework, public budgets, and an organized fiscal system. The question is whether the transition to machine abundance can still be handled gracefully when an economy reaches the size of a modern city."
+      "Our first thought experiment looked at twelve settlers and then a hundred. But critics will reasonably ask: what happens when you scale up to a real city of a hundred thousand people? Can the arithmetic of abundance hold up when you need real hospitals, power grids, and municipal governance?"
     ];
   }
 
   static p_colony_intro_2() {
     return [
-      "The answer is yes—provided we don't blind ourselves by dragging all the structural dysfunctions of Earth along for the ride. We aren't quite ready to leap directly into the messy reality of our current terrestrial economies, because our real-world political systems are burdened by a fatal defect: our voting methods divide us into bitter partisan warfare. Plurality voting and first-past-the-post ballots inevitably lead to vote splitting, primary extremism, and two-party gridlock. In that environment, passing rational fiscal policy is nearly impossible. To see how clean the automation transition actually is, we must first examine how it works in a society designed without those democratic defects.",
-      "To understand how smoothly an automated transition can run, we have to strip away the institutional pathologies that paralyze planet Earth. On Earth today, our voting methods punish nuance: vote splitting forces citizens into defensive partisan camps, transforming economic debate into an endless culture war. Before we confront the entrenched friction of terrestrial politics on our third page, let us first look at what happens when a society of 100,000 people starts with an optimal democratic framework and direct fiscal consensus."
+      "It can, provided we don't bring all of Earth's political dysfunctions with us. Our real-world voting systems divide us into bitter partisan camps. Plurality ballots lead to vote splitting, primary extremism, and two-party gridlock where passing sensible economic policy is nearly impossible. To see how clean the automation transition can be, we first look at how it works in a city designed without those democratic defects."
     ];
   }
 
   static sidebar_ranked_voting() {
     return [
-      "Why Ranked Voting & Median Consensus Eliminate Gridlock: Instead of our traditional 'pick-one' plurality ballot—which causes vote splitting and forces voters to choose the lesser of two evils—the colony uses ranked ballots evaluated through the Condorcet criterion. The winner is the candidate who beats every other competitor in head-to-head comparisons, selecting the candidate closest to the median consensus. When applied to setting a single scalar number—like Dial T or the price of community dues—this connects directly to Duncan Black's foundational Median Voter Theorem (1948). On a continuous spectrum, preferences are single-peaked, meaning taking the median is mathematically strategy-proof: a fringe minority voting for an extreme number cannot pull the median away from the center. It guarantees pragmatic, centrist stability without extremist hijacking.",
-      "The colony avoids two-party polarization by using ranked voting. Rather than forcing voters into binary camps where third choices split the vote, voters rank their options. By applying the Condorcet standard—finding the candidate who wins head-to-head matchups against all others—elections naturally identify the median preference of the population. When setting numeric parameters, choosing the median is mathematically strategy-proof: voters cannot game the outcome by voting for extreme values."
+      "Why Ranked Voting Eliminates Gridlock: Instead of a traditional 'pick-one' ballot—which splits votes and forces people into lesser-of-two-evils thinking—the colony uses ranked ballots. The winner is the candidate who beats every competitor head-to-head, naturally selecting the person closest to the median consensus. When setting a single number, picking the median is hard to game: extreme votes on either end can't pull the result away from the center. It keeps things stable without partisan hijacking."
     ];
   }
-  static p_colony_china_contrast() {
-    return [
-      "It is worth considering a geopolitical reality that Western commentators often misjudge: an authoritarian command state like China is structured to adapt to post-labor automation with brutal efficiency. A centralized regime does not have to spend decades navigating corporate lobbying, legislative filibusters, or media culture wars. If Beijing decides to deploy tens of millions of humanoid robots, retool entire industrial provinces, and allocate the physical harvest by executive decree, it can move fast. And if AI systems handle an increasing share of scientific research and engineering, the old Western assumption that top-down states 'cannot innovate' falls flat. The challenge for a free society is not pretending authoritarian states are incompetent; it is proving that a democracy can achieve this same transition voluntarily—through transparent consensus and clear fiscal rules—without surrendering human liberty to a digital police state.",
-      "Consider the geopolitical contrast with command economies like China. A centralized government faces far less procedural friction when labor becomes obsolete. They can mandate industrial automation, deploy massive robotic fleets, and reallocate physical resources by executive decree. The old cliché that authoritarian regimes will fail because they stifle human innovation misses the point: when advanced AI and autonomous systems drive the innovation cycle themselves, command economies can execute at terrifying speed. Our task in the democratic world is existential: if we remain paralyzed in partisan warfare over obsolete payroll taxes, top-down command regimes will operationalize post-labor abundance long before we do."
-    ];
-  }
-  // Section 2: The Tangible Basket Currency
+
   static p_colony_money_1() {
     return [
-      "Having scaled far beyond the hundred-person sawmill settlement, the colony needs a stable medium of exchange. Rather than adopting unbacked fiat currency subject to speculative debasement, or gold that carries little practical utility, they back their currency with a standardized basket of essential physical goods.",
-      "At 100,000 people, currency is essential. Remembering the lesson of the hundred pioneers who backed their scrip with milled lumber, this larger settlement backs every Credit not with paper promises, but with custody receipts for a tangible basket of core physical commodities: kilowatt-hours of clean power, liters of purified water, staple grain, and standardized building materials."
+      "At a hundred thousand people, you need a dependable currency. Remembering the lesson of the hundred pioneers who backed their scrip with lumber, this city backs every Credit with custody receipts for a basket of physical essentials: kilowatt-hours of clean power, liters of water, staple grain, and standardized building supplies."
     ];
   }
 
   static p_colony_money_2() {
     return [
-      "Because every Credit in circulation represents an honest claim check on real, physical reserves, prices can adjust freely to reflect supply innovations without the threat of runaway inflation. Money here is not wealth itself; it is an unforgeable ticket redeemable for physical abundance produced by the colony's farms, reactors, and mills.",
-      "This commodity-basket standard keeps money anchored in physical reality. Speculative financial bubbles cannot conjure phantom wealth from thin air, because every Credit corresponds to tangible goods in public depots. The currency serves its true historical purpose: an accurate, trusted accounting token to share and trade real output."
+      "Because every Credit represents a claim check on real reserves, prices can adjust freely as technology improves without runaway inflation. Money isn't wealth itself; it's a ticket redeemable for physical output produced by the colony's farms and workshops."
     ];
   }
 
   static p_colony_tax_1() {
     return [
-      "To see how clean public finance becomes in an automated society, the colony replaces tens of thousands of pages of special-interest tax loopholes with an open mathematical schedule defined by two intuitive dials. Economists often object that fiscal policy is far too complex for two numbers, like letting airplane passengers fly a jetliner. But that confuses the interface with the engine. A homeowner does not adjust the gas-to-air combustion ratio inside the furnace; engineers designed the furnace to regulate that automatically. The homeowner simply sets the target temperature on the thermostat. Dials T and P are the thermostat interface for an automated economy. On the frontier, citizens demonstrate this directly by voting on the parameters at the ballot box. On Earth, this represents an inspiring horizon for direct digital democracy—where citizens could annually tune the macro dials of their own commonwealth. But we do not need to wait for a constitutional overhaul: standard representative legislatures can charter this exact continuous schedule into law as an automated statutory auto-pilot. In both cases, the tax code ceases to be a corrupt labyrinth of lobbyist carve-outs; it becomes an open, transparent protocol.",
-      "The colony's two-number tax schedule serves as a pedagogical model for radical fiscal transparency. On Earth today, tax codes are labyrinthine battlegrounds for corporate lobbyists, packed with tens of thousands of carve-outs, accelerated shelters, and offshore loopholes. In a well-designed post-labor economy, whether tuned directly by citizen consensus or enacted by elected representatives as a statutory stabilization rule, fiscal policy is parameterized cleanly: capturing automated capital profits and converting them into an unconditional baseline for every citizen through a single continuous curve."
+      "To keep public finance clear, the colony replaces thousands of pages of tax loopholes with a mathematical curve set by two dials: Total Collection Rate ($T$) and Progressivity ($P$). Think of it like a thermostat. You don't adjust the fuel-to-air combustion mixture inside your furnace; you just set the temperature you want. That's what these two dials do. On the frontier, citizens vote on them directly. On Earth, a legislature can write that exact formula into law on auto-pilot."
     ];
   }
 
   static p_colony_tax_2() {
     return [
-      "The two dials are straightforward: the total collection rate (T) sets the overall percentage of economic surplus captured for public dividends and infrastructure, while the progressivity index (P) sets the shape of the curve. Critics trained in orthodox public choice theory will immediately object: 'If you let people vote on their own cash checks, won't they act like children voting for candy for breakfast and vote for T = 100% on day one?' That cynical reflex misunderstands both human behavior and basic social choice mathematics. First, in our existing representative democracies, voters already possess the legal power to elect politicians who would slash all taxes to zero tomorrow; they do not do so because they know the military would dissolve, roads would crumble, and civilization would fail. Voters understand basic feedback loops. The reason direct ballot measures (like California propositions) often look reckless is that they are unbundled: voters are asked whether they want $10 billion for projects on Question 1, and whether they want to raise taxes on Question 2, creating what economists call 'fiscal illusion'—the fantasy that someone else will pay. Dial T eliminates that illusion entirely because it is a closed thermodynamic balance sheet: collection and dividend are the exact same number. You cannot vote for an unbacked check without raising T, and you cannot vote to strip capital of its maintenance margins without collapsing your own future dividend. Second, as proven by Duncan Black's Median Voter Theorem, choosing the median of a single continuous parameter is mathematically strategy-proof. If an ideological fringe votes for 100% ('candy for breakfast') or 0% ('starve the community'), their extreme vote does not pull the median upward or downward; it simply counts as a single vote above or below the center line. The median naturally isolates the stable, rational center of the population. To backstop this further, the collection dial operates within an engineered safety corridor [T_min, T_max] governed by real market price signals: if nominal transfers begin to bid up the price of physical essentials faster than factories can deliver them, the collection ceiling gently throttles back, ensuring the electorate can never accidentally outrun the physical capacity of the real world.",
-      "The strength of this two-number mechanism is its stability over time. One parameter governs total surplus capture within an engineered safety envelope, and the other governs progressivity. Because the curve is continuous, it operates smoothly across the entire transition. When most people work for wages, it acts as a standard progressive tax. As machines replace human labor, the same formula automatically channels growing machine surplus into universal dividends without requiring emergency bailout bills, while closed-loop balance sheets, Duncan Black's median stability, and price-stability circuit breakers keep the system grounded."
+      "The collection dial ($T$) sets the overall share of surplus captured for public dividends and infrastructure, while progressivity ($P$) sets the shape of the curve. Critics often object: 'If you let people vote on their own checks, won't they vote for 100% on day one?' People don't actually behave that way. In real democracies, voters already have the power to elect politicians who would slash all taxes to zero; they don't do it because they know roads would crumble and civilization would fail. The collection dial bundles the tax and the dividend into a single balanced equation: you can't vote for a check without raising $T$, and you can't strip capital of maintenance funds without collapsing your own future dividend. The median voter naturally converges on a sustainable middle."
     ];
   }
+
   static p_colony_tax_3() {
     return [
-      "Whenever citizens vote for a progressivity curve above 30%, the formula automatically generates negative tax credits for lower income percentiles. It creates an unconditional citizen dividend floor without requiring a separate welfare bureaucracy or means-testing rules. At the same time, the math guarantees that the effective marginal tax rate across every bracket remains well below 100%. Earning an extra Credit through specialized craft, engineering, or voluntary overtime always puts more money in your pocket. There are no sudden welfare cliffs or administrative trapdoors where working an extra hour leaves you worse off.",
-      "Because the tax schedule is an open mathematical curve, negative taxes flow naturally to lower brackets as a guaranteed dividend floor. There is no separate welfare bureaucracy, no means-testing stigma, and no paperwork labyrinth. The community simply tunes the two numbers to balance collective security and individual reward, confident that the formula mathematically guarantees that additional human contribution is always rewarded with higher net income."
+      "Whenever progressivity is set above 30%, the formula automatically produces negative tax credits for lower income brackets. It creates a universal dividend floor without needing a separate welfare bureaucracy or intrusive means tests. At the same time, the math guarantees that the effective tax rate on earning an extra Credit through specialized craft or extra hours always leaves you with more take-home pay. There are no sudden welfare cliffs where working an extra hour makes you worse off."
     ];
   }
-  // Section 4: The Robot Influx & 1:1 Automation
+
   static p_colony_robot_1() {
     return [
-      "With these institutional foundations running smoothly, the colony receives a shipment of advanced utility robots along with sophisticated AI control software. Rather than hoarding the technology or fearing unemployment, the colony uses the machines to build more machines, rapidly expanding the fleet to 100,000 autonomous units—one machine worker for every human citizen.",
-      "A fleet of versatile industrial automatons and open foundation AI models arrives at the settlement. The pioneers immediately deploy them to quarry stone, mill lumber, and manufacture duplicates, quickly scaling the robotic workforce until machines equal the human population."
+      "With these rules in place, the colony receives a shipment of industrial robots and AI software. Rather than hoarding the technology or fearing unemployment, the settlement uses the machines to manufacture more machines, quickly scaling the fleet to 100,000 autonomous units—one machine for every citizen."
     ];
   }
 
   static p_colony_robot_2() {
     return [
-      "The machines take over all routine physical drudgery: farming, timber harvesting, utility grid maintenance, and heavy construction. Where human crews previously endured exhausting twelve-hour shifts under alien suns, automated combines and hydraulic excavators run around the clock, powered by solar arrays and coordinated by AI logistics.",
-      "Autonomous tractors cultivate the fields, robotic haulers manage the warehouses, and automated framing units erect homes at machine speed. Human labor shifts from compulsory toil into chosen vocations, creative arts, scientific research, and civic life."
+      "The machines take over routine physical chores: farming, timber harvesting, utility maintenance, and heavy construction. Where human crews previously worked twelve-hour shifts under alien suns, automated combines and excavators run around the clock on solar power. Human work shifts from compulsory labor into chosen vocations, arts, science, and civic life."
     ];
   }
 
-  // Section 5: The Frictionless Shift to Abundance
   static p_colony_trans_1() {
     return [
-      "Now observe what happens to employment and human survival as machines take over. In a terrestrial economy where taxes depend on human payrolls, replacing 100,000 human jobs would collapse municipal revenues and trigger mass poverty. But in the colony, the two-number democratic tax code absorbs the transition without friction.",
-      "Because the colony’s fiscal system is parameterized, the transition requires no emergency bailout bills. As autonomous factories generate record surpluses while human payrolls shrink, citizens simply use their annual ballot to set the collection rate to capture machine output and channel it directly into the citizen dividend floor."
+      "If taxes depended on human payrolls, replacing 100,000 jobs would destroy municipal budgets and create mass poverty. But in the colony, the two-dial tax code absorbs the shift smoothly. As autonomous factories generate record surplus while payrolls drop, the community sets the collection rate to capture machine output and channel it directly into the citizen dividend floor."
     ];
   }
 
   static quote_colony() {
     return [
-      "An optimal economic system does not manufacture busywork to justify human existence; it updates its ledger to reflect the reality of machine abundance.",
-      "When machines produce all the food, shelter, and energy, forcing humans to toil for permission to eat is not economics—it is an obsolete superstition."
+      "When machines produce all the food, shelter, and energy, forcing humans to toil for permission to eat isn't economics—it's an obsolete superstition."
     ];
   }
 
   static p_colony_trans_2() {
     return [
-      "The 100,000 pioneers achieved full automation without a single strike, breadline, or economic collapse because their democracy was engineered to share abundance rather than ration scarcity. This thought experiment proves that the challenge of automation is not physical or mathematical; it is institutional.",
-      "The colony demonstrates that when democracy functions without vote-splitting and fiscal policy is set directly by the people, full automation is an unalloyed blessing. This brings us directly to the real challenge: how do we bring these principles home to planet Earth?"
+      "The 100,000 pioneers reached full automation without strikes, breadlines, or financial collapse because their system was designed to share abundance rather than ration scarcity. The challenge of automation isn't physical or mathematical; it's institutional."
     ];
   }
 
   static p_colony_trans_3() {
     return [
-      "On Earth, we cannot start from scratch on an uninhabited world, nor can we rely on top-down decrees like China. In a free society, our primary task is education: helping the population understand what an optimal democratic system looks like, how vote splitting keeps us divided, and how simple mathematical fiscal rules can guarantee abundance. With that understanding, we can use our existing voting systems to enact the structural reforms we need. That transition on Earth is the subject of our final chapter.",
-      "Our path on Earth requires something far more durable than authoritarian decrees: educating the citizenry. By recognizing how our flawed voting methods polarize us and understanding how clean algorithmic taxation works, we can use our current democratic process to build a modern system that serves everyone. On the next page, we examine the practical transition here at home."
+      "On Earth, we can't start with a clean slate on an uninhabited world. In a free society, our main job is education: helping people understand how vote splitting keeps us polarized, and how simple mathematical tax rules can guarantee abundance. With that understanding, we can use our existing democratic institutions to enact the reforms we need."
     ];
   }
 
@@ -126,7 +96,7 @@ class ColonyContent {
       {
         section: "introduction",
         partLabel: "Part One",
-        title: "Scaling Up: The Clean Canvas at 100,000",
+        title: "Scaling Up to a City",
         blocks: [
           { id: "p_colony_intro_1", type: "p" },
           { id: "p_colony_intro_2", type: "p" },
@@ -134,15 +104,14 @@ class ColonyContent {
             id: "sidebar_ranked_voting",
             type: "sidebar",
             kicker: "Governance Note",
-            title: "Why Ranked Voting Eliminates Partisan Gridlock"
-          },
-          { id: "p_colony_china_contrast", type: "p" }
+            title: "Why Ranked Voting Eliminates Gridlock"
+          }
         ]
       },
       {
         section: "currency",
         partLabel: "Part Two",
-        title: "The Tangible Basket Standard",
+        title: "What Backs the Money?",
         blocks: [
           { id: "p_colony_money_1", type: "p" },
           { id: "p_colony_money_2", type: "p" }
@@ -151,7 +120,7 @@ class ColonyContent {
       {
         section: "taxation",
         partLabel: "Part Three",
-        title: "Algorithmic Taxation: Voting on Two Numbers",
+        title: "A Two-Dial Tax Code",
         blocks: [
           { id: "p_colony_tax_1", type: "p" },
           { id: "p_colony_tax_2", type: "p" },
@@ -167,7 +136,7 @@ class ColonyContent {
       {
         section: "robotics",
         partLabel: "Part Four",
-        title: "The Machine Influx: Scaling to 100,000 Robots",
+        title: "When Machines Match the Population",
         blocks: [
           { id: "p_colony_robot_1", type: "p" },
           { id: "p_colony_robot_2", type: "p" }
@@ -176,7 +145,7 @@ class ColonyContent {
       {
         section: "transition",
         partLabel: "Part Five",
-        title: "The Frictionless Shift to Abundance",
+        title: "How the Transition Works",
         blocks: [
           { id: "p_colony_trans_1", type: "p" },
           { id: "quote_colony", type: "quote" },

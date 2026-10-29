@@ -1,7 +1,7 @@
 {
   "name": "EconomicsOfAutomation",
-  "version": "1.9.0",
-  "description": "The Robot Dividend & Economics of Automation - Complete Series with Dedicated Standalone Quora Discourse Rules and The Kinetic Illusion",
+  "version": "2.0.0",
+  "description": "The Robot Dividend & Economics of Automation - Master Living Specification with DocumentReader & SidePanel",
   "type": "luno-web-app",
   "mainClass": "EconomicsOfAutomation",
   "entrypoint": {
@@ -27,25 +27,26 @@
   ],
   "library": [
     "DomBasics.js",
-    "UITools.js"
+    "UITools.js",
+    "DocumentReader.js",
+    "SidePanel.js",
+    "DictationWidget.js",
+    "CommunityOracle.js"
   ],
   "styles": [
     "css/robotDividend.css"
   ],
-  "processedCountSinceCheckpoint": 1,
-  "lastCheckpointTime": "2026-10-26T06:27:10.273Z",
-  "pendingCheckpointDescription": "Clean working tree",
+  "processedCountSinceCheckpoint": 14,
   "changedMethods": {
-    "luno.json": "2026-10-11T01:49:15.305Z",
-    "js/KineticContent.js": "2026-10-11T02:47:12.586Z",
-    "rules.html": "2026-10-11T01:49:15.305Z",
-    "js/EconomicsOfAutomation.js": "2026-10-11T02:47:12.586Z",
-    "CadPlan/luno.json": "2026-10-16T18:35:28.846Z",
-    "CadPlan/index.html": "2026-10-16T18:35:28.846Z",
-    "Library/DocumentReader.js": "2026-10-27T21:07:20.561Z",
-    "CadPlan/CadPlan.js": "2026-10-16T18:35:28.846Z",
-    "CadPlan/js/CadPlanVisionContent.js": "2026-10-16T18:35:28.846Z",
-    "CadPlan/js/AccuDrawAnalysisContent.js": "2026-10-16T18:35:28.846Z",
-    "CadPlan/js/CadPlanRoadmapContent.js": "2026-10-16T18:35:28.846Z"
+    "js/RulesContent.js": "2026-10-29T00:02:20.908Z",
+    "js/ArticleContent.js": "2026-10-29T00:18:44.704Z",
+    "js/ColonyContent.js": "2026-10-29T00:18:07.002Z",
+    "js/EarthContent.js": "2026-10-29T00:18:50.511Z",
+    "js/DoomerContent.js": "2026-10-29T00:18:12.466Z",
+    "js/ParadigmsContent.js": "2026-10-29T00:18:14.772Z",
+    "js/ObjectionsContent.js": "2026-10-29T00:18:54.233Z",
+    "js/GameTheoryContent.js": "2026-10-29T00:18:19.238Z",
+    "js/KineticContent.js": "2026-10-29T00:18:39.285Z",
+    "js/DoomerDebateComponent.js": "2026-10-29T00:18:42.034Z"
   }
 }

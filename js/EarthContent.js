@@ -2,112 +2,94 @@ class EarthContent {
   static getMeta() {
     return {
       kicker: "Applying the Lessons to Our World",
-      title: "Transitioning on Planet Earth",
+      title: "3. Transitioning on Planet Earth",
       subtitle: "How breaking out of the manufactured two-party trance unlocks the economics of abundance."
     };
   }
 
-  static getImagePrompts() {
-    return {
-      masterAnchor: "Cinematic 35mm film still, shot on Arri Alexa with anamorphic lenses, natural daylight. Aesthetic: contemporary real-world infrastructure merging with near-future robotics and automation. Realistic, grounded, high detail.",
-      fig_earth_gridlock: "A striking photographic juxtaposition of a bustling modern city center: on one side, an automated electric delivery freight vehicle glides quietly past gleaming glass office towers; on the other side, an anxious crowd of diverse citizens gathers outside a civic administration hall holding placards about economic security. High contrast, atmospheric morning light.",
-      fig_earth_dialogue: "A high-end broadcast interview set in an expansive clean-tech gigafactory. Two figures in thoughtful, intense dialogue across a low table with automated production lines softly blurred in the deep background. Professional television journalism lighting, cinematic 35mm depth of field."
-    };
-  }
-
-  // Section 1: The Legacy Trap & The Real Obstacle
   static p_earth_intro_1() {
     return [
-      "The frontier colonies enjoyed a decisive luxury: they started with an empty continent and a clean slate. They had no 80,000-page tax codes written by century-old lobbying cartels, no trillions in underwater sovereign bonds, and no 24-hour cable news duopoly weaponizing cultural grievance for ratings. On planet Earth, we do not have the luxury of a virgin world. We have eight billion people, legacy institutions, and an economic operating system built for a world of mandatory sweat.",
-      "Our thought experiments with the twelve, the hundred, and the 100,000 pioneers proved that the physics and the accounting of automation work effortlessly: when machines produce a surplus, that surplus can be distributed unconditionally. But bringing that arithmetic home to Earth means confronting a political system that treats economic debate not as a practical engineering problem, but as an existential tribal war."
+      "The frontier colonies had an enormous advantage: an empty continent and a clean slate. They had no 80,000-page tax codes written by lobbyists, no trillions in debt, and no cable news networks turning economic questions into tribal fights. Here on Earth, we have eight billion people, legacy institutions, and an economy built around the assumption that everyone has to work to eat."
     ];
   }
 
   static p_earth_intro_2() {
     return [
-      "Today, modern democracies fund their public services primarily by taxing human paychecks. As AI and robotics accelerate, this creates a dangerous bind: the tax base drawn from human wages shrinks at the exact moment citizens need income support to survive. But fixing this does not require an overnight leap into the unknown. A transition can phase in gradually as an automatic stabilizer pegged directly to the labor share of GDP. In the early stages, collection starts small, delivering an initial dividend of perhaps $300 to $500 a month. This acts as an immediate shock absorber for displaced workers without disrupting capital markets. Meanwhile, because companies save money by replacing costly overhead with inexpensive computation, their expanding operating margins cushion balance sheets and protect retirement portfolios. As physical robotics and automated housing scale up, the dividend expands alongside real physical capacity. The transition is engineered not as a cliff edge, but as a calibrated, self-balancing glide path.",
-      "The tragedy of our current moment is that we are close to solving physical scarcity while fearing that the transition must mean economic ruin. It doesn't. A post-labor transition does not need to crash asset markets or wipe out pensions. By structuring the Robot Dividend as a continuous dial pegged to labor displacement, we avoid a sudden crisis. Corporate payroll savings offset initial cash-flow levies, retirement accounts are supported by growing productivity, and dividends expand in lockstep with real physical output."
+      "Today, modern governments fund public services mainly by taxing payrolls. As AI and robotics accelerate, this creates a real trap: the tax base shrinks at the exact moment people need income support to survive. But fixing this doesn't require an overnight leap into the unknown. A transition can phase in gradually, tied to how much labor has been displaced. In the early stages, collection starts small, delivering an initial dividend of $300 to $500 a month to cushion workers without rattling financial markets. Meanwhile, because companies save money by replacing expensive overhead with cheap compute, their widening margins protect corporate earnings and 401(k) accounts. As physical robotics and automated housing scale up, the dividend expands alongside real supply."
     ];
   }
 
   static sidebar_binary_trap() {
     return [
-      "Moving Past Partisan Reflexes & The 'Frictionless Sphere' Myth: The greatest threat to machine abundance on Earth is not engineering failure; it is political fatalism. Skeptics often dismiss the Robot Dividend by assuming it requires an impossible package deal: simultaneously overthrowing the two-party system, adopting Condorcet voting, abolishing the tax code, and handing citizens iPad sliders overnight. That completely confuses an uncorrupted pedagogical thought experiment with a real-world legislative rollout. The Colony of 100,000 used ranked voting and direct dials to show how the economic engine operates when stripped of earthly noise. But on Earth, the Minimum Viable Policy (MVP) requires zero electoral reform, zero constitutional conventions, and zero referendum voting. An ordinary representative legislature—whether the US Congress or a European parliament—can enact the baseline Robot Dividend tomorrow through a single standard budget reconciliation bill. It uses familiar statutory plumbing: an automatic negative income tax schedule funded by border-adjusted consumption taxes, monopoly cash-flow surtaxes, and land value assessments, running on an automatic stabilization trigger just like Social Security cost-of-living formulas. Citizens do not need to vote directly on mathematical curves on Day 1; the statutory law automates the glide path. Direct democratic tuning of the dials is an inspiring horizon for high-trust governance, but the economic engine functions smoothly on statutory auto-pilot from the very first hour.",
-      "Bypassing the Culture War: Automation does not belong to the Left or the Right. The greatest danger is that partisan sorting turns machine dividends into an ideological litmus test. Notice that enacting this requires no radical institutional paralysis: while direct democratic voting on Dials T and P represents an ideal horizon for civic consensus, representative legislatures can implement the identical economic reality immediately through existing progressive tax schedules and automatic statutory formulas. The mechanism is universal across any sovereign currency-issuing democracy. The obstacle is not legislative mechanism; it is the knee-jerk partisan reflex that treats economic engineering as a tribal blood sport."
+      "Bypassing the Culture War: The biggest obstacle on Earth isn't engineering; it's political fatalism. People often dismiss the Robot Dividend by assuming it requires an impossible package deal: overthrowing the two-party system, rewriting the Constitution, and handing citizens voting sliders overnight. It doesn't. An ordinary legislature can pass the baseline dividend tomorrow through a standard budget bill. It uses familiar statutory tools: an automatic negative income tax funded by consumption taxes, corporate cash-flow levies, and land value assessments, running on an automatic trigger just like Social Security cost-of-living adjustments. The obstacle isn't the legislative plumbing; it's the knee-jerk partisan reflex that treats economic engineering as a tribal blood sport."
     ];
   }
+
   static p_earth_china() {
     return [
-      "As we saw in the colony model, command economies like China hold an uncomfortable operational advantage here. They don't have to navigate legislative deadlocks, appease campaign donors, or negotiate with trade unions. If an unelected central committee decides that human labor is no longer the basis of economic survival, it can decree industrial automation, deploy millions of machines, and distribute staples by state fiat. If frontier AI increasingly performs scientific and technological design, the comfortable Western belief that authoritarian regimes cannot innovate becomes a dangerous illusion. The risk for the democratic West is not that China will fail; it is that China will successfully operationalize automated abundance while Western democracies tear themselves apart defending obsolete payroll taxes.",
-      "Command economies have an undeniable speed advantage in a post-labor transition: they don't have to debate. A centralized leadership can deploy autonomous infrastructure and decree physical distribution overnight by executive fiat. If AI performs the core engineering and design work, the historical innovation penalty of authoritarianism largely disappears. Our challenge in the democratic world is urgent: we cannot afford to let partisan paralysis trap our citizens in artificial poverty while command regimes adapt to the post-work world. We must prove that free citizens can update their own ledger through democratic consensus."
+      "International competition is going to force this conversation sooner than people think. A command economy like China doesn't have to spend years negotiating with lobbyists or filibustering bills. If Beijing decides to deploy tens of millions of humanoid robots, retool manufacturing, and distribute essentials by decree, it can move very quickly. The risk for the democratic West isn't that authoritarian regimes will fail; it's that they will operationalize automated abundance while free societies remain stuck defending obsolete payroll taxes."
     ];
   }
-  // Section 2: The Interview & The Core Dissonance
+
   static p_earth_interview_1() {
     return [
-      "The clash between traditional economic dogma and first-principles physical reality was captured with unusual clarity in a high-profile interview between Elon Musk and Zanny Minton Beddoes, the Editor-in-Chief of The Economist. Regardless of how one feels about Musk's polarizing public persona, his diagnosis cut straight through orthodox economic theology: 'What do you want money for? You want money for goods and services. If robots and AI are providing more goods and services than any human could possibly consume, what do you need money for?'",
-      "Consider the revealing exchange between tech industrialist Elon Musk and The Economist's editor-in-chief. When pressed on how governments could possibly afford universal checks without triggering Weimar-style inflation, Musk pointed out the thermodynamic reality: inflation is simply the ratio of money to physical goods. If automated production expands output by 1,000%, the Treasury can literally create money in the database—and because physical output outpaces currency creation, the result is net abundance and deflation, not runaway inflation."
+      "The clash between traditional economic dogma and first-principles reality came through clearly in a recent interview between Elon Musk and Zanny Minton Beddoes, the Editor-in-Chief of The Economist. Musk put the point bluntly: 'What do you want money for? You want money for goods and services. If robots and AI are providing more goods and services than any human could possibly consume, what do you need money for?'"
     ];
   }
 
   static p_earth_interview_2() {
     return [
-      "What stalled the interviewer wasn't the physical math—she conceded the production numbers could add up. What troubled her was the politics: 'I'm really hung up on how we get from the current polarized, angry, fearful politics we have now to this nirvana. People are so scared that they try to stop it... the economy crumbles because people are so worried.' That fear is the real bottleneck of our era. The danger to humanity's future is rarely that machines will fail to bake enough bread; it is that our politics will paralyze distribution out of sheer panic over an empty work schedule.",
-      "The interviewer's anxiety represents the collective panic of the legacy world: if millions of citizens lose their wage-gate to survival, society will violently fracture before the ledger can be updated. Even Musk acknowledged the emotional vertigo of this moment, admitting that he swings between exhilaration and terror intraday. That terror is entirely the product of our political paralysis. When people believe that jobs equal survival, every labor-saving machine looks like an executioner rather than an emancipator."
+      "What troubled the interviewer wasn't the physical math—she conceded the production numbers could add up. What worried her was the politics: how we get through the fear and polarization without society tearing itself apart first. That fear is the real bottleneck. The danger isn't that the machines won't make enough bread. It's that people will panic and block it from being handed out."
     ];
   }
+
   static quote_earth_ledger() {
     return [
-      "When machines produce the surplus, letting citizens go hungry because they lack a job is not economic realism; it is allowing an obsolete accounting convention to override physical reality.",
-      "The machine paid for the harvest in kilowatt-hours and raw materials. Forcing humans to starve in front of automated silos because they hold no wage tokens is a failure of bookkeeping, not a law of nature."
+      "When machines produce the surplus, letting people go hungry because they don't have a job isn't realism—it's letting an obsolete accounting rule override physical reality."
     ];
   }
 
   static p_earth_model_1() {
-    return [
-      "How do we enact this transition on Earth without triggering capital flight or provoking trade wars? We ground public revenue in two reliable, non-offshorable pillars. First, a standard border-adjusted Value Added Tax (VAT) paired with an excess-profit surtax on super-normal corporate cash flows, while granting 100% immediate expensing for capital investments. Second, a Land Value Tax (LVT) on unimproved urban locations, alongside royalties on raw energy throughput and mineral extraction. This design works within existing international trade law: because a VAT is an indirect tax on domestic consumption, its border adjustments are internationally recognized, closing offshore tax-haven loopholes without trade conflict. By allowing businesses to immediately write off investments in robotics, clean energy, and physical infrastructure, the effective tax rate on building productive automation remains zero percent—tax is only collected when profits are extracted for consumption. To handle any initial retail price bump from a VAT, the baseline negative tax credit can be front-loaded to rebate the estimated tax burden to lower- and middle-income households from day one, while rolling out free automated digital services that cut living costs across the board.",
-      "The mathematical schedule tested in our simulator applies directly to terrestrial economies through a Dual-Pillar revenue engine. By anchoring aggregate funding in border-adjusted consumption VAT receipts, monopoly cash-flow surtaxes, and thermodynamic choke-point royalties on land and energy, the system remains solvent across all technological eras. Crucially, 100% immediate expensing of capital goods guarantees that the incentive to build and scale productive automation remains completely unhindered. Even if hyper-scaling AI firms expense vast hardware outlays, non-deductible land value and natural resource rents guarantee stable public funding. The progressive schedule then converts that pool into an algorithmic Negative Income Tax at the lower percentiles—delivering the Robot Dividend floor as an organic mathematical feature of the tax code, eliminating welfare bureaucracies and means-testing stigma in a single stroke."
-    ];
-  }
+      return [
+        "How do we pay for this on Earth without companies fleeing offshore? We tax things that can't move. First, a standard border-adjusted consumption tax (VAT) paired with an excess-profit surtax on corporate cash flows, while granting 100% immediate expensing for capital investments. Second, a Land Value Tax on unimproved urban locations, alongside royalties on raw energy throughput and mineral extraction. Because a VAT is assessed on domestic consumption, its border adjustments are internationally recognized under trade law, closing offshore tax-haven loopholes. By allowing businesses to immediately write off investments in robotics, clean energy, and physical infrastructure, the effective tax on building productive machines is zero percent—tax is collected only when profits are extracted for consumption."
+      ];
+    }
 
   static p_earth_model_2() {
-    return [
-      "In the interactive simulator, notice how the model navigates the gap between fast software automation and the slower rollout of physical robotics through a Dual-Channel Rheostat. The dividend is delivered through two channels: basic services and liquid cash. Digital services—such as automated medical screening, AI tutoring, legal assistance, and basic compute—can scale almost immediately because software operates at near-zero marginal cost, cutting household expenses without bidding up physical commodities. Meanwhile, the liquid cash floor grows in step with real physical output. Instead of relying on bureaucratic central planning to guess supply levels, the safety corridor is governed by an un-gameable market price circuit breaker: core inflation in physical essentials (food, power, housing). If liquid transfers push core staple prices above a strict target band, cash expansion pauses automatically. Crucially, the bottleneck to physical abundance on Earth is rarely capital; it is regulatory calcification—antiquated zoning laws, endless environmental review litigation (such as NEPA in the United States), and NIMBY vetoes that make building physical housing and energy transmission illegal. For this reason, the policy must be paired with aggressive Supply-Side Permitting Reform: sweeping away procedural vetoes to allow automated modular housing and high-voltage transmission lines to be permitted and constructed at machine speed. Transitional surplus captured from cognitive automation that cannot yet be safely absorbed as liquid cash is routed into open milestone bounties—modeled on the prizes NASA used for commercial spaceflight—paying private firms to deploy modular housing factories and expand clean energy grids. As those physical bottlenecks dissolve and staple prices stabilize, the bounties sunset, and the full surplus flows straight into household cash dividends.",
-      "As demonstrated in the live model, a balanced progressivity curve channels machine surplus into an unconditional survival baseline while preserving robust marginal rewards for exceptional human creativity and entrepreneurial initiative. By pacing liquid cash transfers with real price-stability metrics, paring back regulatory construction vetoes, and routing transitional software surpluses into milestone bounties for physical infrastructure, the system prevents demand-pull inflation while rapidly accelerating the arrival of true material abundance."
-    ];
-  }
-  static p_earth_conservative() {
-    return [
-      "For free-market and conservative readers, the Robot Dividend is a practical defense of private property, commercial enterprise, and constitutional governance. Consider the realistic alternative to a dividend in an automated world: it is not a low-tax free-market paradise; it is a heavy-handed surveillance state where business owners must capture the government, militarize policing, and live in constant fear of civil unrest or expropriation. If consumers lose their purchasing power, private enterprise starves—firms either collapse from lack of customers or become state-dependent monopolies begging for subsidies. Think of the dividend as a return on what earlier generations built. Every modern automated company relies on centuries of public infrastructure, legal property deeds, contract courts, basic scientific research, and shared human knowledge. Full immediate expensing of capital equipment means enterprise is rewarded for building physical machines, while capital owners gain what every investor values: a stable, legitimate constitutional democracy where the public has a personal stake in commercial success.",
-      "If you value private property, the rule of law, and commercial enterprise, the Robot Dividend is your greatest bulwark against tyranny. It prevents the state from nationalizing production by putting purchasing power directly into household hands, allowing consumer demand to direct the economy. By allowing 100% immediate expensing of capital equipment while capturing super-normal rents via non-offshorable consumption and choke-point taxes, enterprise retains maximum incentive to innovate. It gives capital owners what every global investor seeks: the priceless security of a high-trust, peaceful, and legitimate constitutional democracy where the public is a shareholder in civilizational success rather than an existential threat."
-    ];
-  }
-  static p_earth_progressive() {
-    return [
-      "To the progressive and labor-minded reader: the Robot Dividend is not a corporate bribe to pacify the working class. It is the realization of the oldest humanitarian ideal: the permanent abolition of involuntary poverty and wage coercion. For centuries, workers were forced to sell their time, their health, and their dignity under the existential threat of eviction and starvation. When machines shoulder the burden of production and the surplus is distributed as a birthright, work transforms from compulsory survival into voluntary vocation. Humans are finally emancipated to raise families, create art, study science, and care for their communities without fear. You do not liberate the worker by forcing them to compete with a machine that never sleeps; you liberate the worker by giving them their share of the machine's harvest.",
-      "If your core commitment is human dignity, economic justice, and worker empowerment, full automation is not your enemy—it is your liberator. The goal was never to preserve dangerous, repetitive physical drudgery just so people could earn the right to eat. The goal was to end poverty. When autonomous machines mill the lumber and harvest the grain, demanding that human beings continue sweating in the fields to 'earn their keep' is nothing short of reactionary nostalgia."
-    ];
-  }
+      return [
+        "The simulator handles the gap between software and hardware by splitting the dividend into two parts: free services and cash. Digital services—like automated medical screening, AI tutoring, and legal help—can scale almost immediately because software costs next to nothing to replicate, lowering household living costs without bidding up physical goods. Meanwhile, cash transfers expand in step with real physical output: housing completions, food tonnage, and electricity generation. If cash transfers start pushing staple inflation above a target band, an automatic pause kicks in so demand doesn't outrun real supply. Surplus funds during the early software phase can go into milestone prizes—modeled on NASA's commercial space bounties—paying private builders to deploy modular housing factories and expand clean energy grids."
+      ];
+    }
 
+  static p_earth_conservative() {
+      return [
+        "If you believe in free markets and private property, a robot dividend is actually your best defense against government overreach. Consider what happens without one: it's not a low-tax free-market paradise; it's a heavy-handed surveillance state where business owners live in fear of civil unrest. If consumers lose their purchasing power, businesses starve—firms either collapse from a lack of customers or become state-dependent monopolies begging for subsidies. Allowing 100% immediate expensing of capital equipment means enterprise is rewarded for building physical machines, while investors gain what they value most: a stable, legitimate society where the public has a personal stake in commercial success."
+      ];
+    }
+
+  static p_earth_progressive() {
+      return [
+        "For progressives, the dividend achieves what the labor movement always wanted: ending involuntary poverty. For centuries, workers had to sell their time and health under the threat of destitution. When machines shoulder the burden of production and the surplus is distributed as a right, work transforms from compulsory survival into voluntary vocation. You don't liberate workers by forcing them to compete with machines that never sleep; you liberate workers by giving them their share of what the machines produce."
+      ];
+    }
   static p_earth_conclusion_1() {
     return [
-      "The primary barrier to this transition is neither physical nor mathematical. The machines can already harvest grain, generate power, and write software. The main obstacle is psychological: people struggle to believe that it can work. Conditioned by generations of scarcity, we assume that any promise of unconditional survival must be a utopian fantasy or a scam. But this model does not rely on universal goodwill or moral altruism; it aligns the self-interest of every major player. History offers clear parallels where capital preservation led directly to universal floors. In the 1880s, the conservative Prussian chancellor Otto von Bismarck established the world's first modern state pensions specifically to defuse radicalism and stabilize the imperial economy. In 1914, Henry Ford raised worker wages to $5 a day because assembly lines needed mass customers. In 1948, the Marshall Plan injected billions into European purchasing power because American industry needed solvent buyers abroad. The Robot Dividend is simply this logic applied to automation. Capital owners need solvent customers to keep factories profitable; workers need income to survive; and the state needs stability to maintain constitutional order. Once that alignment becomes clear, the sense of impossibility fades.",
-      "The accusation that democratic persuasion is naive assumes that post-labor economics relies on utopian goodwill. It does not. The Robot Dividend does not ask anyone to sacrifice their self-interest for the collective good; it aligns the self-interest of every major economic actor. Capitalists need paying customers; citizens need food and shelter; governments need tax solvency and civil peace. Just as Bismarck ceded social pensions to preserve property, and just as Ford recognized that machines require paying consumers, capital today requires a solvent domestic electorate. The only reason society hasn't already embraced this equilibrium is that people have been conditioned to believe that involuntary sweat is an immutable law of nature. Once people see that the math works, that the transition is a smooth glide path, and that everyone—rich and poor alike—is vastly safer and wealthier on the other side, the illusion of impossibility dissolves."
+      "The main barrier isn't physical or mathematical. The machines can already harvest grain, generate power, and write code. The main obstacle is psychological: people struggle to believe that it can work. Conditioned by generations of scarcity, we assume that any promise of unconditional survival must be a scam. But this model doesn't rely on universal goodwill; it aligns the self-interest of every major player. Capital owners need solvent customers to keep factories profitable; workers need income to survive; and governments need stability to maintain order. Once that alignment becomes clear, the sense of impossibility fades."
     ];
   }
 
   static p_earth_conclusion_2() {
     return [
-      "The fundamental choice before us is not between capitalism and socialism, or between political parties. It is between accounting reality and accounting inertia. If we insist that survival must be earned through compulsory toil even while machines produce record physical surpluses, we will engineer poverty in the middle of plenty. If we update our distribution rules to match physical reality, we can build a society that is both materially secure and genuinely free.",
-      "When automated harvesters fill the granaries and robotic mills stack the lumber, refusing to distribute the harvest makes little sense. The arithmetic holds up. The physical capacity is arriving. What remains is for a free society to update its rules accordingly."
+      "The fundamental choice before us isn't between capitalism and socialism, or between political parties. It's between accounting reality and accounting inertia. If we insist that survival must be earned through compulsory toil even while machines produce record surpluses, we'll engineer poverty in the middle of plenty. If we update our distribution rules to match physical reality, we can build a society that is both materially secure and genuinely free."
     ];
   }
+
   static manifest() {
     return [
       {
         section: "earth_legacy",
         partLabel: "Part One",
-        title: "The Legacy Impasse: The Manufactured Binary",
+        title: "Bringing It Home to Earth",
         blocks: [
           { id: "p_earth_intro_1", type: "p" },
           { id: "p_earth_intro_2", type: "p" },
@@ -123,7 +105,7 @@ class EarthContent {
       {
         section: "earth_interview",
         partLabel: "Part Two",
-        title: "The Great Collision: Economic Dogma vs. Physical Reality",
+        title: "The Debate in Plain English",
         blocks: [
           { id: "p_earth_interview_1", type: "p" },
           { id: "p_earth_interview_2", type: "p" },
@@ -133,7 +115,7 @@ class EarthContent {
       {
         section: "earth_model",
         partLabel: "Part Three",
-        title: "The Terrestrial Model: Algorithmic Security",
+        title: "How We'd Actually Fund It",
         blocks: [
           { id: "p_earth_model_1", type: "p" },
           {
@@ -148,7 +130,7 @@ class EarthContent {
       {
         section: "earth_consensus",
         partLabel: "Part Four",
-        title: "Beyond the Party Line: A Win for Both Sides",
+        title: "Why Both Sides Benefit",
         blocks: [
           { id: "p_earth_conservative", type: "p" },
           { id: "p_earth_progressive", type: "p" }
@@ -157,7 +139,7 @@ class EarthContent {
       {
         section: "earth_conclusion",
         partLabel: "Part Five",
-        title: "The Democratic Choice",
+        title: "The Path Forward",
         blocks: [
           { id: "p_earth_conclusion_1", type: "p" },
           { id: "p_earth_conclusion_2", type: "p" }
