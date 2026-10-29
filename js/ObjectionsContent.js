@@ -3,10 +3,42 @@ class ObjectionsContent {
     return {
       kicker: "Stress-Testing the Thesis Against Skeptics, Economists, and AI Critics",
       title: "7. The Adversarial Gauntlet",
-      subtitle: "Addressing every major objection: the transition path, the gold illusion, inflation, land, and human purpose."
+      subtitle: "Addressing every major objection: the transition path, elite autarky, inflation, land, and human purpose."
     };
   }
 
+  // Fallback methods for headless environments where HTML templates are not mounted
+  static p_obj_m2m_1() {
+    return [
+      "A frequent counter-argument is that capital owners simply won't need human consumers at all: 'If machines can do all the work, robots will just build datacenters, fusion power grids, and orbital rockets for the wealthy. Capital can circulate machine-to-machine within an elite loop without needing ordinary people to buy products.'"
+    ];
+  }
+
+  static p_obj_m2m_2() {
+    return [
+      "This sounds plausible until you look at how industrial economies actually function. First, capital goods are intermediate goods—they exist to produce final goods. A supply chain where machines only build machines to build more machines is an engine running in neutral with no terminal purpose.\n\nSecond, advanced technology requires massive aggregate volume. An extreme ultraviolet lithography machine or a frontier chip fab requires hundreds of thousands of specialized parts from thousands of suppliers. You cannot amortize the trillions of dollars needed for continuous hardware development on the purchasing power of a few hundred wealthy families. If you shrink the customer base to a country club, the industrial division of labor physically atrophies.\n\nMost importantly, corporations are legal entities chartered by sovereign democratic states, not alien spacecraft hovering in orbit. They rely on public power grids, municipal water, contract courts, and physical security. The idea that a handful of corporate boards can run an insular high-tech paradise inside a sovereign nation while telling 150 million voting citizens to go away ignores the basic reality of state sovereignty."
+    ];
+  }
+
+  static sidebar_m2m_fallacy() {
+    return [
+      "The Intermediate Capital Fallacy:\n\nMachines building machines sounds self-contained, but capital equipment is not final wealth. An AI datacenter or an automated excavator has zero terminal value on its own; it only creates value if its output is consumed. Without a broad consumer base to clear final goods, an insular elite loop quickly collapses under the fixed costs of maintaining global supply chains."
+    ];
+  }
+
+  static p_obj_zoo_1() {
+    return [
+      "A related objection concedes that people won't be allowed to starve, but warns of a different trap: 'Elites won't share real wealth; they'll just pacify the population with bare-minimum in-kind rations—standardized modular housing, synthetic food, and virtual reality—while keeping the money, capital, and political control for themselves.'"
+    ];
+  }
+
+  static p_obj_zoo_2() {
+    return [
+      "This overlooks the basic logistics of distribution. Managing a population on direct in-kind handouts recreates the Soviet calculation problem. Who decides who gets the apartment with a view versus the basement? Who decides who gets craft tools, sports gear, or musical instruments? Centralized rationing boards are corrupt, inefficient, and despised by the public.\n\nTo give people any choice over their daily lives, you have to hand them accounting tokens. And the moment you give citizens fungible tokens to command automated surplus, you have created a universal cash dividend.\n\nFurthermore, businesses are not a single, unified cabal. Companies that make housing, home appliances, food, and digital entertainment compete against each other for customer dollars. They actively want consumers to have liquid purchasing power so they can sell to them. The alternative—trying to lock the public into non-transferable company scrip—collapses into black markets almost immediately. A universal dividend isn't a top-down ration; it is the open-market coordination mechanism for an automated economy."
+    ];
+  }
+
+  // Pre-existing methods preserved
   static p_obj_trans_1() {
     return [
       "A frequent objection from economists is that even if the destination is sound, the road to get there will be a decade-long gauntlet of asset crashes, legal fights, and inflation spikes. Critics picture a sudden disruption where the state attempts an overnight overhaul of capital, causing investment flight and tanking retirement funds before physical robots are ready. This concern assumes a clumsy, overnight shock. In practice, the dividend phases in gradually as an automatic stabilizer tied to the labor share of GDP: collection starts modest, delivering an initial baseline of $300 to $500 a month to cushion displaced workers without rattling markets. At the same time, because corporate payroll expenses fall, operating margins widen, absorbing the tax without crushing earnings or 401(k) values. The dividend scales up alongside measured physical capacity—expanding as modular construction, clean power, and automated transport increase real supply."
@@ -80,10 +112,11 @@ class ObjectionsContent {
   }
 
   static p_obj_positional_1() {
-      return [
-        "People always ask about land: 'If you give everyone an unconditional dividend, won't landlords just hike rents by the exact same amount and take it all?' Housing has two completely different parts: the building itself (which automation makes cheap) and the land underneath it (which is physically fixed). While 3D printers and modular manufacturing can put up homes in forty-eight hours at very low cost, they can't manufacture more land in Manhattan or coastal California. To prevent machine dividends from leaking directly into landlords' pockets, the Robot Dividend must be paired with a Land Value Tax—as proposed by Henry George. By taxing the location value of land while eliminating taxes on the buildings put on it, you stop speculative hoarding. Landlords can't pass a land tax onto tenants because the supply of land is fixed; instead, the tax forces them to build housing or sell to someone who will."
-      ];
-    }
+    return [
+      "People always ask about land: 'If you give everyone an unconditional dividend, won't landlords just hike rents by the exact same amount and take it all?' Housing has two completely different parts: the building itself (which automation makes cheap) and the land underneath it (which is physically fixed). While 3D printers and modular manufacturing can put up homes in forty-eight hours at very low cost, they can't manufacture more land in Manhattan or coastal California. To prevent machine dividends from leaking directly into landlords' pockets, the Robot Dividend must be paired with a Land Value Tax—as proposed by Henry George. By taxing the location value of land while eliminating taxes on the buildings put on it, you stop speculative hoarding. Landlords can't pass a land tax onto tenants because the supply of land is fixed; instead, the tax forces them to build housing or sell to someone who will."
+    ];
+  }
+
   static p_obj_geopolitics_1() {
     return [
       "Another serious objection looks across the Pacific: 'What about China? If a command dictatorship can decree mass automation from the top down and reinvest machine surplus with speed, won't a polarized democracy fall behind?' This highlights a genuine competitive reality. A centralized command regime faces far less procedural friction when labor becomes obsolete: Beijing doesn't have to spend decades navigating corporate lobbying cartels or partisan filibusters. If Chinese leadership decides to deploy fifty million humanoid robots, automate heavy manufacturing, and distribute physical staples to their population by decree, they can execute that transition quickly."
@@ -97,16 +130,17 @@ class ObjectionsContent {
   }
 
   static p_obj_purpose_1() {
-      return [
-        "Then there's the existential worry: if machines do all the work—even the engineering, medicine, and art—won't people just sit around depressed with nothing to live for? This comes from an old survival reflex and the instinct that everyone has to pull their weight. For thousands of years, survival meant everyone had to contribute; anyone eating without working put the whole group in danger. That makes people uncomfortable with unconditional income. But the dividend isn't charity; think of it as an inheritance. If a family inherits an orchard planted by their grandparents, nobody complains when the grandkids eat the fruit. They're the heirs of what came before. Modern automation stands on centuries of scientific and cultural work. The dividend is just sharing that harvest. Hard labor was never human purpose; it was the price of admission to stay alive. Throughout history, whenever people were freed from daily survival—in the Enlightenment or in open-source projects—they didn't collapse into apathy. They did science, created art, played sports, and built communities."
-      ];
-    }
+    return [
+      "Then there's the existential worry: if machines do all the work—even the engineering, medicine, and art—won't people just sit around depressed with nothing to live for? This comes from an old survival reflex and the instinct that everyone has to pull their weight. For thousands of years, survival meant everyone had to contribute; anyone eating without working put the whole group in danger. That makes people uncomfortable with unconditional income. But the dividend isn't charity; think of it as an inheritance. If a family inherits an orchard planted by their grandparents, nobody complains when the grandkids eat the fruit. They're the heirs of what came before. Modern automation stands on centuries of scientific and cultural work. The dividend is just sharing that harvest. Hard labor was never human purpose; it was the price of admission to stay alive. Throughout history, whenever people were freed from daily survival—in the Enlightenment or in open-source projects—they didn't collapse into apathy. They did science, created art, played sports, and built communities."
+    ];
+  }
 
   static p_obj_purpose_2() {
-      return [
-        "We shouldn't pretend it doesn't sting when software beats humans at things we took pride in. When a computer beats a grandmaster at chess, or generates an illustration in seconds, it's a blow to the ego. But chess didn't die when computers beat Kasparov—more people play chess today than ever before. We still run marathons even though bicycles are faster, and people hike mountains even though a helicopter can drop you on the peak. Human creativity, sports, and community matter because we enjoy them, not because they're commercially efficient. What's truly empty is forcing millions of people into repetitive jobs just to give them an excuse to eat. The Robot Dividend solves the baseline: survival becomes unconditional. What we choose to do with our freedom is the real work ahead."
-      ];
-    }
+    return [
+      "We shouldn't pretend it doesn't sting when software beats humans at things we took pride in. When a computer beats a grandmaster at chess, or generates an illustration in seconds, it's a blow to the ego. But chess didn't die when computers beat Kasparov—more people play chess today than ever before. We still run marathons even though bicycles are faster, and people hike mountains even though a helicopter can drop you on the peak. Human creativity, sports, and community matter because we enjoy them, not because they're commercially efficient. What's truly empty is forcing millions of people into repetitive jobs just to give them an excuse to eat. The Robot Dividend solves the baseline: survival becomes unconditional. What we choose to do with our freedom is the real work ahead."
+    ];
+  }
+
   static quote_gauntlet() {
     return [
       "Work was never the ultimate purpose of human life; it was merely the price of admission to survival in an era of scarcity. When machines pay that price, we gain our lives."
@@ -147,8 +181,25 @@ class ObjectionsContent {
         ]
       },
       {
-        section: "obj_money",
+        section: "obj_realization",
         partLabel: "Part Two",
+        title: "Does Capital Actually Need Human Consumers?",
+        blocks: [
+          { id: "p_obj_m2m_1", type: "p" },
+          { id: "p_obj_m2m_2", type: "p" },
+          {
+            id: "sidebar_m2m_fallacy",
+            type: "sidebar",
+            kicker: "Industrial Reality",
+            title: "The Intermediate Capital Fallacy"
+          },
+          { id: "p_obj_zoo_1", type: "p" },
+          { id: "p_obj_zoo_2", type: "p" }
+        ]
+      },
+      {
+        section: "obj_money",
+        partLabel: "Part Three",
         title: "The Money Illusion: Gold, Bitcoin, and Real Wealth",
         blocks: [
           { id: "p_obj_money_1", type: "p" },
@@ -162,7 +213,7 @@ class ObjectionsContent {
       },
       {
         section: "obj_inflation",
-        partLabel: "Part Three",
+        partLabel: "Part Four",
         title: "Inflation, Positional Land, and Henry George",
         blocks: [
           { id: "p_obj_inflation_1", type: "p" },
@@ -171,7 +222,7 @@ class ObjectionsContent {
       },
       {
         section: "obj_geopolitics",
-        partLabel: "Part Four",
+        partLabel: "Part Five",
         title: "Can Free Societies Beat Dictatorships?",
         blocks: [
           { id: "p_obj_geopolitics_1", type: "p" },
@@ -180,7 +231,7 @@ class ObjectionsContent {
       },
       {
         section: "obj_purpose",
-        partLabel: "Part Five",
+        partLabel: "Part Six",
         title: "From Forced Toil to the Renaissance",
         blocks: [
           { id: "p_obj_purpose_1", type: "p" },

@@ -7,47 +7,7 @@ class GameTheoryContent {
     };
   }
 
-  static manifest() {
-    return [
-      {
-        section: "intro",
-        partLabel: "First Principles",
-        title: "What is Game Theory?",
-        blocks: [
-          { id: "p_gt_intro_1", type: "p" },
-          { id: "p_gt_intro_2", type: "p" }
-        ]
-      },
-      {
-        section: "rationality",
-        partLabel: "The Core Distinction",
-        title: "Rational Self-Interest vs. Naive Short-Term Greed",
-        blocks: [
-          { id: "p_gt_tax_analogy", type: "p" },
-          { id: "sidebar_feedback_loop", type: "sidebar", kicker: "Key Insight", title: "Why Capital Needs Consumers" }
-        ]
-      },
-      {
-        section: "automation_dilemma",
-        partLabel: "Macro Coordination",
-        title: "The Automation Prisoner's Dilemma",
-        blocks: [
-          { id: "p_gt_prisoners_dilemma", type: "p" },
-          { id: "p_gt_nash_equilibrium", type: "p" }
-        ]
-      },
-      {
-        section: "the_mirror",
-        partLabel: "Discourse Application",
-        title: "Applying the Mirror Test to Economic Skepticism",
-        blocks: [
-          { id: "p_gt_mirror_test", type: "p" },
-          { id: "p_gt_conclusion", type: "p" }
-        ]
-      }
-    ];
-  }
-
+  // Fallback methods for headless environments where HTML templates are not mounted
   static p_gt_intro_1() {
     return [
       "Whenever discussions turn to AI, robotics, and the future of work, online commentary almost always defaults to fatalism: people assume that capital owners will hoard every machine, lobby away all public obligations, and leave the population to fend for itself. When asked why, commenters reply: 'Because humans are selfish.'\n\nThat diagnosis is half-right and completely misapplied. Game Theory is the mathematical study of strategic interaction among rational decision-makers. It assumes individuals act to maximize their own welfare. But Game Theory doesn't assume people are short-sighted fools who fail to understand basic cause and effect."
@@ -57,6 +17,36 @@ class GameTheoryContent {
   static p_gt_intro_2() {
     return [
       "In game theory, an outcome is called a Nash Equilibrium when every participant is making the best choice for themselves given what everyone else is doing, such that no individual can improve their standing by changing their move alone. Finding the equilibrium requires looking past cinematic tropes to evaluate the actual incentives facing the players."
+    ];
+  }
+
+  static p_gt_timing_1() {
+    return [
+      "Critics frequently raise a timing objection: 'Once 90% of the workforce is automated, human labor has zero value. Workers will have no strike leverage, no income, and no tax footprint. Why would capital owners negotiate with an underclass that has zero leverage?'\n\nThis objection commits a static timing fallacy. It assumes society leaps overnight from full employment straight into 90% obsolescence, and that negotiations only begin at the very end of the line."
+    ];
+  }
+
+  static p_gt_timing_2() {
+    return [
+      "In reality, the political tipping point occurs mid-transition—between 25% and 35% displacement. At that stage, the majority of the population is still working, paying taxes, and running essential infrastructure. But they are gripped by acute self-preservation because they see colleagues laid off, family members struggling, and their children graduating into shrinking labor markets.\n\nThis was the exact political dynamic of the 1930s. The New Deal, Social Security, and top marginal tax brackets above 80% were not enacted when 90% of workers were destitute; they passed when unemployment peaked at 25%. That shock turned economic security into a single-issue electoral landslide. The legal rules and tax auto-pilots of the Robot Dividend will be chartered when democratic leverage is at its peak—not after it has disappeared."
+    ];
+  }
+
+  static sidebar_timing_precedent() {
+    return [
+      "The 25% Leverage Tipping Point:\n\nMajor realignments in public welfare and labor law are never negotiated at total economic collapse. They are passed when a working middle class realizes it is next on the chopping block. An electorate facing 30% structural displacement holds total ballot-box authority and will vote for statutory dividend auto-pilots before mass disenfranchisement can ever occur."
+    ];
+  }
+
+  static p_gt_praetorian_1() {
+    return [
+      "When pressed on democratic voting power, skeptics often retreat to the historical mercenary defense: 'Elites will simply buy off the top 5% or 10%—the lead software engineers, cybersecurity chiefs, and military drone commanders—with prime equity, turning them into a high-tech Praetorian Guard to suppress the other 90%.'"
+    ];
+  }
+
+  static p_gt_praetorian_2() {
+    return [
+      "In imperial Rome, a legionary was a physical human being who could not be duplicated. To maintain a private guard, an emperor had to keep paying thousands of individuals forever. But in an automated economy, AI automates cognitive tasks faster than manual trades.\n\nCode generation, network administration, and algorithmic defense systems are automated long before physical plumbing or electrical repair. Capital owners have no economic incentive to share massive equity with a 10% human technician class when autonomous agents can run the systems for pennies. The moment capital tries to cut overhead by replacing its own technical staff, those discarded engineers, data scientists, and systems architects don't become docile dependents—they become the organized, technically capable leadership of the democratic majority. A regime that relies on a technician class it is actively trying to eliminate is structurally unstable."
     ];
   }
 
@@ -93,6 +83,71 @@ class GameTheoryContent {
   static p_gt_conclusion() {
     return [
       "When evaluating any post-labor policy proposal, remember the core rule: look at the systemic feedback loops, not the immediate impulses."
+    ];
+  }
+
+  static manifest() {
+    return [
+      {
+        section: "intro",
+        partLabel: "First Principles",
+        title: "What is Game Theory?",
+        blocks: [
+          { id: "p_gt_intro_1", type: "p" },
+          { id: "p_gt_intro_2", type: "p" }
+        ]
+      },
+      {
+        section: "timing_leverage",
+        partLabel: "Political Dynamic",
+        title: "The Timing of Democratic Leverage",
+        blocks: [
+          { id: "p_gt_timing_1", type: "p" },
+          { id: "p_gt_timing_2", type: "p" },
+          {
+            id: "sidebar_timing_precedent",
+            type: "sidebar",
+            kicker: "Historical Tipping Point",
+            title: "Why Negotiations Happen at 25%, Not 90%"
+          }
+        ]
+      },
+      {
+        section: "praetorian_fallacy",
+        partLabel: "Enforcement Limits",
+        title: "The Praetorian Fallacy: Why Buying the 10% Fails",
+        blocks: [
+          { id: "p_gt_praetorian_1", type: "p" },
+          { id: "p_gt_praetorian_2", type: "p" }
+        ]
+      },
+      {
+        section: "rationality",
+        partLabel: "The Core Distinction",
+        title: "Rational Self-Interest vs. Naive Short-Term Greed",
+        blocks: [
+          { id: "p_gt_tax_analogy", type: "p" },
+          { id: "sidebar_feedback_loop", type: "sidebar", kicker: "Key Insight", title: "Why Capital Needs Consumers" }
+        ]
+      },
+      {
+        section: "automation_dilemma",
+        partLabel: "Macro Coordination",
+        title: "The Automation Prisoner's Dilemma",
+        blocks: [
+          { id: "p_gt_prisoners_dilemma", type: "p" },
+          { id: "p_gt_nash_equilibrium", type: "p" }
+        ]
+      },
+      {
+        section: "the_mirror",
+        partLabel: "Discourse Application",
+        title: "Applying the Mirror Test to Economic Skepticism",
+        blocks: [
+          { id: "p_gt_mirror_test", type: "p" },
+          { id: "p_gt_conclusion", type: "p" }
+        ]
+      }
     ];
   }
 }
