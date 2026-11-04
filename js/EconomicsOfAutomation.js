@@ -10,69 +10,75 @@ class EconomicsOfAutomation {
   }
 
   async run(env) {
-    if (!env || !env.container) {
-      throw new Error("[EconomicsOfAutomation] run() requires an environment with a valid container.");
-    }
-
-    if (this.rootElement) {
-      this.destroy();
-    }
-
-    this.env = env;
-    this.rootElement = env.container;
-    this.rootElement.innerHTML = '';
-    this.rootElement.style.overflowY = 'auto';
-    this.rootElement.style.minHeight = '100vh';
-    this.rootElement.style.boxSizing = 'border-box';
-    this.rootElement.style.transition = 'margin-left 0.25s cubic-bezier(0.2, 0.0, 0.2, 1), width 0.25s cubic-bezier(0.2, 0.0, 0.2, 1)';
-
-    const pages = [
-      { id: 'dividend', title: '1. The Robot Dividend', group: 'core', docClass: () => globalThis.ArticleContent },
-      { id: 'colony', title: '2. The 100,000 Colony', group: 'core', docClass: () => globalThis.ColonyContent },
-      { id: 'earth', title: '3. Earth Transition', group: 'core', docClass: () => globalThis.EarthContent },
-      { id: 'statusquo', title: '4. The Status Quo Trap', group: 'response', docClass: () => globalThis.KineticContent },
-      { id: 'doomer', title: '5. The Doomer Loop', group: 'response', docClass: () => globalThis.DoomerContent },
-      { id: 'paradigms', title: '6. The Three Visions', group: 'response', docClass: () => globalThis.ParadigmsContent },
-      { id: 'objections', title: '7. The Adversarial Gauntlet', group: 'response', docClass: () => globalThis.ObjectionsContent },
-      { id: 'gametheory', title: '8. Game Theory & The Law', group: 'reference', docClass: () => globalThis.GameTheoryContent },
-      { id: 'rules', title: '9. Discussion Ground Rules', group: 'reference', docClass: () => globalThis.RulesContent },
-      { id: 'ai-rules', title: '10. AI Prompt Directives', group: 'reference', docClass: () => globalThis.AiRulesContent }
-    ];
-
-    this.pages = pages;
-
-    if (typeof DocumentReader !== 'undefined') {
-      this.reader = new DocumentReader({
-        container: this.rootElement,
-        brandTitle: 'The Robot Dividend',
-        brandIcon: '⚡',
-        dossierId: 'EconomicsOfAutomation',
-        pages: pages
-      });
-      await this.reader.init();
-
-      if (typeof SidePanel !== 'undefined') {
-        this.sidePanel = new SidePanel('left', 340, null);
-        this._buildSidePanelNavigation(pages);
-
-        this._safeAreaHandler = (e) => {
-          const left = e.detail?.left || 0;
-          if (this.rootElement) {
-            this.rootElement.style.marginLeft = `${left}px`;
-            this.rootElement.style.width = left > 0 ? `calc(100% - ${left}px)` : '100%';
-          }
-        };
-        window.addEventListener('layout-safe-area-change', this._safeAreaHandler);
-        this.sidePanel.open();
+      if (!env || !env.container) {
+        throw new Error("[EconomicsOfAutomation] run() requires an environment with a valid container.");
       }
 
-      window.economicsApp = this;
-      globalThis._economicsInstance = this;
+      if (this.rootElement) {
+        this.destroy();
+      }
+
+      this.env = env;
+      this.rootElement = env.container;
+      this.rootElement.innerHTML = '';
+      this.rootElement.style.overflowY = 'visible';
+      this.rootElement.style.overflowX = 'hidden';
+      this.rootElement.style.minHeight = '100vh';
+      this.rootElement.style.boxSizing = 'border-box';
+      this.rootElement.style.transition = 'margin-left 0.25s cubic-bezier(0.2, 0.0, 0.2, 1), width 0.25s cubic-bezier(0.2, 0.0, 0.2, 1)';
+
+      const pages = [
+        { id: 'dividend', title: '1. The Robot Dividend', group: 'core', docClass: () => globalThis.ArticleContent },
+        { id: 'colony', title: '2. The 100,000 Colony', group: 'core', docClass: () => globalThis.ColonyContent },
+        { id: 'earth', title: '3. Earth Transition', group: 'core', docClass: () => globalThis.EarthContent },
+        { id: 'statusquo', title: '4. The Status Quo Trap', group: 'response', docClass: () => globalThis.KineticContent },
+        { id: 'doomer', title: '5. The Doomer Loop', group: 'response', docClass: () => globalThis.DoomerContent },
+        { id: 'paradigms', title: '6. The Three Visions', group: 'response', docClass: () => globalThis.ParadigmsContent },
+        { id: 'objections', title: '7. The Adversarial Gauntlet', group: 'response', docClass: () => globalThis.ObjectionsContent },
+        { id: 'gametheory', title: '8. Game Theory & The Law', group: 'reference', docClass: () => globalThis.GameTheoryContent },
+        { id: 'rules', title: '9. Discussion Ground Rules', group: 'reference', docClass: () => globalThis.RulesContent },
+        { id: 'ai-rules', title: '10. AI Prompt Directives', group: 'reference', docClass: () => globalThis.AiRulesContent }
+      ];
+
+      this.pages = pages;
+
+      if (typeof DocumentReader !== 'undefined') {
+        this.reader = new DocumentReader({
+          container: this.rootElement,
+          brandTitle: 'The Robot Dividend',
+          brandIcon: '⚡',
+          dossierId: 'EconomicsOfAutomation',
+          pages: pages
+        });
+        await this.reader.init();
+
+        if (typeof SidePanel !== 'undefined') {
+          const isNarrow = window.innerWidth < 860;
+          const panelWidth = isNarrow ? 260 : 280;
+          this.sidePanel = new SidePanel('left', panelWidth, null);
+          this._buildSidePanelNavigation(pages);
+
+          this._safeAreaHandler = (e) => {
+            const isMobile = window.innerWidth < 860;
+            const left = isMobile ? 0 : (e.detail?.left || 0);
+            if (this.rootElement) {
+              this.rootElement.style.marginLeft = `${left}px`;
+              this.rootElement.style.width = left > 0 ? `calc(100% - ${left}px)` : '100%';
+            }
+          };
+          window.addEventListener('layout-safe-area-change', this._safeAreaHandler);
+
+          if (!isNarrow) {
+            this.sidePanel.open();
+          }
+        }
+
+        window.economicsApp = this;
+        globalThis._economicsInstance = this;
+      }
+
+      return this;
     }
-
-    return this;
-  }
-
   _buildSidePanelNavigation(pages) {
     if (!this.sidePanel) return;
 
