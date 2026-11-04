@@ -53,21 +53,7 @@ PART 3: ROB BROWN — THE ROBOT DIVIDEND (SUMMARY & FULL TEXT)
 ================================================================================
 
 Summary:
-Brown grounds his model in thermodynamic materialism: wealth is the physical output produced by energy, machines, and raw materials; money is merely an unforgeable accounting ticket. Deprivation amid automated abundance is an accounting failure, not a physical scarcity. 
-
-Rather than attempting to amass an impossible capital stock endowment ($124T+ at national scale), Brown's model taxes current commercial flows: an algorithmic Negative Income Tax (NIT) schedule (modeled by dials T and P) bounded within a statutory Capacity Corridor [T_min, T_max] that guarantees industrial capital replenishment before dividend extraction. 
-
-Funding Engine:
-1. Destination-Based Cash-Flow Taxation (DBCFT / border-adjusted VAT) assessed at retail consumption with 100% immediate CapEx expensing, mathematically isolating economic rent and neutralizing tax havens without subjective deduction loopholes.
-2. Georgist Land Value Taxation (LVT) on unimproved urban locations, alongside royalties on raw energy throughput and mineral extraction, preventing landlords from capturing dividends into higher rents.
-3. Terrestrial Benchmark (US Scale): At $28T–$30T GDP, a 15% DBCFT ($2.85T) + 5% LVT ($1.0T) + Resource Royalties ($600B) generates $4.45 trillion annually, funding an unconditional baseline dividend of $17,100 per adult per year ($34,200 for a two-adult household) without debt or capital erosion.
-
-Strategic & Transition Dynamics:
-• Transforming the Dilemma: Automation in an unregulated market is a Prisoner's Dilemma, but statutory implementation transforms it into an Assurance Game (Stag Hunt) where the Robot Dividend is the unique subgame-perfect Nash equilibrium.
-• The Realization Trap & Minimum Efficient Scale: Disproves elite autarky using Adam Smith's division of labor: frontier hardware (ASML EUV fabs, gigawatt datacenters, humanoid robotics) requires mass consumer volume to amortize fixed capital costs. Capital cannot survive in an insular enclave.
-• The Anti-War Abundance Mobilization: Contrast with WWII borrowing (which financed physical destruction); transition bonds finance expanding, permanent physical productivity inside a deflating cost structure.
-• The All-Volunteer Labor Clearing: Physical trades clear via compensating wage differentials funded by corporate payroll savings, mirroring the post-1973 all-volunteer military.
-• Political Leverage Tipping Point: Enacted mid-transition at 25–35% displacement when middle-class electoral leverage peaks.
+Brown grounds his model in thermodynamic materialism: wealth is the physical output produced by energy, machines, and raw materials; money is merely an unforgeable accounting ticket. Deprivation amid automated abundance is an accounting failure, not a physical scarcity. Rather than attempting to amass an impossible capital stock endowment ($120T+ at national scale), Brown's model taxes current commercial flows: an algorithmic Negative Income Tax (NIT) schedule (modeled by dials T and P) funded by Destination-Based Cash-Flow Taxation (DBCFT) on corporate monopoly profits at the point of consumption (neutralizing tax havens) and Georgist Land Value Taxation (LVT) on unimproved land (preventing urban landlords from capitalizing dividends into higher rents). Where automation is competitive, price drops deliver real purchasing power directly; where rents exist, taxes fund the liquid dividend floor. Transition is achieved through democratic persuasion and institutional consensus.
 
 [PASTE THE FULL TEXT OF ROB BROWN'S TREATISE HERE]
 
