@@ -1,7 +1,7 @@
 {
   "name": "EconomicsOfAutomation",
-  "version": "2.0.0",
-  "description": "The Robot Dividend & Economics of Automation - Master Living Specification with DocumentReader & SidePanel",
+  "version": "2.1.1",
+  "description": "The Robot Dividend & Economics of Automation - Master Living Specification with DocumentReader, SidePanel, Living Directives & Aardvark",
   "type": "luno-web-app",
   "mainClass": "EconomicsOfAutomation",
   "entrypoint": {
@@ -31,32 +31,14 @@
     "DocumentReader.js",
     "SidePanel.js",
     "DictationWidget.js",
-    "CommunityOracle.js"
+    "CommunityOracle.js",
+    "SupabaseCommentsAdapter.js",
+    "CadPlanDataRegistry.js",
+    "CadPlanItemNotes.js",
+    "CadPlanDocumentEditor.js",
+    "CadPlanAardvark.js"
   ],
   "styles": [
     "css/robotDividend.css"
-  ],
-  "processedCountSinceCheckpoint": 0,
-  "changedMethods": {
-    "js/RulesContent.js": "2026-11-04T03:55:15.796Z",
-    "js/ArticleContent.js": "2026-10-29T00:18:44.704Z",
-    "js/ColonyContent.js": "2026-11-04T00:53:43.207Z",
-    "js/EarthContent.js": "2026-11-04T03:46:33.520Z",
-    "js/DoomerContent.js": "2026-10-29T00:18:12.466Z",
-    "js/ParadigmsContent.js": "2026-11-04T03:55:15.796Z",
-    "js/ObjectionsContent.js": "2026-11-04T00:53:43.207Z",
-    "js/GameTheoryContent.js": "2026-11-04T03:46:33.520Z",
-    "js/KineticContent.js": "2026-10-29T00:18:39.285Z",
-    "js/DoomerDebateComponent.js": "2026-10-29T00:18:42.034Z",
-    "objections.html": "2026-11-04T00:53:43.207Z",
-    "gametheory.html": "2026-11-04T03:46:33.520Z",
-    "earth.html": "2026-11-04T03:46:33.520Z",
-    "colony.html": "2026-11-04T00:53:43.207Z",
-    "js/EconomicsOfAutomation.js": "2026-11-03T21:44:57.105Z",
-    "Library/DocumentReader.js": "2026-11-03T21:44:57.105Z",
-    "rules.html": "2026-11-04T03:55:15.796Z",
-    "ClaudeMasterPrompt.md": "2026-11-04T03:55:15.796Z"
-  },
-  "lastCheckpointTime": "2026-11-08T03:37:10.853Z",
-  "pendingCheckpointDescription": "Clean working tree"
+  ]
 }
